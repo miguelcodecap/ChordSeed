@@ -393,7 +393,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
           <span class="mono" style="{{st1Badge}}">{{st1Num}}</span>
           <div style="display:flex;flex-direction:column;gap:1px">
             <span style="font:400 20px 'Cormorant Garamond',Georgia,serif">{{t.startTitle}}</span>
-            <span style="font-size:12px;color:#9FB3A4">{{t.startSub}}</span>
+            <span style="{{startSubStyle}}">{{startSubTxt}}</span>
           </div>
         </div>
         <span style="font-size:13px;color:#F0E39A">{{profileLine}}</span>
@@ -4297,6 +4297,8 @@ class Component extends DCLogic {
       st1Num: stepDone[0] ? '✓' : '1', st2Num: stepDone[2] ? '✓' : '3', st3Num: stepDone[1] ? '✓' : '2', st4Num: stepDone[3] ? '✓' : '4', st5Num: stepDone[4] ? '✓' : '5',
       st1Class: stepNow === 0 ? 'step-now' : '', st2Class: stepNow === 2 && view === 'gen' ? 'step-now' : '', st3Class: stepNow === 1 ? 'step-now' : '', st4Class: stepNow === 3 ? 'step-now' : '', st5Class: stepNow === 4 ? 'step-now' : '',
       st2Now: stepNow === 2, st3Now: stepNow === 1, st4Now: stepNow === 3, st5Now: stepNow === 4,
+      startSubTxt: st.onbAns ? LX('Ya lo elegiste al inicio. Si quieres cambiarlo, despliega este bloque.', 'You already chose this at the start. Expand this block if you want to change it.') : T.startSub,
+      startSubStyle: 'font-size:12px;color:' + (st.onbAns ? '#C9D6C6' : '#9FB3A4'),
       profileLine: st.profileSet ? T.profileLine1 + (INSTS.filter(function (x) { return x[0] === st.inst; })[0] || ['', '', ''])[es ? 1 : 2] + ' · ' + RE_STYLES[genre][lang].at(0) : '',
       instCards: INSTS.map(function (x) { var on = st.inst === x[0]; return { label: x[es ? 1 : 2], pressed: on ? 'true' : 'false',
         dot: 'width:10px;height:10px;border-radius:99px;display:inline-block;background:' + (on ? '#0E140A' : x[3]),
@@ -4748,7 +4750,7 @@ class Component extends DCLogic {
       nsSub: [LX('Usa una idea para empezar o pon los acordes de tu idea.', 'Use a starting idea or enter the chords of your idea.'), LX('La app te sugiere qué acordes pueden venir después.', 'The app suggests which chords can come next.'), LX('Añade partes (verso, coro…) y decide en qué orden suenan.', 'Add parts (verse, chorus…) and choose their order.'), LX('Ejemplos reales de tu género y cómo se tocan.', 'Real examples from your genre and how to play them.')].at(Math.min(3, (st.reveal || 1) - 1)),
       goNext: function () { var n = Math.min(5, (st.reveal || 1) + 1); self.setState({ reveal: n }); setTimeout(function () { try { var el = document.getElementById('stp-' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) {} }, 90); },
       canShowAll: (st.reveal || 1) < 5, showAllLab: LX('Ver todos los pasos', 'Show all steps'), showAll: function () { self.setState({ reveal: 5 }); },
-      colCls_start: isCol('start', view !== 'gen') ? 'is-col' : '', colExp_start: isCol('start', view !== 'gen') ? 'false' : 'true', colIco_start: isCol('start', view !== 'gen') ? '▾' : '▴', colLab_start: isCol('start', view !== 'gen') ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_start: function () { var c2 = Object.assign({}, self.state.col || {}); c2['start'] = !isCol('start', view !== 'gen'); self.setState({ col: c2 }); },
+      colCls_start: isCol('start', view !== 'gen' || !!st.onbAns) ? 'is-col' : '', colExp_start: isCol('start', view !== 'gen' || !!st.onbAns) ? 'false' : 'true', colIco_start: isCol('start', view !== 'gen' || !!st.onbAns) ? '▾' : '▴', colLab_start: isCol('start', view !== 'gen' || !!st.onbAns) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_start: function () { var c2 = Object.assign({}, self.state.col || {}); c2['start'] = !isCol('start', view !== 'gen' || !!st.onbAns); self.setState({ col: c2 }); },
       colCls_snd: isCol('snd', false) ? 'is-col' : '', colExp_snd: isCol('snd', false) ? 'false' : 'true', colIco_snd: isCol('snd', false) ? '▾' : '▴', colLab_snd: isCol('snd', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_snd: function () { var c2 = Object.assign({}, self.state.col || {}); c2['snd'] = !isCol('snd', false); self.setState({ col: c2 }); },
       colCls_prog: isCol('prog', false) ? 'is-col' : '', colExp_prog: isCol('prog', false) ? 'false' : 'true', colIco_prog: isCol('prog', false) ? '▾' : '▴', colLab_prog: isCol('prog', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_prog: function () { var c2 = Object.assign({}, self.state.col || {}); c2['prog'] = !isCol('prog', false); self.setState({ col: c2 }); },
       colCls_sugs: isCol('sugs', false) ? 'is-col' : '', colExp_sugs: isCol('sugs', false) ? 'false' : 'true', colIco_sugs: isCol('sugs', false) ? '▾' : '▴', colLab_sugs: isCol('sugs', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_sugs: function () { var c2 = Object.assign({}, self.state.col || {}); c2['sugs'] = !isCol('sugs', false); self.setState({ col: c2 }); },
@@ -4855,7 +4857,7 @@ class Component extends DCLogic {
       onbAgainLab: LX('Ver la bienvenida otra vez', 'Show the welcome again'), onbAgain: function () { try { window.localStorage.removeItem('chordseed.onb.v1'); } catch (x) {} self.setState({ onb: false, settingsOpen: false }); },
       onbSkipLab: LX('Saltar', 'Skip'), onbGoLab: LX('Empezar →', 'Start →'),
       onbSkip: function () { storeFlag('chordseed.onb.v1'); self.setState({ onb: true }); },
-      onbGo: function () { storeFlag('chordseed.onb.v1'); self.setState({ onb: true, profileSet: true, view: st.onbTool || 'gen' }); },
+      onbGo: function () { storeFlag('chordseed.onb.v1'); self.setState({ onb: true, profileSet: true, onbAns: true, view: st.onbTool || 'gen' }); },
       lrn_tools: function () { if (!self.state.lrnSeen) storeFlag('chordseed.lrnseen.v1'); self.setState({ lrnKey: 'tools', lrnSeen: true }); },
       lrnTag_tools: (LX('Aprende: ', 'Learn: ')) + LEARN['tools'][LX('es', 'en')][0],
       lrn_start: function () { if (!self.state.lrnSeen) storeFlag('chordseed.lrnseen.v1'); self.setState({ lrnKey: 'start', lrnSeen: true }); },
