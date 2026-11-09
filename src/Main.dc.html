@@ -351,6 +351,30 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 
 .xbtn{gap:6px;min-height:44px}
 .xpro{font:700 9px 'Figtree',sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872}
+
+/* account */
+.acctbtn{gap:8px}
+.acct-dot{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#0A1510;border:1px solid #3B5A47;font:700 12px 'Figtree',sans-serif;color:#C9D6C6}
+.acctbtn.is-in .acct-dot{background:linear-gradient(180deg,#F7EDA8,#B8963A);color:#0E140A;border-color:#E8D872;box-shadow:0 0 10px rgba(232,216,114,.45)}
+.acct-card{width:min(460px,100%)}
+.acct-hero{display:flex;align-items:center;gap:8px}
+.acct-sage{width:70px;margin:-10px -4px -14px -6px}
+.acct-hero .sage-bubble{flex:1}
+.acct-google{display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;border-radius:12px;border:1px solid #3B5A47;background:#F3F1E8;color:#1A1F1A;font:600 15px 'Figtree',sans-serif;cursor:pointer}
+.acct-google:hover{background:#FFFFFF}
+.acct-or{display:flex;align-items:center;gap:10px;color:#7F9C87;font-size:12px}.acct-or::before,.acct-or::after{content:"";flex:1;height:1px;background:#24392E}
+.acct-f{display:flex;flex-direction:column;gap:6px;font:600 12px 'Figtree',sans-serif;color:#9FB3A4;letter-spacing:.04em}
+.acct-f input{min-height:46px;padding:0 14px;border-radius:12px;border:1.5px solid #2F4A3B;background:#0A1510;color:#EAF2E6;font:500 15px 'Figtree',sans-serif;outline:none}
+.acct-f input:focus{border-color:#E8D872;box-shadow:0 0 0 3px rgba(232,216,114,.15)}
+.acct-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+.acct-link{all:unset;cursor:pointer;font:600 13px 'Figtree',sans-serif;color:#E8D872}.acct-link:hover{text-decoration:underline}
+.acct-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:12px;background:rgba(10,21,16,.6);border:1px solid #24392E;font-size:14px;color:#EAF2E6}
+.acct-note{margin:0;padding:10px 12px;border-radius:12px;background:rgba(232,216,114,.08);border:1px solid rgba(232,216,114,.3);color:#F0E39A;font-size:13px;line-height:1.5}
+.cloud-songs{display:flex;flex-direction:column;gap:6px}.cloud-row{display:flex;flex-wrap:wrap;gap:6px}
+.cs-chip{display:inline-flex;align-items:center;border-radius:12px;border:1px solid #2F4A3B;background:#16271F;overflow:hidden}
+.cs-load{all:unset;cursor:pointer;padding:7px 12px;font:600 13px 'JetBrains Mono',monospace;color:#EAF2E6}.cs-load:hover{color:#F0E39A}
+.cs-del{all:unset;cursor:pointer;padding:7px 10px;color:#9FB3A4;border-left:1px solid #2F4A3B}.cs-del:hover{color:#FF9A9D}
+@media (max-width:640px){.acct-lab{display:none}}
 </style>
 </helmet>
 
@@ -361,6 +385,30 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
   <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-exit" onClick="{{lrnExit}}">✕ {{lrnExitLab}}</button></sc-if>
   <sc-if value="{{toolLrnShow}}" hint-placeholder-val="{{ false }}"><button class="lrn-toolcard" onClick="{{toolLrnOpen}}">📖 {{toolLrnLab}}</button></sc-if>
   <sc-if value="{{lrnIntro}}" hint-placeholder-val="{{ false }}"><div class="lrn-toast" role="status"><span class="ns-k">{{lrnIntroK}}</span><span style="font:400 21px 'Cormorant Garamond',Georgia,serif">{{lrnIntroT}}</span><span style="font-size:14px;line-height:1.5;color:#D3E0D4">{{lrnIntroP}}</span><button class="btn" onClick="{{lrnIntroOk}}" style="align-self:flex-start;min-height:42px;box-shadow:none">{{lrnIntroBtn}}</button></div></sc-if>
+  <sc-if value="{{acctOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{acctBackdrop}}"><div class="lrn-card acct-card" role="dialog" aria-label="{{acctTitle}}">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span class="ns-k">✦ Chordseed</span><span style="font:400 26px/1.15 'Cormorant Garamond',Georgia,serif">{{acctTitle}}</span></div><button class="ghost" onClick="{{acctClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
+    <div class="acct-hero"><img class="sage acct-sage" src="{{acctSage}}" alt="Lumen" width="70" height="165"><div class="sage-bubble"><span class="sage-name">{{sageName}}</span><span class="sage-say" style="font-size:17px">{{acctSay}}</span></div></div>
+    <sc-if value="{{acctNoSvc}}" hint-placeholder-val="{{ false }}"><p class="acct-note">{{acctNoSvcTxt}}</p></sc-if>
+    <sc-if value="{{acctShowLogin}}" hint-placeholder-val="{{ true }}">
+      <button class="acct-google" onClick="{{acctGoogle}}"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"></path></svg>{{acctGoogleLab}}</button>
+      <div class="acct-or"><span>{{acctOrLab}}</span></div>
+      <label class="acct-f"><span>{{acctEmailLab}}</span><input id="cs-email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+      <sc-if value="{{acctNeedPw}}" hint-placeholder-val="{{ true }}"><label class="acct-f"><span>{{acctPwLab}}</span><input id="cs-pw" type="password" autocomplete="{{acctPwAuto}}" placeholder="••••••••" onKeyDown="{{acctKey}}"></label></sc-if>
+      <button class="btn" onClick="{{acctSubmit}}" style="min-height:46px;box-shadow:none">{{acctSubmitLab}}</button>
+      <div class="acct-links"><sc-for list="{{acctLinks}}" as="al" hint-placeholder-count="2"><button class="acct-link" onClick="{{al.go}}">{{al.label}}</button></sc-for></div>
+    </sc-if>
+    <sc-if value="{{acctShowNewPw}}" hint-placeholder-val="{{ false }}">
+      <label class="acct-f"><span>{{acctNewPwLab}}</span><input id="cs-newpw" type="password" autocomplete="new-password" placeholder="••••••••"></label>
+      <button class="btn" onClick="{{acctSetPw}}" style="min-height:46px;box-shadow:none">{{acctSetPwLab}}</button>
+    </sc-if>
+    <sc-if value="{{acctShowUser}}" hint-placeholder-val="{{ false }}">
+      <div class="acct-row"><span class="lab">{{acctEmailLab}}</span><b>{{acctEmail}}</b></div>
+      <div class="acct-row"><span class="lab">{{acctPlanLab}}</span><b style="{{acctPlanStyle}}">{{acctPlan}}</b></div>
+      <div class="acct-row"><span class="lab">{{acctSyncLab}}</span><span>{{acctSyncTxt}}</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end"><sc-if value="{{acctCanUpgrade}}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{goPro}}" style="box-shadow:none">{{t.seePro}}</button></sc-if><button class="ghost" onClick="{{acctSignOut}}">{{acctSignOutLab}}</button></div>
+    </sc-if>
+    <sc-if value="{{acctHasMsg}}" hint-placeholder-val="{{ false }}"><p role="status" style="{{acctMsgStyle}}">{{acctMsg}}</p></sc-if>
+  </div></div></sc-if>
   <sc-if value="{{lrnOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{lrnBackdrop}}"><div class="lrn-card" role="dialog" aria-label="{{lrnTitle}}"><img class="sage lrn-sage" src="{{lrnSage}}" alt="Lumen" width="96" height="226">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span class="ns-k">📖 {{lrnKicker}}</span><span style="font:400 26px/1.15 'Cormorant Garamond',Georgia,serif">{{lrnTitle}}</span></div><button class="ghost" onClick="{{lrnClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
     <div class="sage-bubble lrn-bubble" role="note"><span class="sage-name">{{sageName}}</span><span class="sage-say" style="font-size:18px">{{lrnSub}}</span></div>
@@ -386,6 +434,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 
     <div class="hdr-tools" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
       <button class="ghost lbtn {{learnCls}}" style="{{learnHdrStyle}}" aria-pressed="{{learnPressed}}" onClick="{{toggleLearn}}" title="{{t.learnHint}}"><span aria-hidden="true" style="font-weight:700">?</span> {{t.learnMode}}<span class="lsw" aria-hidden="true"><span class="lsw-k"></span></span><span class="lsw-t">{{learnState}}</span></button>
+      <button class="ghost acctbtn {{acctBtnCls}}" onClick="{{acctToggle}}" title="{{acctBtnTitle}}"><span class="acct-dot" aria-hidden="true">{{acctInitial}}</span><span class="acct-lab">{{acctBtnLab}}</span></button>
       <button class="ghost" onClick="{{toggleSettings}}" aria-expanded="{{settingsExpanded}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>{{t.settings}}</button>
     </div>
   </header>
@@ -400,8 +449,8 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
       <div class="seg" role="group" aria-label="{{t.notation}}"><sc-for list="{{notations}}" as="n" hint-placeholder-count="2"><button style="{{n.style}}" aria-pressed="{{n.pressed}}" onClick="{{n.pick}}">{{n.label}}</button></sc-for></div>
       <span class="lab">ES / EN</span>
       <div class="seg" role="group" aria-label="Idioma / Language"><sc-for list="{{langs}}" as="l" hint-placeholder-count="2"><button style="{{l.style}}" aria-pressed="{{l.pressed}}" onClick="{{l.pick}}">{{l.label}}</button></sc-for></div>
-      <span class="lab">{{t.plan}}</span>
-      <div class="seg" role="group" aria-label="{{t.plan}}"><sc-for list="{{plans}}" as="pl" hint-placeholder-count="2"><button style="{{pl.style}}" aria-pressed="{{pl.pressed}}" onClick="{{pl.pick}}">{{pl.label}}</button></sc-for></div>
+      <sc-if value="{{devPlan}}" hint-placeholder-val="{{ false }}"><span class="lab">{{t.plan}}</span>
+      <div class="seg" role="group" aria-label="{{t.plan}}"><sc-for list="{{plans}}" as="pl" hint-placeholder-count="2"><button style="{{pl.style}}" aria-pressed="{{pl.pressed}}" onClick="{{pl.pick}}">{{pl.label}}</button></sc-for></div></sc-if>
       <button class="ghost" onClick="{{onbAgain}}" style="min-height:38px;font-size:13px">↺ {{onbAgainLab}}</button>
     </div>
   </sc-if>
@@ -699,8 +748,9 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
           <h2 class="h2">{{fTitle}}</h2>
           <p style="margin:0;font-size:13px;line-height:1.5;color:#9FB3A4">{{fSub}}</p>
         </div>
-        <button class="btn" onClick="{{fPlay}}" style="box-shadow:none">{{fPlayText}}</button><button class="ghost xbtn" onClick="{{fMidi}}" title="{{fMidiHint}}">⬇ MIDI<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button><button class="ghost xbtn" onClick="{{fPdf}}" title="{{fPdfHint}}">⬇ PDF<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button>
+        <button class="btn" onClick="{{fPlay}}" style="box-shadow:none">{{fPlayText}}</button><button class="ghost xbtn" onClick="{{fMidi}}" title="{{fMidiHint}}">⬇ MIDI<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button><button class="ghost xbtn" onClick="{{fCloudSave}}" title="{{fCloudHint}}">☁ {{fCloudLab}}<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button><button class="ghost xbtn" onClick="{{fPdf}}" title="{{fPdfHint}}">⬇ PDF<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button>
       </div>
+      <sc-if value="{{hasCloudSongs}}" hint-placeholder-val="{{ false }}"><div class="cloud-songs"><span class="lab">☁ {{cloudSongsLab}}</span><div class="cloud-row"><sc-for list="{{cloudSongList}}" as="cs" hint-placeholder-count="3"><span class="cs-chip"><button class="cs-load" onClick="{{cs.load}}" title="{{cs.hint}}">{{cs.name}}</button><button class="cs-del" onClick="{{cs.del}}" aria-label="{{cs.delLab}}">×</button></span></sc-for></div></div></sc-if>
       <div style="display:flex;flex-direction:column;gap:6px">
         <span class="lab">{{fPartsLab}}</span>
         <div class="ptabs">
@@ -2536,6 +2586,32 @@ function csPdf(lines) {
   var u8 = new Uint8Array(out.length); for (var i = 0; i < out.length; i++) u8[i] = out.charCodeAt(i) & 255; return u8;
 }
 
+/* ===== Cuentas y nube (Supabase) ===== */
+var CS_SB = { url: 'https://siafatxbgecgenhnciej.supabase.co', key: 'sb_publishable_wbMAklnoQrY6-P0vM1KVlw_l0llY6fK' };
+var CS_SB_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+var CS_SYNC = null;
+function csLoadSb(cb) {
+  if (window.supabase && window.supabase.createClient) { cb(true); return; }
+  try {
+    var s = document.createElement('script'); s.src = CS_SB_JS; s.async = true;
+    s.onload = function () { cb(!!(window.supabase && window.supabase.createClient)); };
+    s.onerror = function () { cb(false); };
+    document.head.appendChild(s);
+  } catch (e) { cb(false); }
+}
+function csAuthErr(e, es) {
+  var m = (e && (e.message || e.error_description)) || '';
+  if (/Invalid login/i.test(m)) return es ? 'Correo o contraseña incorrectos.' : 'Wrong email or password.';
+  if (/already registered|already been registered/i.test(m)) return es ? 'Ese correo ya tiene cuenta. Inicia sesión.' : 'That email already has an account. Sign in instead.';
+  if (/at least 6|Password should/i.test(m)) return es ? 'La contraseña debe tener al menos 6 caracteres.' : 'Password must be at least 6 characters.';
+  if (/Email not confirmed/i.test(m)) return es ? 'Confirma tu correo: te enviamos un enlace.' : 'Please confirm your email: we sent you a link.';
+  if (/valid email|invalid.*email/i.test(m)) return es ? 'Escribe un correo válido.' : 'Enter a valid email.';
+  if (/rate limit|too many/i.test(m)) return es ? 'Demasiados intentos. Espera un momento.' : 'Too many attempts. Please wait a moment.';
+  if (/provider is not enabled/i.test(m)) return es ? 'El inicio con Google aún no está activado.' : 'Google sign-in isn’t enabled yet.';
+  if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return es ? 'No hay conexión con el servidor. Prueba en la versión web.' : 'Can’t reach the server. Try the web version.';
+  return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
+}
+
 var SAGE = { explain: '/_blob/48d48012a66681c4137c00ce0c524b41', think: '/_blob/6c0971d9e067a24781a61e967d406cd6', celebrate: '/_blob/a1bcb5be43be1bb1de4b50eccb33d492', encourage: '/_blob/59c41745f0aec0f2d5954978aabf7883', play: '/_blob/440c86fbc0a00111d14d8c556bbe7e24' };
 var LESSONS = [
   { id: 'notes',
@@ -3584,13 +3660,14 @@ function storeFlag(k) { try { window.localStorage.setItem(k, '1'); } catch (e) {
 function loadLearn() { try { var raw = window.localStorage.getItem('chordseed.learn.v1'); var v = raw ? JSON.parse(raw) : {}; return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
 var SAVE_KEY = 'chordapp.saved.v1';
 function loadSaved() { try { var raw = window.localStorage.getItem(SAVE_KEY); var v = raw ? JSON.parse(raw) : []; return Array.isArray(v) ? v : []; } catch (e) { return []; } }
-function storeSaved(list) { try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch (e) {} }
+function storeSaved(list) { try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch (e) {} if (CS_SYNC) CS_SYNC(); }
 function proBadge(on) { return 'font:700 9px Figtree,sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:' + (on ? '#0E140A' : '#2C3520') + ';color:' + (on ? '#F0E39A' : '#E8D872'); }
 function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q + ':' + c.sx; }).join('|'); }
 
 class Component extends DCLogic {
   componentDidMount() {
     var self = this;
+    try { this.acctInit(); } catch (e) {}
     try {
       var fitAll = function () {
         var hs = document.querySelectorAll('.hs');
@@ -3642,6 +3719,52 @@ class Component extends DCLogic {
       loadBank(this.ctx, this.state.inst || 'guitar');
       ['piano', 'guitar', 'eguitar', 'flute', 'strings'].forEach(function (k, i) { setTimeout(function () { loadBank(self.ctx, k); }, 800 + i * 600); });
     } catch (e) {}
+  }
+  acctInit() {
+    var self = this;
+    csLoadSb(function (ok) {
+      if (!ok || self._mounted === false) { self.setState({ acctAvail: false }); return; }
+      try { self.sb = window.supabase.createClient(CS_SB.url, CS_SB.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }); }
+      catch (e) { self.setState({ acctAvail: false }); return; }
+      self.setState({ acctAvail: true });
+      self.sb.auth.getSession().then(function (r) { var s = r && r.data && r.data.session; if (s && s.user) self.acctLoad(s.user); }).catch(function () {});
+      self.sb.auth.onAuthStateChange(function (ev, session) {
+        if (ev === 'PASSWORD_RECOVERY') { self.setState({ acctOpen: true, acctMode: 'newpw', acctMsg: '' }); return; }
+        if (session && session.user) { if (!self.state.user || self.state.user.id !== session.user.id) self.acctLoad(session.user); }
+        else if (ev === 'SIGNED_OUT') { CS_SYNC = null; self.setState({ user: null, isPro: false, cloudSongs: [], acctSync: '' }); }
+      });
+    });
+  }
+  acctLoad(user) {
+    var self = this, sb = this.sb;
+    self.setState({ user: { id: user.id, email: user.email || '' }, acctMsg: '', acctSync: 'loading' });
+    Promise.all([
+      sb.from('subscriptions').select('*').eq('user_id', user.id).maybeSingle(),
+      sb.from('user_data').select('*').eq('user_id', user.id).maybeSingle()
+    ]).then(function (res) {
+      var sub = res[0] && res[0].data, ud = res[1] && res[1].data;
+      var pro = !!(sub && sub.plan === 'pro' && ['active', 'trialing', 'past_due'].indexOf(sub.status) >= 0 && (!sub.current_period_end || new Date(sub.current_period_end) > new Date()));
+      var cloudSaved = ud && Array.isArray(ud.saved) ? ud.saved : [], seen = {}, merged = [];
+      cloudSaved.concat(self.state.saved || []).forEach(function (x) { var k = x && (x.id || JSON.stringify(x)); if (x && !seen[k]) { seen[k] = 1; merged.push(x); } });
+      if (!pro && merged.length > 5) merged = merged.slice(0, 5);
+      try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(merged)); } catch (e) {}
+      var learn = Object.assign({}, (ud && ud.learn) || {}, self.state.lDone || {});
+      try { window.localStorage.setItem('chordseed.learn.v1', JSON.stringify(learn)); } catch (e) {}
+      self.setState({ isPro: pro, sub: sub || null, saved: merged, lDone: learn, cloudSongs: ud && Array.isArray(ud.songs) ? ud.songs : [], acctSync: 'ok' });
+      CS_SYNC = function () { self.acctPush(); };
+      if (!ud || merged.length !== cloudSaved.length || JSON.stringify(learn) !== JSON.stringify((ud && ud.learn) || {})) self.acctPush();
+    }).catch(function () { self.setState({ acctSync: 'err' }); });
+  }
+  acctPush() {
+    var self = this;
+    if (!self.sb || !self.state.user) return;
+    clearTimeout(self._pushT);
+    self._pushT = setTimeout(function () {
+      var st = self.state;
+      var row = { user_id: st.user.id, saved: st.saved || [], learn: st.lDone || {}, songs: st.cloudSongs || [], prefs: { inst: st.inst, reStyle: st.reStyle, lang: st.lang } };
+      self.setState({ acctSync: 'saving' });
+      self.sb.from('user_data').upsert(row).then(function (r) { self.setState({ acctSync: r && r.error ? 'err' : 'ok' }); }).catch(function () { self.setState({ acctSync: 'err' }); });
+    }, 700);
   }
   componentWillUnmount() { try { document.removeEventListener('pointermove', this._hovMove); document.removeEventListener('mouseleave', this._hovLeaveDoc); } catch (e) {} this.stopMic(true); this.stopPlay(true); try { if (this._modObs) this._modObs.disconnect(); } catch (e) {} this._mounted = false; var i = BANK_LISTENERS.indexOf(this._bankL); if (i >= 0) BANK_LISTENERS.splice(i, 1); }
 
@@ -4493,7 +4616,7 @@ class Component extends DCLogic {
       lPlayHome: function () { self.playSeq([lKeyList[0], lKeyList[3], lKeyList[4], lKeyList[0]]); },
       lOpts: lCur.o.map(function (o, j) { var chosen = lAns === j, ok = j === lCur.a, showOk = lRight && ok;
         return { label: o, pressed: chosen ? 'true' : 'false',
-          pick: function () { var u = { lAns: j }; if (j === lCur.a) { var d = Object.assign({}, self.state.lDone || {}); d[lL.id] = true; u.lDone = d; try { window.localStorage.setItem('chordseed.learn.v1', JSON.stringify(d)); } catch (e) {} } self.setState(u); },
+          pick: function () { var u = { lAns: j }; if (j === lCur.a) { var d = Object.assign({}, self.state.lDone || {}); d[lL.id] = true; u.lDone = d; try { window.localStorage.setItem('chordseed.learn.v1', JSON.stringify(d)); } catch (e) {} if (CS_SYNC) setTimeout(CS_SYNC, 50); } self.setState(u); },
           style: 'min-width:72px;min-height:48px;padding:0 18px;border-radius:12px;cursor:pointer;font:700 16px Figtree,sans-serif;border:1.5px solid ' + (showOk ? '#6FD39C' : (chosen && !ok ? '#E5484D' : '#2F4A3B')) + ';background:' + (showOk ? 'rgba(111,211,156,.14)' : (chosen && !ok ? 'rgba(229,72,77,.12)' : '#16271F')) + ';color:' + (showOk ? '#9BE6BC' : (chosen && !ok ? '#FF9A9D' : '#EAF2E6')) }; }),
       lHasFb: lAns !== null && lAns !== undefined,
       lFbHead: lRight ? (LX('¡Correcto!', 'Correct!')) : (LX('Casi. Prueba otra vez.', 'Not quite. Try again.')),
@@ -5017,6 +5140,70 @@ class Component extends DCLogic {
       rHint: LX('Con − y + en cada acorde decides cuánto dura (cuántas veces se repite). Así suena como tu idea y no todos iguales.', 'Use − and + on each chord to set how long it lasts (how many times it repeats), so it sounds like your idea instead of all the same.'),
       fTitle: LX('Arma tu canción', 'Build your song'),
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
+      devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
+      acctOpen: !!st.acctOpen,
+      acctBtnCls: st.user ? 'is-in' : '',
+      acctInitial: st.user ? (st.user.email || '?').charAt(0).toUpperCase() : '☾',
+      acctBtnLab: st.user ? (st.isPro ? 'Pro' : LX('Cuenta', 'Account')) : LX('Entrar', 'Sign in'),
+      acctBtnTitle: st.user ? st.user.email : LX('Inicia sesión para guardar en la nube', 'Sign in to save to the cloud'),
+      acctToggle: function () { self.setState({ acctOpen: !st.acctOpen, acctMode: st.acctMode || 'login', acctMsg: '' }); },
+      acctClose: function () { self.setState({ acctOpen: false, acctMsg: '' }); },
+      acctBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ acctOpen: false, acctMsg: '' }); },
+      acctTitle: st.user ? LX('Tu cuenta', 'Your account') : (st.acctMode === 'signup' ? LX('Crea tu cuenta', 'Create your account') : (st.acctMode === 'reset' ? LX('Recupera tu contraseña', 'Reset your password') : (st.acctMode === 'newpw' ? LX('Nueva contraseña', 'New password') : LX('Entra a Chordseed', 'Sign in to Chordseed')))),
+      acctSage: st.user ? SAGE.celebrate : SAGE.explain,
+      acctSay: st.user ? LX('Tus progresiones y lecciones se guardan solas en la nube y te siguen a cualquier dispositivo.', 'Your progressions and lessons save themselves to the cloud and follow you to any device.') : (st.acctMode === 'signup' ? LX('Crea tu cuenta gratis y nunca pierdas una idea: tus progresiones y lecciones te esperarán en cualquier dispositivo.', 'Create your free account and never lose an idea: your progressions and lessons will wait for you on any device.') : (st.acctMode === 'reset' ? LX('Escribe tu correo y te envío un enlace para crear una contraseña nueva.', 'Enter your email and I’ll send you a link to set a new password.') : (st.acctMode === 'newpw' ? LX('Elige tu nueva contraseña.', 'Choose your new password.') : LX('Bienvenido de vuelta. Entra para recuperar tus canciones donde las dejaste.', 'Welcome back. Sign in to pick up your songs where you left them.')))),
+      acctNoSvc: st.acctAvail === false,
+      acctNoSvcTxt: LX('Las cuentas funcionan en la versión web de Chordseed. Aquí no se puede conectar con el servidor.', 'Accounts work on the Chordseed web version. This view can’t reach the server.'),
+      acctShowLogin: !st.user && st.acctMode !== 'newpw',
+      acctShowNewPw: st.acctMode === 'newpw',
+      acctShowUser: !!st.user && st.acctMode !== 'newpw',
+      acctNeedPw: st.acctMode !== 'reset',
+      acctPwAuto: st.acctMode === 'signup' ? 'new-password' : 'current-password',
+      acctGoogleLab: LX('Continuar con Google', 'Continue with Google'), acctOrLab: LX('o con tu correo', 'or with your email'),
+      acctEmailLab: LX('Correo', 'Email'), acctPwLab: LX('Contraseña', 'Password'), acctNewPwLab: LX('Nueva contraseña', 'New password'),
+      acctSubmitLab: st.acctBusy ? '…' : (st.acctMode === 'signup' ? LX('Crear cuenta', 'Create account') : (st.acctMode === 'reset' ? LX('Enviar enlace', 'Send link') : LX('Entrar', 'Sign in'))),
+      acctSetPwLab: LX('Guardar contraseña', 'Save password'),
+      acctLinks: (st.acctMode === 'signup' ? [['login', LX('¿Ya tienes cuenta? Entra', 'Already have an account? Sign in')]] : (st.acctMode === 'reset' ? [['login', LX('Volver a entrar', 'Back to sign in')]] : [['signup', LX('¿Nuevo aquí? Crea tu cuenta gratis', 'New here? Create a free account')], ['reset', LX('Olvidé mi contraseña', 'Forgot my password')]])).map(function (x) { return { label: x[1], go: function () { self.setState({ acctMode: x[0], acctMsg: '' }); } }; }),
+      acctKey: function (e) { if (e && e.key === 'Enter') { var b = document.querySelector('.acct-card .btn'); if (b) b.click(); } },
+      acctSubmit: function () {
+        var sb = self.sb, mode = self.state.acctMode || 'login';
+        if (!sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; }
+        var em = ((document.getElementById('cs-email') || {}).value || '').trim(), pw = (document.getElementById('cs-pw') || {}).value || '';
+        if (!em) { self.setState({ acctMsg: LX('Escribe tu correo.', 'Enter your email.'), acctErr: true }); return; }
+        var back = (location.href || '').split('#')[0];
+        var done = function (r, okMsg) { if (r && r.error) self.setState({ acctBusy: false, acctMsg: csAuthErr(r.error, es), acctErr: true }); else self.setState({ acctBusy: false, acctMsg: okMsg || '', acctErr: false, acctOpen: !!okMsg }); };
+        var fail = function (e) { self.setState({ acctBusy: false, acctMsg: csAuthErr(e, es), acctErr: true }); };
+        self.setState({ acctBusy: true, acctMsg: '' });
+        if (mode === 'reset') { sb.auth.resetPasswordForEmail(em, { redirectTo: back }).then(function (r) { done(r, LX('Listo: revisa tu correo para crear una contraseña nueva.', 'Done: check your email to set a new password.')); }).catch(fail); return; }
+        if (!pw) { self.setState({ acctBusy: false, acctMsg: LX('Escribe tu contraseña.', 'Enter your password.'), acctErr: true }); return; }
+        if (mode === 'signup') { sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: back } }).then(function (r) { done(r, r && r.data && r.data.session ? '' : LX('¡Cuenta creada! Revisa tu correo y confirma para entrar.', 'Account created! Check your email and confirm to sign in.')); }).catch(fail); return; }
+        sb.auth.signInWithPassword({ email: em, password: pw }).then(function (r) { done(r); }).catch(fail);
+      },
+      acctGoogle: function () { if (!self.sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; } self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); }).catch(function (e) { self.setState({ acctMsg: csAuthErr(e, es), acctErr: true }); }); },
+      acctSetPw: function () { var pw = (document.getElementById('cs-newpw') || {}).value || ''; if (!self.sb || pw.length < 6) { self.setState({ acctMsg: csAuthErr({ message: 'Password should be at least 6' }, es), acctErr: true }); return; } self.sb.auth.updateUser({ password: pw }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); else self.setState({ acctMode: 'login', acctMsg: LX('Contraseña actualizada.', 'Password updated.'), acctErr: false }); }); },
+      acctSignOut: function () { if (self.sb) self.sb.auth.signOut(); CS_SYNC = null; self.setState({ user: null, isPro: false, cloudSongs: [], acctOpen: false }); },
+      acctEmail: st.user ? st.user.email : '',
+      acctPlanLab: LX('Plan', 'Plan'), acctPlan: st.isPro ? 'Pro ✦' : LX('Gratis', 'Free'), acctPlanStyle: st.isPro ? 'color:#F0E39A' : 'color:#C9D6C6',
+      acctCanUpgrade: !!st.user && !st.isPro,
+      acctSyncLab: LX('Nube', 'Cloud'),
+      acctSyncTxt: ({ loading: LX('Cargando…', 'Loading…'), saving: LX('Guardando…', 'Saving…'), ok: LX('Todo guardado ✓', 'All saved ✓'), err: LX('No se pudo guardar. Revisa tu conexión.', 'Couldn’t save. Check your connection.') })[st.acctSync] || '—',
+      acctSignOutLab: LX('Cerrar sesión', 'Sign out'),
+      acctMsg: st.acctMsg || '',
+      acctHasMsg: !!st.acctMsg, acctMsgStyle: 'margin:0;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.5;' + (st.acctErr ? 'background:rgba(229,72,77,.10);border:1px solid #7A2E31;color:#FFC2C4' : 'background:rgba(111,211,156,.12);border:1px solid #3E8F66;color:#BDEFD2'),
+      fCloudLab: LX('Guardar canción', 'Save song'),
+      fCloudHint: LX('Guarda la canción completa (partes y orden) en la nube.', 'Save the whole song (parts and order) to the cloud.'),
+      fCloudSave: function () {
+        if (!self.state.user) { self.setState({ acctOpen: true, acctMode: 'login', acctMsg: LX('Entra a tu cuenta para guardar canciones en la nube.', 'Sign in to save songs to the cloud.'), acctErr: false }); return; }
+        if (!self.state.isPro) { self.setState({ proMsg: LX('Guardar canciones completas en la nube es del plan Pro: tus partes y su orden te esperan en cualquier dispositivo.', 'Saving full songs to the cloud is part of Pro: your parts and their order wait for you on any device.') }); return; }
+        var K = detect(homeList.length ? homeList : chs), nmS = spell(K.t, flatsFor(K.t, K.mode), st.lat) + ' · ' + formArr.join('');
+        var song = { id: 's' + Date.now(), name: nmS, at: Date.now(), parts: withEdit(), form: formArr.slice(), editPart: editP, partNames: st.partNames || {}, bpm: bpmN, ts: tsN };
+        self.setState({ cloudSongs: [song].concat(self.state.cloudSongs || []).slice(0, 50), saveMsg: LX('Canción guardada en la nube ✓', 'Song saved to the cloud ✓') }); self.acctPush();
+      },
+      hasCloudSongs: !!(st.user && st.cloudSongs && st.cloudSongs.length),
+      cloudSongsLab: LX('Mis canciones', 'My songs'),
+      cloudSongList: (st.cloudSongs || []).map(function (s) { return { name: s.name, hint: new Date(s.at).toLocaleString(), delLab: LX('Borrar ', 'Delete ') + s.name,
+        load: function () { var pr = Object.assign({}, s.parts || {}), ep = s.editPart || 'A', ch = pr[ep] || []; delete pr[ep]; self.setState({ parts: pr, editPart: ep, chords: ch, form: (s.form || [ep]).slice(), partNames: s.partNames || {}, bpm: s.bpm, ts: s.ts, focus: null, saveMsg: LX('Canción cargada: ', 'Song loaded: ') + s.name }); },
+        del: function () { self.setState({ cloudSongs: (self.state.cloudSongs || []).filter(function (y) { return y.id !== s.id; }) }); self.acctPush(); } }; }),
       fPlay: function () { self.playArr(songItems, optsN('song')); },
       fLock: !st.isPro,
       fMidiHint: LX('Descarga tu canción en MIDI para abrirla en GarageBand, FL Studio, Ableton o Logic.', 'Download your song as MIDI to open it in GarageBand, FL Studio, Ableton or Logic.'),

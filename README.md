@@ -61,6 +61,15 @@ build.py              Rebuilds index.html from src/
 If you add a new image or sample in the artifact, add its asset id → file path to
 the `ASSETS` map in `build.py`.
 
+## Accounts & cloud (Supabase)
+
+- Project: `https://siafatxbgecgenhnciej.supabase.co` (publishable key is in `src/Main.dc.html`; it is safe to be public).
+- Database: run `supabase/schema.sql` once in **Supabase → SQL Editor**. It creates `subscriptions` and `user_data`
+  with Row Level Security, server-side free-plan limits (5 saved progressions, cloud songs Pro-only) and the sign-up trigger.
+- **Never** put the `sb_secret_…` key in this repo or in the page.
+- Auth → URL Configuration: set **Site URL** to the GitHub Pages URL and add it to **Redirect URLs**.
+- Developer switch: open the app with `?dev=1` to show the Free/Pro demo toggle in Settings (for testing only).
+
 ## Credits
 
 - Instrument sounds: FluidR3 GM by Frank Wen (CC BY 3.0).
