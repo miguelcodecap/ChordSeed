@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Diagrama de acorde</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:#0F1D20;border:1px solid #2D464B;border-radius:16px;box-shadow:0 14px 36px rgba(0,0,0,.5);color:#E4EDE2;font-family:'Figtree',system-ui,sans-serif;width:max-content;max-width:240px">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+    <span style="font:700 16px 'JetBrains Mono',ui-monospace,monospace">{{name}}</span>
+    <span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9FB3A4">{{inst}}</span>
+  </div>
+  <sc-if value="{{isBox}}" hint-placeholder-val="{{ true }}">
+    <div role="img" aria-label="{{aria}}" style="{{boxStyle}}">
+      <sc-for list="{{items}}" as="it" hint-placeholder-count="20">
+        <span style="{{it.style}}">{{it.text}}</span>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{isNotes}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px">
+      <sc-for list="{{chips}}" as="n" hint-placeholder-count="3">
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="font:700 14px 'JetBrains Mono',monospace;padding:6px 10px;border-radius:10px;background:#2C3520;color:#F0E39A">{{n.label}}</span><span style="{{n.arrow}}">→</span></span>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{hasPos}}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <button onClick="{{prev}}" aria-label="{{prevLabel}}" style="width:44px;height:36px;border-radius:10px;border:1.5px solid #2D464B;background:#16271F;color:#E4EDE2;cursor:pointer;display:inline-flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <span style="font:600 12px 'JetBrains Mono',monospace;color:#C4CED0">{{posLabel}}</span>
+      <button onClick="{{next}}" aria-label="{{nextLabel}}" style="width:44px;height:36px;border-radius:10px;border:1.5px solid #2D464B;background:#16271F;color:#E4EDE2;cursor:pointer;display:inline-flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+    </div>
+  </sc-if>
+  <span style="font-size:12px;line-height:1.45;color:#9FB3A4;max-width:210px">{{caption}}</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"diag":{"editor":null},"$preview":{"width":240,"height":220}}'>
+var WHITE = [0,2,4,5,7,9,11];
+var FINGERS = {1:[1],2:[1,3],3:[1,3,5],4:[1,2,3,5],5:[1,2,3,4,5]};
+
+function guitarItems(frets) {
+  var X = function (s) { return 12 + s * 18; };
+  var fretted = [];
+  frets.forEach(function (f, s) { if (f > 0) fretted.push({ s: s, f: f }); });
+  var fs = fretted.map(function (e) { return e.f; });
+  var mx = fs.length ? Math.max.apply(null, fs) : 0, mn = fs.length ? Math.min.apply(null, fs) : 0;
+  var base = mx <= 4 ? 1 : mn;
+  var Y = function (f) { return 24 + (f - base + 0.5) * 22; };
+  var out = [];
+  for (var s = 0; s < 6; s++) out.push({ text: '', style: 'position:absolute;left:' + (X(s) - 0.75) + 'px;top:24px;width:1.5px;height:110px;background:#9FB3A4' });
+  for (var i = 0; i <= 5; i++) {
+    var nut = i === 0 && base === 1;
+    out.push({ text: '', style: 'position:absolute;left:' + X(0) + 'px;top:' + (24 + i * 22 - (nut ? 2 : 0)) + 'px;width:' + (X(5) - X(0)) + 'px;height:' + (nut ? 4 : 1) + 'px;background:' + (nut ? '#DDE4E5' : '#42666D') + ';border-radius:2px' });
+  }
+  frets.forEach(function (f, s) {
+    if (f === 0) out.push({ text: 'o', style: 'position:absolute;left:' + (X(s) - 6) + 'px;top:2px;width:12px;text-align:center;font:600 12px/14px "JetBrains Mono",monospace;color:#9FB3A4' });
+    if (f < 0) out.push({ text: 'x', style: 'position:absolute;left:' + (X(s) - 6) + 'px;top:2px;width:12px;text-align:center;font:600 12px/14px "JetBrains Mono",monospace;color:#FF9B9B' });
+  });
+  var atMin = fretted.filter(function (e) { return e.f === mn; });
+  var lo = atMin.length ? atMin[0].s : 0, hi = atMin.length ? atMin[atMin.length - 1].s : 0;
+  var barre = atMin.length >= 2 && frets.slice(lo, hi + 1).every(function (f) { return f >= mn; });
+  var rest = barre ? fretted.filter(function (e) { return e.f !== mn; }) : fretted.slice();
+  rest.sort(function (a, b) { return a.f - b.f || a.s - b.s; });
+  var next = barre ? 2 : 1;
+  if (barre) out.push({ text: '1', style: 'position:absolute;left:' + (X(lo) - 8) + 'px;top:' + (Y(mn) - 8) + 'px;width:' + (X(hi) - X(lo) + 16) + 'px;height:16px;border-radius:8px;background:#E8D872;color:#0E140A;font:700 10px/16px "JetBrains Mono",monospace;text-align:center' });
+  rest.forEach(function (e) {
+    var fg = Math.min(4, next++);
+    out.push({ text: String(fg), style: 'position:absolute;left:' + (X(e.s) - 8) + 'px;top:' + (Y(e.f) - 8) + 'px;width:16px;height:16px;border-radius:99px;background:#E8D872;color:#0E140A;font:700 10px/16px "JetBrains Mono",monospace;text-align:center' });
+  });
+  if (base > 1) out.push({ text: base + 'fr', style: 'position:absolute;left:' + (X(5) + 10) + 'px;top:' + (Y(base) - 7) + 'px;font:600 11px/14px "JetBrains Mono",monospace;color:#C4CED0' });
+  return { items: out, w: X(5) + 34, h: 140 };
+}
+
+function pianoItems(upper) {
+  var lo = 60, hi = 83, out = [], wi = 0, whiteIdx = {};
+  var sorted = upper.slice().sort(function (a, b) { return a - b; });
+  var fing = FINGERS[Math.min(5, sorted.length)] || [];
+  var fingerOf = function (m) { var i = sorted.indexOf(m); return i >= 0 ? String(fing.at(i) || '') : ''; };
+  for (var m = lo; m <= hi; m++) {
+    if (WHITE.indexOf(m % 12) < 0) continue;
+    whiteIdx[m] = wi;
+    var on = sorted.indexOf(m) >= 0;
+    out.push({ text: fingerOf(m), style: 'position:absolute;left:' + (wi * 14) + 'px;top:0;width:13px;height:72px;border-radius:0 0 4px 4px;background:' + (on ? '#E8D872' : '#E5EAEB') + ';color:#0E140A;font:700 10px "JetBrains Mono",monospace;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;box-sizing:border-box' });
+    wi++;
+  }
+  for (var b = lo; b <= hi; b++) {
+    if (WHITE.indexOf(b % 12) >= 0) continue;
+    var onb = sorted.indexOf(b) >= 0;
+    out.push({ text: fingerOf(b), style: 'position:absolute;left:' + ((whiteIdx[b - 1] + 1) * 14 - 5) + 'px;top:0;width:10px;height:44px;border-radius:0 0 3px 3px;background:' + (onb ? '#F0E39A' : '#08171A') + ';color:#08171A;font:700 9px "JetBrains Mono",monospace;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;box-sizing:border-box' });
+  }
+  return { items: out, w: wi * 14, h: 72 };
+}
+
+function fluteItems(rows, thumbLab) {
+  var out = [], RH = 30, top = 16;
+  var col = { T: 44, L1: 62, L2: 80, L3: 98, Gs: 114, R1: 134, R2: 152, R3: 170, Eb: 186 };
+  var lab = function (txt, x) { out.push({ text: txt, style: 'position:absolute;left:' + (x - 14) + 'px;top:0;width:28px;text-align:center;font:600 9px/12px "Figtree",sans-serif;letter-spacing:.04em;color:#92AB98' }); };
+  lab(thumbLab, col.T); lab('1', col.L1); lab('2', col.L2); lab('3', col.L3); lab('1', col.R1); lab('2', col.R2); lab('3', col.R3);
+  out.push({ text: '', style: 'position:absolute;left:124px;top:' + top + 'px;width:1px;height:' + (rows.length * RH - 6) + 'px;background:#2F4A3B' });
+  rows.forEach(function (r, i) {
+    var y = top + i * RH, cy = y + 12;
+    out.push({ text: r.name, style: 'position:absolute;left:0;top:' + (cy - 8) + 'px;width:34px;font:700 13px/16px "JetBrains Mono",monospace;color:#F0E39A' });
+    out.push({ text: '', style: 'position:absolute;left:38px;top:' + (cy - 1) + 'px;width:156px;height:2px;border-radius:2px;background:#22393E' });
+    ['T','L1','L2','L3','Gs','R1','R2','R3','Eb'].forEach(function (k) {
+      var on = r.keys.indexOf(k) >= 0, small = k === 'Gs' || k === 'Eb', thumb = k === 'T';
+      var w = small ? 9 : (thumb ? 10 : 15), h = small ? 9 : 15;
+      var yy = small ? cy - (k === 'Gs' ? 11 : 0) : cy - h / 2;
+      out.push({ text: '', style: 'position:absolute;left:' + (col[k] - w / 2) + 'px;top:' + yy + 'px;width:' + w + 'px;height:' + h + 'px;box-sizing:border-box;border-radius:99px;' + (on ? 'background:#E8D872;border:1.5px solid #E8D872' : 'background:#0F1D20;border:1.5px solid #5E7F69') });
+    });
+  });
+  return { items: out, w: 196, h: top + rows.length * RH };
+}
+
+function violinItems(dots, open) {
+  var out = [], X = function (s) { return 22 + s * 30; }, Y = function (n) { return 22 + n * 17; };
+  for (var s = 0; s < 4; s++) {
+    out.push({ text: '', style: 'position:absolute;left:' + (X(s) - (s === 0 ? 1.25 : 0.75)) + 'px;top:22px;width:' + (s === 0 ? 2.5 : 1.5) + 'px;height:' + (6 * 17 + 10) + 'px;background:#9FB3A4' });
+    out.push({ text: open[s], style: 'position:absolute;left:' + (X(s) - 14) + 'px;top:' + (Y(6) + 14) + 'px;width:28px;text-align:center;font:600 11px/14px "JetBrains Mono",monospace;color:#92AB98' });
+  }
+  out.push({ text: '', style: 'position:absolute;left:' + X(0) + 'px;top:20px;width:' + (X(3) - X(0)) + 'px;height:4px;border-radius:2px;background:#DDE4E5' });
+  [2, 4, 5].forEach(function (n) { out.push({ text: '', style: 'position:absolute;left:' + (X(0) - 6) + 'px;top:' + Y(n) + 'px;width:' + (X(3) - X(0) + 12) + 'px;height:1px;background:#2A4535' }); });
+  dots.forEach(function (d) {
+    if (d.n === 0) { out.push({ text: 'o', style: 'position:absolute;left:' + (X(d.s) - 6) + 'px;top:2px;width:12px;text-align:center;font:600 12px/14px "JetBrains Mono",monospace;color:#9FB3A4' }); return; }
+    out.push({ text: d.f, style: 'position:absolute;left:' + (X(d.s) - 9) + 'px;top:' + (Y(d.n) - 9) + 'px;width:18px;height:18px;border-radius:99px;background:#E8D872;color:#0E140A;font:700 10px/18px "JetBrains Mono",monospace;text-align:center' });
+    out.push({ text: d.label, style: 'position:absolute;left:' + (X(d.s) + 11) + 'px;top:' + (Y(d.n) - 7) + 'px;font:600 10px/14px "JetBrains Mono",monospace;color:#C4CED0' });
+  });
+  return { items: out, w: X(3) + 34, h: Y(6) + 30 };
+}
+
+class Component extends DCLogic {
+  renderVals() {
+    var d = this.props.diag || { kind: 'guitar', name: 'G', inst: 'Guitarra', frets: [3,2,0,0,0,3], caption: 'Números = dedo: 1 índice, 2 medio, 3 anular, 4 meñique. o = cuerda al aire.' };
+    var isBox = d.kind === 'guitar' || d.kind === 'piano' || d.kind === 'flute' || d.kind === 'violin';
+    var g = d.kind === 'guitar' ? guitarItems(d.frets || [0,0,0,0,0,0]) : (d.kind === 'piano' ? pianoItems(d.upper || []) : (d.kind === 'flute' ? fluteItems(d.rows || [], d.thumbLab || 'Th') : (d.kind === 'violin' ? violinItems(d.dots || [], d.open || ['G','D','A','E']) : { items: [], w: 0, h: 0 })));
+    var chips = (d.notes || []).map(function (n, i, arr) { return { label: n, arrow: i === arr.length - 1 ? 'display:none' : 'color:#9FB3A4' }; });
+    return {
+      name: d.name || '',
+      inst: d.inst || '',
+      isBox: isBox,
+      isNotes: d.kind === 'notes',
+      boxStyle: 'position:relative;width:' + g.w + 'px;height:' + g.h + 'px',
+      items: g.items,
+      chips: chips,
+      aria: (d.name || '') + ' · ' + (d.inst || ''),
+      caption: d.caption || '',
+      hasPos: !!d.hasPos,
+      posLabel: d.posLabel || '',
+      prevLabel: d.prevLabel || '',
+      nextLabel: d.nextLabel || '',
+      prev: d.prev || function () {},
+      next: d.next || function () {}
+    };
+  }
+}
+</script>
+</body>
+</html>
