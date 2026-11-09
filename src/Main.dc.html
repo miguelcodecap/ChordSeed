@@ -308,7 +308,25 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .tools .tooltab[aria-selected="true"]{background:linear-gradient(180deg,rgba(232,216,114,.2),rgba(232,216,114,.08))!important;color:#F7EDA8!important;box-shadow:inset 0 0 0 1px rgba(232,216,114,.45),0 0 18px rgba(232,216,114,.12)}
 .tools .hs-a{width:30px;height:30px;font-size:17px;background:rgba(15,29,22,.96);border-color:#2F4A3B;box-shadow:0 0 0 4px rgba(10,21,16,.9)}
 .tools .hs-l{left:4px}.tools .hs-r{right:4px}
-@media (min-width:1241px){.tools .hs-many>.hs-a{display:none}.tools .hs>.chips{-webkit-mask-image:none;mask-image:none;justify-content:space-between}}
+.hs[data-fit="1"]>.hs-a{display:none!important}
+.hs[data-fit="1"]>.chips,.hs[data-fit="1"]>.moodrow{-webkit-mask-image:none!important;mask-image:none!important}
+@media (min-width:1241px){.tools .hs[data-fit="1"]>.chips{justify-content:space-between}}
+
+/* starter progressions */
+.starter{display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:16px;background:rgba(10,21,16,.6);border:1px dashed #2F4A3B}
+.starter-t{font-size:14px;line-height:1.5;color:#C9D6C6}
+.starter-row{display:flex;flex-wrap:wrap;gap:6px}
+.starter-b{display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;padding:7px 12px;border-radius:12px;border:1px solid #2F4A3B;background:#16271F;color:#EAF2E6;cursor:pointer;font:600 14px 'JetBrains Mono',monospace;transition:border-color .15s,background .15s}
+.starter-b small{font:600 11px 'Figtree',sans-serif;color:#9FB3A4;letter-spacing:.02em}
+.starter-b:hover{border-color:#E8D872;background:#1F2A17}
+.moodfit{font:600 11px 'Figtree',sans-serif;padding:3px 8px;border-radius:99px;background:rgba(232,216,114,.12);color:#F0E39A;border:1px solid rgba(232,216,114,.35)}
+/* Lumen in learn cards */
+.lrn-card{position:relative}
+.lrn-sage{position:absolute;left:16px;top:98px;width:80px;z-index:2}
+.lrn-bubble{margin:0 0 4px 92px;min-height:184px;justify-content:center}
+@media (max-width:640px){.lrn-sage{width:58px;left:10px;top:104px}.lrn-bubble{margin-left:62px;min-height:136px}}
+/* desktop: scroll rows wrap, no arrows; phones keep swipe + arrows */
+@media (min-width:900px){main .hs>.chips,main .hs>.moodrow,.lrn-modal .hs>.chips,.onb .hs>.chips,.onb .hs>.moodrow{flex-wrap:wrap!important;overflow:visible!important;-webkit-mask-image:none!important;mask-image:none!important}main .hs>.hs-a,.onb .hs>.hs-a{display:none!important}}
 </style>
 </helmet>
 
@@ -319,9 +337,9 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
   <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-exit" onClick="{{lrnExit}}">✕ {{lrnExitLab}}</button></sc-if>
   <sc-if value="{{toolLrnShow}}" hint-placeholder-val="{{ false }}"><button class="lrn-toolcard" onClick="{{toolLrnOpen}}">📖 {{toolLrnLab}}</button></sc-if>
   <sc-if value="{{lrnIntro}}" hint-placeholder-val="{{ false }}"><div class="lrn-toast" role="status"><span class="ns-k">{{lrnIntroK}}</span><span style="font:400 21px 'Cormorant Garamond',Georgia,serif">{{lrnIntroT}}</span><span style="font-size:14px;line-height:1.5;color:#D3E0D4">{{lrnIntroP}}</span><button class="btn" onClick="{{lrnIntroOk}}" style="align-self:flex-start;min-height:42px;box-shadow:none">{{lrnIntroBtn}}</button></div></sc-if>
-  <sc-if value="{{lrnOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{lrnBackdrop}}"><div class="lrn-card" role="dialog" aria-label="{{lrnTitle}}">
+  <sc-if value="{{lrnOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{lrnBackdrop}}"><div class="lrn-card" role="dialog" aria-label="{{lrnTitle}}"><img class="sage lrn-sage" src="{{lrnSage}}" alt="Lumen" width="96" height="226">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span class="ns-k">📖 {{lrnKicker}}</span><span style="font:400 26px/1.15 'Cormorant Garamond',Georgia,serif">{{lrnTitle}}</span></div><button class="ghost" onClick="{{lrnClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
-    <p style="margin:0;font-size:15px;line-height:1.55;color:#D3E0D4">{{lrnSub}}</p>
+    <div class="sage-bubble lrn-bubble" role="note"><span class="sage-name">{{sageName}}</span><span class="sage-say" style="font-size:18px">{{lrnSub}}</span></div>
     <sc-for list="{{lrnParas}}" as="lp" hint-placeholder-count="4"><div class="lrn-sec"><b style="font-size:14px;color:#F0E39A">{{lp.h}}</b><span style="font-size:14px;line-height:1.55;color:#DDE8DC">{{lp.p}}</span></div></sc-for>
     <sc-if value="{{lrnHasDemos}}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:8px"><span class="lab">{{lrnDemoLab}}</span><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{lrnDemos}}" as="dm" hint-placeholder-count="4"><button class="pill" onClick="{{dm.play}}" style="min-height:40px;font-size:13px">▶ {{dm.label}}</button></sc-for></div></div></sc-if>
     <button class="btn" onClick="{{lrnClose}}" style="align-self:flex-end;min-height:44px;box-shadow:none">{{lrnDone}}</button>
@@ -484,6 +502,10 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
         </sc-if>
       </div>
       <sc-if value="{{st2Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next2}}</span></div></sc-if>
+      <div class="starter">
+        <span class="starter-t">{{starterTxt}}</span>
+        <div class="starter-row"><sc-for list="{{starters}}" as="sp" hint-placeholder-count="7"><button class="starter-b" onClick="{{sp.pick}}" title="{{sp.hint}}"><b>{{sp.names}}</b><small>{{sp.label}}</small></button></sc-for></div>
+      </div>
       <sc-if value="{{hasSaveMsg}}" hint-placeholder-val="{{ false }}"><p role="status" style="margin:0;font-size:14px;color:#F0E39A">{{saveMsg}}</p></sc-if>
       <sc-if value="{{hasPartTag}}" hint-placeholder-val="{{ false }}"><span style="{{partTagStyle}}"><span style="{{partTagDot}}">{{partTagL}}</span>{{partTag}}</span></sc-if>
       <div style="padding:6px 0 8px">
@@ -616,7 +638,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
               <span class="mono" style="{{s.rankStyle}}">{{s.rank}}</span>
               <button onClick="{{s.focus}}" aria-label="{{s.focusLabel}}" style="all:unset;cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;flex:1;min-width:0">
                 <span class="mono snames" style="font-size:24px;font-weight:700;min-width:64px;white-space:nowrap">{{s.names}}</span>
-                <span style="{{s.fnStyle}}">{{s.roman}} · {{s.fnLabel}}</span>
+                <span style="{{s.fnStyle}}">{{s.roman}} · {{s.fnLabel}}</span><sc-if value="{{s.moodOk}}" hint-placeholder-val="{{ false }}"><span class="moodfit">✓ {{s.moodTag}}</span></sc-if>
                 <span style="display:flex;align-items:center;gap:6px"><span style="width:56px;height:5px;border-radius:9px;background:#24392E;overflow:hidden;display:inline-block"><span style="{{s.barStyle}}"></span></span><span class="mono" style="font-size:11px;color:#9FB3A4">{{s.fit}}</span></span>
               </button>
               <button class="ghost" onClick="{{s.play}}" aria-label="{{s.playLabel}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button>
@@ -1993,7 +2015,7 @@ function detect(chs) {
 function scoreOf(p, prev, st) {
   var base = TRANS[prev ? prev.f : 'T'][p.f];
   if (prev && prev.to !== undefined && p.o === prev.to) base *= 2.5;
-  base *= st.mood === 'any' ? 1 : (p.m.indexOf(st.mood) >= 0 ? 1.7 : 0.45);
+  base *= st.mood === 'any' ? 1 : (p.m.indexOf(st.mood) >= 0 ? 2.4 : 0.3);
   base *= SF[st.sur][p.s];
   return base;
 }
@@ -3284,157 +3306,161 @@ function trTree(v) {
   return v;
 }
 var LEARN = {
-  start: { es: ['Instrumento y género', 'Lo que eliges aquí cambia cómo suena la app, cómo te enseña los acordes y qué te propone.', [
-      ['Por qué elegir instrumento', 'Cada acorde se toca distinto en cada instrumento. La app te muestra la posición en el que elijas y suena con él.'],
-      ['Piano', 'Puede tocar acordes completos con las dos manos: bajo con la izquierda y acorde con la derecha. Muy usado en pop, baladas, jazz, gospel y clásica.'],
-      ['Guitarra acústica', 'Se rasguea (golpes hacia abajo y arriba) o se puntea nota a nota (arpegio). Es la base del folk, el pop acústico, la bossa nova y el bolero.'],
-      ['Guitarra eléctrica', 'Limpia suena en funk, R&B y jazz; con saturación (crunch) en blues y pop-rock; con distorsión en rock y metal, donde se usan power chords (solo la nota base y su quinta).'],
-      ['Flauta', 'Solo toca una nota a la vez, así que un acorde se toca como arpegio: sus notas una detrás de otra. Aparece en clásica, folk y música de cine.'],
-      ['Cuerdas (violín)', 'Notas largas que llenan el fondo y dan emoción. Clave en cine, clásica y baladas.'],
-      ['Sintetizador', 'Sonidos electrónicos: pop actual, lo-fi, city pop y música electrónica.'],
-      ['El género', 'Cambia los acordes que te sugiero (séptimas en jazz y neo-soul, power chords en metal), el ritmo, la batería y las canciones de ejemplo.']] ],
-    en: ['Instrument and genre', 'What you pick here changes how the app sounds, how it teaches chords and what it suggests.', [
-      ['Why pick an instrument', 'Each chord is played differently on each instrument. The app shows the shape on the one you pick and plays with it.'],
-      ['Piano', 'Plays full chords with both hands: bass on the left, chord on the right. Common in pop, ballads, jazz, gospel and classical.'],
-      ['Acoustic guitar', 'Strummed (down and up) or picked note by note (arpeggio). The base of folk, acoustic pop, bossa nova and bolero.'],
-      ['Electric guitar', 'Clean in funk, R&B and jazz; crunchy in blues and pop-rock; distorted in rock and metal, where power chords (root and fifth only) are used.'],
-      ['Flute', 'Plays one note at a time, so a chord becomes an arpeggio. Found in classical, folk and film music.'],
-      ['Strings (violin)', 'Long notes that fill the background and add emotion. Key in film, classical and ballads.'],
-      ['Synth', 'Electronic sounds: modern pop, lo-fi, city pop and electronic music.'],
-      ['Genre', 'Changes the chords I suggest (sevenths in jazz and neo-soul, power chords in metal), the rhythm, drums and example songs.']] ],
+  start: { es: ['Tu instrumento y tu estilo', 'Primero cuéntame qué tocas y qué música te gusta. Con eso, todo lo demás se adapta a ti: el sonido, los dibujos de cómo se toca y los acordes que te recomiendo.', [
+      ['¿Por qué importa el instrumento?', 'Un mismo acorde se toca distinto en cada instrumento. Si eliges guitarra, te muestro dónde poner los dedos en la guitarra; si eliges piano, qué teclas apretar. Y todo suena con ese instrumento.'],
+      ['Piano', 'Puedes tocar el acorde completo con una mano y la nota grave con la otra. Sirve para casi todo: pop, baladas, jazz, gospel.'],
+      ['Guitarra acústica', 'Puedes rasguear (pasar la mano por todas las cuerdas) o tocar las notas una a una. Es la de las fogatas, el folk y el pop tranquilo.'],
+      ['Guitarra eléctrica', 'Limpia suena suave (funk, R&B). Con distorsión suena fuerte y rasposa (rock, metal); ahí se usan «power chords», acordes de solo dos notas.'],
+      ['Flauta', 'Solo suena una nota a la vez, así que los acordes se tocan nota por nota, uno detrás de otro.'],
+      ['Cuerdas (violín)', 'Notas largas que llenan el fondo y dan emoción, como en las películas.'],
+      ['Sintetizador', 'Sonidos electrónicos: pop actual, lo-fi y música electrónica.'],
+      ['¿Y el estilo?', 'Según el estilo te recomiendo otros acordes (más sofisticados en jazz, más simples y potentes en rock), otro ritmo, otra batería y canciones de ejemplo de ese estilo.']] ],
+    en: ['Your instrument and your style', 'First tell me what you play and what music you like. Then everything adapts to you: the sound, the drawings of how to play, and the chords I recommend.', [
+      ['Why does the instrument matter?', 'The same chord is played differently on each instrument. Pick guitar and I show where to put your fingers on the guitar; pick piano and I show which keys to press. And everything plays with that sound.'],
+      ['Piano', 'You can play the whole chord with one hand and a low note with the other. Works for almost anything: pop, ballads, jazz, gospel.'],
+      ['Acoustic guitar', 'You can strum (sweep your hand across all strings) or play the notes one by one. The campfire, folk and soft pop instrument.'],
+      ['Electric guitar', 'Clean, it sounds smooth (funk, R&B). With distortion it sounds loud and gritty (rock, metal), where “power chords” of just two notes are used.'],
+      ['Flute', 'Plays only one note at a time, so chords are played note by note, one after another.'],
+      ['Strings (violin)', 'Long notes that fill the background and add emotion, like in movies.'],
+      ['Synth', 'Electronic sounds: modern pop, lo-fi and electronic music.'],
+      ['And the style?', 'Depending on your style I recommend different chords (fancier in jazz, simpler and stronger in rock), a different rhythm, drums and example songs.']] ],
     demo: 'inst' },
-  mood: { es: ['¿Por qué algo suena alegre o melancólico?', 'La emoción depende sobre todo de los acordes mayores y menores y de hacia dónde se mueven.', [
-      ['Mayor = luminoso', 'Un acorde mayor tiene una tercera mayor (4 semitonos sobre la base). Suena abierto y brillante. Escucha C.'],
-      ['Menor = íntimo o triste', 'Un acorde menor baja esa tercera un semitono (3 semitonos). Ese solo cambio lo vuelve más oscuro. Escucha Cm.'],
-      ['Alegre', 'Gira alrededor de un acorde mayor (el I) y usa sus vecinos fuertes, IV y V. Por ejemplo C – G – Am – F.'],
-      ['Melancólico', 'Empieza o descansa en un acorde menor (vi o i). Am – F – C – G usa los mismos acordes que el alegre, pero empezar en Am lo cambia todo.'],
-      ['Épico', 'Acordes mayores grandes que suben hacia un menor: i – VI – VII (Am – F – G). Muy usado en cine y rock.'],
-      ['Soñador', 'Acordes con séptima mayor (Cmaj7, Fmaj7): una nota queda “flotando” y el sonido se vuelve suave y abierto.'],
-      ['Tenso', 'Acordes que chocan o piden resolverse: el bII (Am – Bb) o los disminuidos. El oído espera que algo pase.'],
-      ['Oscuro', 'Menor con bajos que descienden, como la cadencia andaluza Am – G – F – E.']] ],
-    en: ['Why does something sound happy or sad?', 'Emotion mostly depends on major and minor chords and where they move.', [
-      ['Major = bright', 'A major chord has a major third (4 semitones above the root). It sounds open and bright. Listen to C.'],
-      ['Minor = intimate or sad', 'A minor chord lowers that third by a semitone (3 semitones). That single change makes it darker. Listen to Cm.'],
-      ['Happy', 'Revolves around a major chord (I) and its strong neighbors IV and V, e.g. C – G – Am – F.'],
-      ['Melancholic', 'Starts on or rests on a minor chord (vi or i). Am – F – C – G uses the same chords as the happy one, but starting on Am changes everything.'],
-      ['Epic', 'Big major chords climbing to a minor: i – VI – VII (Am – F – G). Common in film and rock.'],
-      ['Dreamy', 'Major seventh chords (Cmaj7, Fmaj7): one note “floats” and the sound becomes soft and open.'],
-      ['Tense', 'Chords that clash or want to resolve: bII (Am – Bb) or diminished chords.'],
-      ['Dark', 'Minor with descending bass, like the Andalusian cadence Am – G – F – E.']] ],
+  mood: { es: ['¿Cómo quieres que suene?', 'Aquí eliges la emoción de tu canción. Los acordes que te recomiendo cambian según lo que elijas.', [
+      ['La regla básica', 'Los acordes mayores suenan alegres y luminosos. Los menores suenan tristes o íntimos. Entre uno y otro solo cambia una nota. Escucha C y luego Cm.'],
+      ['Alegre', 'Usa sobre todo acordes mayores y vuelve seguido a «casa». Ejemplo: C – G – Am – F.'],
+      ['Melancólico', 'Empieza o se apoya en un acorde menor. Curioso: Am – F – C – G tiene los mismos acordes que el alegre, pero empezar en Am lo vuelve nostálgico.'],
+      ['Épico', 'Acordes grandes que van subiendo, como en el cine: Am – F – G.'],
+      ['Soñador', 'Acordes con una nota extra que queda «flotando» (como Cmaj7). Suena suave, como en un sueño.'],
+      ['Tenso', 'Acordes que suenan a «algo va a pasar» y piden resolverse.'],
+      ['Oscuro', 'Acordes menores con notas graves que van bajando, como Am – G – F – E.'],
+      ['Cualquiera', 'Si eliges «Cualquiera», te recomiendo los acordes que mejor siguen a los tuyos, sin importar la emoción.']] ],
+    en: ['How should it sound?', 'Here you choose your song’s emotion. The chords I recommend change based on what you pick.', [
+      ['The basic rule', 'Major chords sound happy and bright. Minor chords sound sad or intimate. Only one note changes between them. Listen to C, then Cm.'],
+      ['Happy', 'Mostly major chords that keep coming back “home”. Example: C – G – Am – F.'],
+      ['Melancholic', 'Starts on or leans on a minor chord. Fun fact: Am – F – C – G has the same chords as the happy one, but starting on Am makes it nostalgic.'],
+      ['Epic', 'Big chords climbing up, like in movies: Am – F – G.'],
+      ['Dreamy', 'Chords with an extra note that “floats” (like Cmaj7). Soft, like a dream.'],
+      ['Tense', 'Chords that sound like “something is about to happen” and want to resolve.'],
+      ['Dark', 'Minor chords with low notes walking down, like Am – G – F – E.'],
+      ['Any', 'Pick “Any” and I recommend whatever chords follow yours best, regardless of emotion.']] ],
     demo: 'mood' },
-  cx: { es: ['Complejidad', 'Cuántas notas tiene cada acorde. Más notas = más color, pero más difícil de tocar.', [
-      ['Tríadas (3 notas)', 'La base: C = do, mi, sol. Son las de rock, pop y folk.'],
-      ['Sus y add', 'Cambian o añaden una nota (Csus4, Cadd9). Suenan abiertos, muy usados en pop y worship.'],
-      ['Sextas', 'C6 añade la sexta: suena retro y dulce, típico del bolero y el swing.'],
-      ['Séptimas (4 notas)', 'Cmaj7 suena suave, C7 pide moverse, Am7 suena relajado. Son la base del jazz, el R&B y la bossa.'],
-      ['Novenas y extendidas', 'Cmaj9, C13, Am11: muy ricas y elegantes. Neo-soul, gospel y jazz moderno.'],
-      ['Tus acordes', 'Al cambiar el nivel te pregunto si quieres pasar tus acordes actuales a ese nivel o usarlo solo para las sugerencias nuevas.']] ],
-    en: ['Complexity', 'How many notes each chord has. More notes = more color, but harder to play.', [
-      ['Triads (3 notes)', 'The base: C = C, E, G. Used in rock, pop and folk.'],
-      ['Sus and add', 'Change or add a note (Csus4, Cadd9). Open sound, common in pop.'],
-      ['Sixths', 'C6 adds the sixth: retro and sweet, typical of bolero and swing.'],
-      ['Sevenths (4 notes)', 'Cmaj7 is soft, C7 wants to move, Am7 is relaxed. The base of jazz, R&B and bossa.'],
-      ['Ninths and extended', 'Cmaj9, C13, Am11: rich and elegant. Neo-soul, gospel and modern jazz.'],
-      ['Your chords', 'When you change the level, I ask whether to convert your current chords or use it only for new suggestions.']] ],
+  cx: { es: ['¿Acordes simples o con más color?', 'Decide cuántas notas tienen los acordes que te recomiendo. Más notas = sonido más rico, pero más difícil de tocar.', [
+      ['Simples (3 notas)', 'Los de toda la vida, como C = do, mi, sol. Perfectos para empezar, para rock, pop y folk.'],
+      ['Sus y add', 'Cambian o añaden una nota (Csus4, Cadd9). Suenan abiertos y modernos.'],
+      ['Sextas', 'C6: suena dulce y retro, como un bolero.'],
+      ['Séptimas (4 notas)', 'Cmaj7 suena suave, C7 suena a «quiero moverme», Am7 suena relajado. Muy usados en R&B, jazz y bossa nova.'],
+      ['Novenas y más', 'Acordes muy ricos y elegantes (Cmaj9, Am11). Neo-soul, gospel y jazz.'],
+      ['Tus acordes', 'Al cambiar el nivel te pregunto si quieres convertir los acordes que ya tienes o usarlo solo para las nuevas recomendaciones.']] ],
+    en: ['Simple chords or more color?', 'Decide how many notes the chords I recommend have. More notes = richer sound, but harder to play.', [
+      ['Simple (3 notes)', 'The classics, like C = C, E, G. Perfect to start, and for rock, pop and folk.'],
+      ['Sus and add', 'Change or add a note (Csus4, Cadd9). Open, modern sound.'],
+      ['Sixths', 'C6: sweet and retro.'],
+      ['Sevenths (4 notes)', 'Cmaj7 sounds soft, C7 sounds like “I want to move”, Am7 sounds relaxed. Common in R&B, jazz and bossa nova.'],
+      ['Ninths and beyond', 'Very rich, elegant chords (Cmaj9, Am11). Neo-soul, gospel and jazz.'],
+      ['Your chords', 'When you change the level, I ask whether to convert the chords you already have or use it only for new recommendations.']] ],
     demo: 'cx' },
-  sur: { es: ['Acordes fuera del tono', 'Una tonalidad es una “familia” de 7 acordes que suenan bien juntos. Este control decide si te propongo acordes de fuera de esa familia.', [
-      ['Ninguno', 'Solo acordes de tu tonalidad. Suena seguro y conocido.'],
-      ['Alguno', 'De vez en cuando un acorde “prestado”. Por ejemplo, en C mayor el Fm (de C menor) da un toque nostálgico, como en muchas baladas.'],
-      ['Muchos', 'Acordes de fuera más a menudo: dominantes secundarios como E7 (que lleva con fuerza a Am) o el napolitano Db. Más sorpresa, menos predecible.'],
-      ['Por qué funciona', 'Un acorde de fuera suena bien si comparte notas con los de alrededor o si resuelve hacia uno de la familia.']] ],
-    en: ['Out-of-key chords', 'A key is a “family” of 7 chords that sound good together. This control decides whether I suggest chords from outside that family.', [
-      ['None', 'Only chords from your key. Safe and familiar.'],
-      ['Some', 'Now and then a “borrowed” chord. In C major, Fm (from C minor) adds a nostalgic touch.'],
-      ['Lots', 'Outside chords more often: secondary dominants like E7 (which pulls strongly to Am) or the Neapolitan Db.'],
-      ['Why it works', 'An outside chord sounds good if it shares notes with its neighbors or resolves into the family.']] ],
+  sur: { es: ['¿Quieres sorpresas?', 'Cada canción tiene una «familia» de 7 acordes que suenan bien juntos. Aquí decides si te recomiendo también acordes de fuera de esa familia.', [
+      ['Ninguna', 'Solo acordes de la familia. Suena seguro y conocido.'],
+      ['Algunas', 'De vez en cuando un acorde «prestado» que da un toque especial. Por ejemplo, en C mayor el Fm suena nostálgico, como en muchas baladas.'],
+      ['Muchas', 'Acordes de fuera más seguido. Más sorpresa y personalidad, menos predecible.'],
+      ['¿Por qué funcionan?', 'Un acorde de fuera suena bien si comparte notas con los de al lado o si te lleva de vuelta a un acorde de la familia.']] ],
+    en: ['Want surprises?', 'Every song has a “family” of 7 chords that sound good together. Here you decide whether I also recommend chords from outside that family.', [
+      ['None', 'Only family chords. Safe and familiar.'],
+      ['Some', 'Now and then a “borrowed” chord that adds something special. In C major, Fm sounds nostalgic, like in many ballads.'],
+      ['Lots', 'Outside chords more often. More surprise and personality, less predictable.'],
+      ['Why do they work?', 'An outside chord sounds good if it shares notes with its neighbors or leads you back to a family chord.']] ],
     demo: 'sur' },
-  count: { es: ['Acordes por sugerencia', 'Cuántos acordes te propongo de una vez.', [
-      ['1 acorde', 'Solo el siguiente paso: ideal para ir probando poco a poco.'],
-      ['2 o 4 acordes', 'Una frase completa que ya funciona sola. Útil para crear una parte nueva de la canción, como el coro.']] ],
-    en: ['Chords per suggestion', 'How many chords I suggest at once.', [
-      ['1 chord', 'Just the next step: great for trying things little by little.'],
-      ['2 or 4 chords', 'A full phrase that works on its own. Useful for a new song section like the chorus.']] ] },
-  prog: { es: ['Tu progresión', 'Una progresión es una serie de acordes que se repite. Es el esqueleto de la canción.', [
-      ['La tonalidad', 'La app detecta sola en qué tonalidad estás mirando qué acordes usas. Aparece arriba (por ejemplo “C mayor”).'],
-      ['Los números romanos', 'I, IV, V, vi… indican la posición del acorde dentro de la tonalidad. Mayúscula = mayor, minúscula = menor. Sirven para tocar la misma progresión en cualquier tono.'],
-      ['Las funciones', 'Tónica = reposo, “estar en casa”. Subdominante = alejarse. Dominante = tensión que pide volver a casa. Por eso V → I suena a final.'],
-      ['La duración', 'Con − y + decides cuánto dura cada acorde. Cambiar rápido da energía; cambiar lento da calma.'],
-      ['Ideas para empezar', 'Si no sabes por dónde empezar, las ideas usan progresiones probadas según tu género y emoción.']] ],
-    en: ['Your progression', 'A progression is a series of chords that repeats. It is the skeleton of the song.', [
-      ['The key', 'The app detects the key from the chords you use. It shows at the top (e.g. “C major”).'],
-      ['Roman numerals', 'I, IV, V, vi… show the chord’s position in the key. Uppercase = major, lowercase = minor. They let you play the same progression in any key.'],
-      ['Functions', 'Tonic = rest, “home”. Subdominant = moving away. Dominant = tension that wants to go home. That’s why V → I sounds like an ending.'],
-      ['Length', 'Use − and + to set how long each chord lasts. Fast changes add energy; slow changes add calm.'],
-      ['Starting ideas', 'If you don’t know where to start, the ideas use proven progressions for your genre and mood.']] ],
+  count: { es: ['¿Cuántos acordes te propongo?', 'Elige si quieres ideas de un acorde o frases completas.', [
+      ['1 acorde', 'Solo el siguiente paso. Ideal para construir poco a poco y escuchar cada cambio.'],
+      ['2 o 4 acordes', 'Una frase completa que ya suena a canción. Útil para inventar una parte nueva, como el coro.']] ],
+    en: ['How many chords should I suggest?', 'Choose single-chord ideas or full phrases.', [
+      ['1 chord', 'Just the next step. Great for building little by little and hearing each change.'],
+      ['2 or 4 chords', 'A full phrase that already sounds like a song. Useful for inventing a new section, like the chorus.']] ] },
+  prog: { es: ['Tu progresión', 'Una progresión es la lista de acordes que se repite en tu canción. Es su esqueleto: la melodía y la letra van encima.', [
+      ['Cómo empezar', 'Si ya tienes acordes, ponlos en orden con «Añadir acorde». Si no tienes ninguno, elige una progresión famosa de las ideas para empezar, o cualquier acorde que te guste: yo te ayudo con el resto.'],
+      ['La tonalidad', 'Miro tus acordes y adivino en qué «tono» estás (por ejemplo, C mayor). Es como saber en qué barrio vive tu canción.'],
+      ['Los números (I, IV, V…)', 'Indican qué lugar ocupa cada acorde en la familia. Mayúscula = mayor, minúscula = menor. Con números puedes tocar la misma progresión en cualquier tono.'],
+      ['Casa, paseo y tensión', 'Cada acorde tiene un papel: el I es la casa (calma), el IV es salir a pasear (movimiento) y el V es la tensión que pide volver a casa.'],
+      ['Cuánto dura cada acorde', 'Con − y + decides cuánto suena cada uno. Cambiar rápido da energía; cambiar lento da calma.']] ],
+    en: ['Your progression', 'A progression is the list of chords that repeats in your song. It’s the skeleton: melody and lyrics go on top.', [
+      ['How to start', 'If you already have chords, add them in order with “Add chord”. If you have none, pick a famous progression from the starting ideas, or any chord you like: I’ll help with the rest.'],
+      ['The key', 'I look at your chords and figure out which “key” you’re in (e.g. C major). Think of it as the neighborhood your song lives in.'],
+      ['The numbers (I, IV, V…)', 'They show each chord’s place in the family. Uppercase = major, lowercase = minor. With numbers you can play the same progression in any key.'],
+      ['Home, journey and tension', 'Each chord has a role: I is home (calm), IV is going for a walk (movement) and V is tension that wants to go back home.'],
+      ['How long each chord lasts', 'Use − and + to set how long each one plays. Fast changes add energy; slow changes add calm.']] ],
     demo: 'prog' },
-  rhythm: { es: ['Ritmo y duración', 'El ritmo decide cómo suenan tus acordes en el tiempo.', [
-      ['Tempo (BPM)', 'Golpes por minuto. 70 es lento (balada), 120 es medio (pop), 170 es rápido (punk, metal).'],
-      ['Compás', '4/4 cuenta de 4 en 4 (casi todo el pop y rock). 3/4 de 3 en 3 (vals). 6/8 se siente en dos grupos de tres, como un balanceo.'],
-      ['Cómo se toca', 'Pulso, corcheas, sincopado, arpegio, contratiempo (reggae) o shuffle (blues): el mismo acorde cambia de carácter según el patrón.'],
-      ['Batería y bajo', 'Añaden el patrón típico del género para que suene como una canción de verdad.']] ],
-    en: ['Rhythm and length', 'Rhythm decides how your chords sound over time.', [
-      ['Tempo (BPM)', 'Beats per minute. 70 is slow (ballad), 120 is medium (pop), 170 is fast (punk, metal).'],
-      ['Time signature', '4/4 counts in fours (most pop and rock). 3/4 in threes (waltz). 6/8 feels like two groups of three, a swaying feel.'],
-      ['How it’s played', 'Pulse, eighths, syncopated, arpeggio, off-beat (reggae) or shuffle (blues): the same chord changes character with the pattern.'],
-      ['Drums and bass', 'Add the genre’s typical pattern so it sounds like a real song.']] ] },
-  sugs: { es: ['Ideas para continuar', 'Te propongo qué acordes pueden venir después de los tuyos y por qué.', [
-      ['Cómo decido', 'Busco movimientos que el oído reconoce: ir de la dominante a la tónica (V → I), bajar por quintas (ii → V → I) o mover el bajo por pasos cortos.'],
-      ['El porcentaje', 'Indica qué tan bien encaja la sugerencia con tu progresión, tu emoción y tu género.'],
-      ['Toca antes de decidir', 'Escucha cada idea unida a tus acordes y quédate con la que se parezca a lo que tienes en la cabeza.']] ],
-    en: ['Ideas to continue', 'I suggest which chords can come after yours and why.', [
-      ['How I decide', 'I look for moves the ear recognizes: dominant to tonic (V → I), falling fifths (ii → V → I) or short bass steps.'],
-      ['The percentage', 'Shows how well the suggestion fits your progression, mood and genre.'],
-      ['Listen first', 'Hear each idea after your chords and keep the one closest to what’s in your head.']] ] },
-  struct: { es: ['Estructura de la canción', 'Una canción se arma con partes que se repiten y contrastan.', [
-      ['Verso', 'Cuenta la historia. Energía media; suele repetirse con letra distinta.'],
-      ['Pre-coro', 'Sube la tensión para preparar el coro.'],
-      ['Coro', 'La parte que se repite igual y se recuerda. Suele tener más energía o acordes más luminosos.'],
-      ['Puente', 'Un contraste (otros acordes) antes del último coro, para que no aburra.'],
-      ['Formas típicas', 'A A B B, verso–coro (A B A B), o A B C B con puente. Usa los atajos o arma tu propio orden.']] ],
-    en: ['Song structure', 'A song is built from parts that repeat and contrast.', [
-      ['Verse', 'Tells the story. Medium energy; usually repeats with different lyrics.'],
-      ['Pre-chorus', 'Builds tension toward the chorus.'],
-      ['Chorus', 'The part that repeats and sticks. Usually more energy or brighter chords.'],
-      ['Bridge', 'A contrast (other chords) before the last chorus so it doesn’t get boring.'],
-      ['Common forms', 'A A B B, verse–chorus (A B A B), or A B C B with a bridge. Use the shortcuts or build your own order.']] ] },
-  songs: { es: ['Canciones de ejemplo', 'Escuchar tu progresión en canciones reales te ayuda a entender cómo suena y cómo se usa.', [
-      ['Mismos acordes', 'Muchas canciones comparten progresión: I–V–vi–IV está en cientos de éxitos. Lo que las diferencia es la melodía, el ritmo y el sonido.'],
-      ['Otro tono', 'Una progresión puede tocarse más aguda o más grave (transportar). Los números romanos no cambian; solo los nombres de los acordes.'],
-      ['Cómo se toca', 'Abre “Cómo se toca” para ver el patrón de cada compás, el orden de los acordes y sus diagramas.']] ],
-    en: ['Example songs', 'Hearing your progression in real songs helps you understand how it sounds and is used.', [
-      ['Same chords', 'Many songs share a progression: I–V–vi–IV is in hundreds of hits. Melody, rhythm and sound make them different.'],
-      ['Another key', 'A progression can be played higher or lower (transposing). Roman numerals stay the same; only chord names change.'],
-      ['How to play it', 'Open “How to play it” to see each bar’s pattern, the chord order and the diagrams.']] ] },
-  tools: { es: ['Herramientas', 'Chordseed tiene varias herramientas. Cada pestaña es una:', [
-      ['Generador', 'Escribe tus acordes y te sugiere cómo seguir. Con «Analizar mi progresión» te explica por qué funciona.'],
-      ['Enriquecer mis acordes', 'Cambia tus acordes por otros con más color, manteniendo la misma idea.'],
-      ['Escalas para tu melodía', 'Qué notas tocar para melodías o solos sobre tus acordes.'],
-      ['Cambiar de tonalidad', 'Cómo pasar de una tonalidad a otra, o meter un acorde de fuera, sin que suene forzado.'],
-      ['Diccionario', 'Cualquier acorde y cómo se toca.'],
+  rhythm: { es: ['Ritmo y velocidad', 'El ritmo decide cómo suenan tus acordes en el tiempo: lento o rápido, suave o con golpe.', [
+      ['Tempo (BPM)', 'Cuántos golpes por minuto. 70 = lento, como una balada. 120 = medio, como el pop. 170 = rápido, como el punk.'],
+      ['Compás', '4/4 se cuenta 1-2-3-4 (casi todo el pop y rock). 3/4 se cuenta 1-2-3, como un vals. 6/8 se siente como un balanceo.'],
+      ['Cómo se toca', 'El mismo acorde cambia mucho según el patrón: golpes parejos, notas sueltas (arpegio), golpes a contratiempo (reggae) o con swing (blues).'],
+      ['Batería y bajo', 'Añaden el acompañamiento típico de tu estilo para que suene como una canción de verdad.']] ],
+    en: ['Rhythm and speed', 'Rhythm decides how your chords sound over time: slow or fast, soft or punchy.', [
+      ['Tempo (BPM)', 'Beats per minute. 70 = slow, like a ballad. 120 = medium, like pop. 170 = fast, like punk.'],
+      ['Time signature', '4/4 counts 1-2-3-4 (most pop and rock). 3/4 counts 1-2-3, like a waltz. 6/8 feels like swaying.'],
+      ['How it’s played', 'The same chord changes a lot with the pattern: even strums, single notes (arpeggio), off-beat hits (reggae) or swing (blues).'],
+      ['Drums and bass', 'Add your style’s typical backing so it sounds like a real song.']] ] },
+  sugs: { es: ['¿Qué acorde pongo después?', 'Te recomiendo acordes que suenan bien después de los tuyos, ordenados del que mejor encaja al que menos.', [
+      ['Cómo los elijo', 'Busco cambios que tu oído ya conoce de mil canciones, como pasar de la tensión (V) a la casa (I).'],
+      ['Tu emoción cuenta', 'Si elegiste Alegre, Melancólico, etc., subo los acordes que transmiten esa emoción y bajo los que no.'],
+      ['El porcentaje', 'Qué tan bien encaja cada idea con tus acordes, tu emoción y tu estilo.'],
+      ['Escucha antes de elegir', 'Pulsa ▶ para oír la idea unida a tus acordes y quédate con la que se parezca a lo que tienes en la cabeza.']] ],
+    en: ['Which chord comes next?', 'I recommend chords that sound good after yours, ordered from best fit to least.', [
+      ['How I pick them', 'I look for changes your ear already knows from a thousand songs, like going from tension (V) to home (I).'],
+      ['Your emotion counts', 'If you chose Happy, Melancholic, etc., I push up the chords that carry that emotion and push down the rest.'],
+      ['The percentage', 'How well each idea fits your chords, your emotion and your style.'],
+      ['Listen before choosing', 'Press ▶ to hear the idea after your chords and keep the one closest to what’s in your head.']] ] },
+  struct: { es: ['Arma tu canción', 'Una canción se arma con partes: unas se repiten y otras cambian para que no aburra.', [
+      ['Verso', 'Cuenta la historia. Suele repetirse con distinta letra.'],
+      ['Pre-coro', 'Sube la emoción para preparar el coro.'],
+      ['Coro', 'La parte que todo el mundo canta y recuerda. Suele tener más energía.'],
+      ['Puente', 'Un cambio de aire (otros acordes) antes del último coro.'],
+      ['Cómo se usa aquí', 'Tu progresión es la parte A. Crea más partes (B, C…) y ordénalas: por ejemplo A A B A. Usa los atajos si no sabes por dónde empezar.']] ],
+    en: ['Build your song', 'A song is built from parts: some repeat and some change so it doesn’t get boring.', [
+      ['Verse', 'Tells the story. Usually repeats with different lyrics.'],
+      ['Pre-chorus', 'Builds up emotion to prepare the chorus.'],
+      ['Chorus', 'The part everyone sings and remembers. Usually more energy.'],
+      ['Bridge', 'A change of scenery (other chords) before the last chorus.'],
+      ['How to use it here', 'Your progression is part A. Create more parts (B, C…) and order them, e.g. A A B A. Use the shortcuts if you don’t know where to start.']] ] },
+  songs: { es: ['Canciones que usan tus acordes', 'Escuchar tus acordes en canciones famosas te ayuda a entender cómo suenan y te da ideas.', [
+      ['Mismos acordes, otra canción', 'Cientos de éxitos usan los mismos 4 acordes. Lo que las hace distintas es la melodía, el ritmo y el sonido.'],
+      ['En otro tono', 'Una progresión puede sonar más aguda o más grave. Los números (I, V, vi…) no cambian; solo los nombres de los acordes.'],
+      ['Tus acordes y los del compositor', 'Los acordes resaltados son los que tú pusiste; los punteados son los cambios que hizo el compositor.'],
+      ['Cómo se toca', 'Abre «Cómo se toca» para ver el ritmo, el orden de los acordes y dónde poner los dedos.']] ],
+    en: ['Songs that use your chords', 'Hearing your chords in famous songs helps you understand how they sound and gives you ideas.', [
+      ['Same chords, different song', 'Hundreds of hits use the same 4 chords. Melody, rhythm and sound make them different.'],
+      ['In another key', 'A progression can sound higher or lower. The numbers (I, V, vi…) stay the same; only chord names change.'],
+      ['Your chords vs. the songwriter’s', 'Highlighted chords are the ones you entered; dashed ones are changes the songwriter made.'],
+      ['How to play it', 'Open “How to play it” to see the rhythm, chord order and finger positions.']] ] },
+  tools: { es: ['Las herramientas', 'Cada pestaña es una herramienta distinta. Puedes usarlas en cualquier orden:', [
+      ['Generador de acordes', 'Pones tus acordes y te digo cuál puede venir después. Con «Analizar mi progresión» te explico por qué funciona.'],
+      ['Enriquecer mis acordes', 'Convierte tus acordes en versiones con más color, sin cambiar la idea.'],
+      ['Escalas para tu melodía', 'Qué notas puedes cantar o tocar encima de tus acordes sin que choquen.'],
+      ['Cambiar de tonalidad', 'Cómo pasar a otro tono a mitad de canción sin que suene forzado.'],
+      ['Diccionario', 'Busca cualquier acorde y mira cómo se toca.'],
       ['Afinador', 'Afina tu instrumento con el micrófono.'],
-      ['Aprende desde cero', 'Lecciones cortas, de la primera nota a los acordes.']] ],
-    en: ['Tools', 'Chordseed has several tools. Each tab is one:', [
-      ['Generator', 'Enter your chords and get ideas to continue. “Analyze my progression” explains why it works.'],
-      ['Enrich my chords', 'Swap your chords for more colorful ones while keeping the same idea.'],
-      ['Scales for your melody', 'Which notes to play for melodies or solos over your chords.'],
-      ['Change key', 'How to move to another key, or bring in an outside chord, without it sounding forced.'],
-      ['Dictionary', 'Any chord and how to play it.'],
+      ['Aprende desde cero', 'Siete lecciones cortas, desde la primera nota hasta entender los acordes.']] ],
+    en: ['The tools', 'Each tab is a different tool. Use them in any order:', [
+      ['Chord generator', 'Enter your chords and I tell you what can come next. “Analyze my progression” explains why it works.'],
+      ['Enrich my chords', 'Turns your chords into more colorful versions without changing the idea.'],
+      ['Scales for your melody', 'Which notes you can sing or play over your chords without clashing.'],
+      ['Change key', 'How to move to another key mid-song without it sounding forced.'],
+      ['Dictionary', 'Look up any chord and see how to play it.'],
       ['Tuner', 'Tune your instrument with the microphone.'],
-      ['Learn from scratch', 'Short lessons, from your first note to chords.']] ] },
-  ana: { es: ['Analizador', 'Descubre cómo está hecha una canción.', [['Qué hace', 'Pegas los acordes y detecta la tonalidad, la función de cada acorde (reposo, tensión…) y los recursos especiales, como acordes prestados.'], ['Para qué sirve', 'Para entender por qué te gusta una canción y usar esos trucos en las tuyas.']]],
-    en: ['Analyzer', 'Find out how a song is built.', [['What it does', 'Paste chords and it detects the key, each chord’s function and special tricks like borrowed chords.'], ['Why', 'To understand why you like a song and use those tricks in yours.']]] },
-  scl: { es: ['Escalas para improvisar', 'Una escala es el grupo de notas que suenan bien sobre unos acordes.', [['Escala mayor y menor', 'Las 7 notas de la tonalidad. Sobre C – G – Am – F funciona la escala de C mayor.'], ['Pentatónica', 'Solo 5 notas, sin las que chocan: casi imposible equivocarse. La favorita para solos de rock y blues.'], ['Modos', 'Dórico, mixolidio… son la misma escala empezando en otra nota; cada uno tiene su color.']]],
-    en: ['Scales to improvise', 'A scale is the group of notes that sound good over some chords.', [['Major and minor', 'The 7 notes of the key. Over C – G – Am – F, C major works.'], ['Pentatonic', 'Only 5 notes, without the clashing ones: hard to go wrong. The favorite for rock and blues solos.'], ['Modes', 'Dorian, Mixolydian… the same scale starting on another note; each has its color.']]] },
-  rea: { es: ['Rearmonizador', 'Rearmonizar es cambiar los acordes de una canción por otros que encajen con la misma melodía.', [['Para qué', 'Para dar un aire nuevo: más jazz, más oscuro o más emotivo.'], ['Cómo', 'Se usan sustitutos: acordes que comparten notas con el original, como Am en lugar de C.']]],
-    en: ['Reharmonizer', 'Reharmonizing means swapping a song’s chords for others that fit the same melody.', [['Why', 'To give it a new feel: jazzier, darker or more emotional.'], ['How', 'Using substitutes: chords that share notes with the original, like Am instead of C.']]] },
-  mod: { es: ['Modulador', 'Modular es cambiar de tonalidad dentro de una canción, como el típico “subidón” del último coro.', [['Acorde pivote', 'Un acorde que pertenece a las dos tonalidades sirve de puente suave.'], ['Dominante', 'Tocar el V de la nueva tonalidad la anuncia con fuerza.'], ['Círculo de quintas', 'Las tonalidades vecinas comparten casi todas sus notas; cuanto más lejos, más llamativo el cambio.']]],
-    en: ['Key changer', 'Modulating means changing key inside a song, like the classic last-chorus “lift”.', [['Pivot chord', 'A chord that belongs to both keys makes a smooth bridge.'], ['Dominant', 'Playing the new key’s V announces it strongly.'], ['Circle of fifths', 'Neighboring keys share almost all their notes; the farther away, the more striking the change.']]] },
-  dic: { es: ['Diccionario de acordes', 'Busca cualquier acorde y aprende cómo se toca.', [['Nombre del acorde', 'La letra es la nota base (C, D…). Lo que sigue es el tipo: m = menor, 7 = séptima, maj7 = séptima mayor, sus4 = suspendido…'], ['Posiciones', 'Un mismo acorde se puede tocar en varios lugares del mástil o del teclado; elige la más cómoda.']]],
-    en: ['Chord dictionary', 'Look up any chord and learn how to play it.', [['Chord names', 'The letter is the root (C, D…). What follows is the type: m = minor, 7 = seventh, maj7 = major seventh, sus4 = suspended…'], ['Shapes', 'The same chord can be played in several places; pick the most comfortable.']]] },
-  tun: { es: ['Afinador', 'Afinar es ajustar cada cuerda a su nota exacta.', [['Cómo funciona', 'El micrófono escucha la nota y te dice si está baja (afloja menos) o alta (afloja la cuerda).'], ['A = 440', 'La nota La de referencia vibra 440 veces por segundo. Es el estándar mundial.']]],
-    en: ['Tuner', 'Tuning means adjusting each string to its exact note.', [['How it works', 'The microphone hears the note and tells you whether it’s flat or sharp.'], ['A = 440', 'The reference A vibrates 440 times per second, the world standard.']]] },
-  learn: { es: ['Aprende desde cero', 'Lecciones cortas que explican el porqué, te dejan escucharlo y terminan con una pregunta.', [['Para quién', 'Para quien empieza: no necesitas saber teoría.']]],
-    en: ['Learn from scratch', 'Short lessons that explain the why, let you hear it and end with a question.', [['For whom', 'For beginners: no theory needed.']]] }
+      ['Learn from scratch', 'Seven short lessons, from your first note to understanding chords.']] ] },
+  ana: { es: ['Analizar una progresión', 'Te explico cómo está hecha una progresión, como si la desarmáramos juntos.', [['Qué hace', 'Pones los acordes y te digo en qué tono están, qué papel cumple cada uno (casa, paseo o tensión) y si usa algún truco especial.'], ['Para qué sirve', 'Para entender por qué te gusta una canción y usar esos mismos trucos en las tuyas.']]],
+    en: ['Analyze a progression', 'I explain how a progression is built, as if we took it apart together.', [['What it does', 'Enter chords and I tell you the key, each chord’s role (home, journey or tension) and any special tricks.'], ['Why', 'To understand why you like a song and use the same tricks in yours.']]] },
+  scl: { es: ['Escalas para tu melodía', 'Una escala es el grupo de notas que puedes usar encima de tus acordes sin que choquen.', [['Mayor y menor', 'Las 7 notas del tono de tu canción. Sobre C – G – Am – F funciona la escala de C mayor.'], ['Pentatónica', 'Solo 5 notas, quitando las que pueden chocar: es casi imposible equivocarse. La favorita para solos.'], ['Modos', 'Son la misma escala empezando en otra nota. Cada uno tiene su propio «color».']]],
+    en: ['Scales for your melody', 'A scale is the group of notes you can use over your chords without clashing.', [['Major and minor', 'The 7 notes of your song’s key. Over C – G – Am – F, the C major scale works.'], ['Pentatonic', 'Only 5 notes, leaving out the ones that can clash: almost impossible to go wrong. The favorite for solos.'], ['Modes', 'The same scale starting on another note. Each has its own “color”.']]] },
+  rea: { es: ['Enriquecer tus acordes', 'Cambiar tus acordes por versiones con más color que encajan con la misma melodía.', [['Para qué', 'Para darle a tu canción otro aire: más jazz, más oscura o más emotiva.'], ['Cómo', 'Uso acordes que comparten notas con los tuyos, así la melodía sigue encajando. Por ejemplo, Am en lugar de C.']]],
+    en: ['Enrich your chords', 'Swap your chords for more colorful versions that fit the same melody.', [['Why', 'To give your song a new feel: jazzier, darker or more emotional.'], ['How', 'I use chords that share notes with yours, so the melody still fits. For example, Am instead of C.']]] },
+  mod: { es: ['Cambiar de tonalidad', 'Es cuando la canción «sube» a otro tono, como el clásico último coro que suena más alto y emocionante.', [['Acorde puente', 'Un acorde que pertenece a los dos tonos te lleva de uno a otro sin que se note.'], ['Anunciar el cambio', 'Tocar el acorde de tensión (V) del nuevo tono lo anuncia con fuerza.'], ['Tonos cercanos y lejanos', 'Los tonos vecinos comparten casi todas sus notas, así que el cambio es suave. Cuanto más lejos, más llamativo.']]],
+    en: ['Change key', 'It’s when the song “lifts” into another key, like the classic last chorus that sounds higher and more exciting.', [['Bridge chord', 'A chord that belongs to both keys takes you from one to the other without it being noticed.'], ['Announce the change', 'Playing the new key’s tension chord (V) announces it strongly.'], ['Near and far keys', 'Neighboring keys share almost all their notes, so the change is smooth. The farther away, the more striking.']]] },
+  dic: { es: ['Diccionario de acordes', 'Busca cualquier acorde y mira cómo se toca, o al revés: aprieta notas y te digo qué acorde es.', [['Cómo leer un nombre', 'La letra es la nota principal (C, D…). Lo que viene después es el tipo: m = menor, 7 = séptima, maj7 = séptima mayor, sus4 = suspendido.'], ['Varias posiciones', 'Un mismo acorde se puede tocar en varios lugares del mástil o del teclado. Elige el más cómodo para ti.']]],
+    en: ['Chord dictionary', 'Look up any chord and see how to play it, or the other way around: press notes and I tell you which chord it is.', [['Reading a name', 'The letter is the main note (C, D…). What follows is the type: m = minor, 7 = seventh, maj7 = major seventh, sus4 = suspended.'], ['Several shapes', 'The same chord can be played in several places on the neck or keyboard. Pick the most comfortable for you.']]] },
+  tun: { es: ['Afinador', 'Afinar es ajustar cada cuerda para que suene en su nota exacta.', [['Cómo funciona', 'El micrófono escucha la nota que tocas y te dice si está baja (aprieta la clavija) o alta (aflójala).'], ['La nota de referencia', 'Todo el mundo afina tomando como base el La (A) a 440 vibraciones por segundo.']]],
+    en: ['Tuner', 'Tuning means adjusting each string so it plays its exact note.', [['How it works', 'The microphone listens to the note you play and tells you if it’s too low (tighten the peg) or too high (loosen it).'], ['The reference note', 'Everyone tunes from the same A, which vibrates 440 times per second.']]] },
+  learn: { es: ['Aprende desde cero', 'Siete lecciones cortas. Cada una te explica algo, te deja escucharlo y termina con una pregunta.', [['Para quién', 'Para quien empieza: no necesitas saber nada de teoría.'], ['Tu guía', 'Lumen te acompaña en cada lección y celebra contigo cuando aciertas.']]],
+    en: ['Learn from scratch', 'Seven short lessons. Each one explains something, lets you hear it and ends with a question.', [['For whom', 'For beginners: no theory needed.'], ['Your guide', 'Lumen walks you through every lesson and celebrates with you when you get it right.']]] }
 };
 var NAV_ORDER = ['gen', 'rea', 'scl', 'mod', 'dic', 'tun', 'learn'];
 var NAV_TAB = { rea: ['Enriquecer mis acordes', 'Enrich my chords'], mod: ['Cambiar de tonalidad', 'Change key'], scl: ['Escalas para tu melodía', 'Scales for your melody'] };
@@ -3460,6 +3486,19 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 class Component extends DCLogic {
   componentDidMount() {
     var self = this;
+    try {
+      var fitAll = function () {
+        var hs = document.querySelectorAll('.hs');
+        for (var i = 0; i < hs.length; i++) {
+          var r = hs[i].querySelector('.chips,.moodrow'); if (!r) continue;
+          var fits = r.scrollWidth <= r.clientWidth + 2 ? '1' : '0';
+          if (hs[i].getAttribute('data-fit') !== fits) hs[i].setAttribute('data-fit', fits);
+        }
+      };
+      var fitQ = false, fitSoon = function () { if (fitQ) return; fitQ = true; requestAnimationFrame(function () { fitQ = false; fitAll(); }); };
+      this._fitObs = new MutationObserver(fitSoon); this._fitObs.observe(document.body, { childList: true, subtree: true, characterData: true });
+      window.addEventListener('resize', fitSoon); this._fitSoon = fitSoon; fitSoon();
+    } catch (e) {}
     try {
       this._hovMove = function (e) {
         if (e.pointerType === 'touch') return;
@@ -3766,7 +3805,7 @@ class Component extends DCLogic {
     var k = detect(chs);
     var pool = POOL[k.mode];
     var flats = flatsFor(k.t, k.mode);
-    var nm = function (c) { return spell(c.pc, flats, st.lat) + c.sx; };
+    var nm = function (c) { return spell(c.pc, flats || !!(c.p && /^b/.test(c.p.r || '')), st.lat) + c.sx; };
     var sp = function (pc) { return spell(pc, flats, st.lat); };
     var seg = function (on) { return on ? 'background:#E8D872;color:#0E140A' : ''; };
     var pill = function (on) { return on ? 'background:#E8D872;color:#0E140A;border-color:#E8D872' : ''; };
@@ -4360,7 +4399,7 @@ class Component extends DCLogic {
       lToGen: function () { self.setState({ view: 'gen' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
       lOpen: lGo(Math.min(LESSONS.length - 1, lDoneN)),
       sageName: LX('Lumen · tu guía', 'Lumen · your guide'),
-      sageTop: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? SAGE.play : SAGE.explain,
+      sageTop: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? SAGE.play : SAGE[['explain', 'play', 'think', 'explain', 'play', 'think', 'encourage'][lI] || 'explain'],
       sageTopSay: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? LX('¡Lo lograste! Ya sabes por qué los acordes funcionan. Ahora ve al generador y siembra tu primera canción.', 'You did it! Now you know why chords work. Head to the generator and plant your first song.') : lCur.k,
       sageQuiz: (lAns === null || lAns === undefined) ? SAGE.think : (lRight ? SAGE.celebrate : SAGE.encourage),
       sagePlay: SAGE.play,
@@ -4782,6 +4821,7 @@ class Component extends DCLogic {
       toolLrnOpen: function () { if (!self.state.lrnSeen) storeFlag('chordseed.lrnseen.v1'); self.setState({ lrnKey: LEARN[view] ? view : 'tools', lrnSeen: true }); },
       lrnOpen: !!st.lrnKey && !!LEARN[st.lrnKey],
       lrnKicker: LX('Aprende', 'Learn'),
+      lrnSage: SAGE[{ start: 'explain', mood: 'play', cx: 'think', sur: 'celebrate', count: 'think', prog: 'explain', rhythm: 'play', sugs: 'think', struct: 'explain', songs: 'play', tools: 'explain', ana: 'think', scl: 'play', rea: 'celebrate', mod: 'encourage', dic: 'think', tun: 'play', learn: 'encourage' }[st.lrnKey] || 'explain'],
       lrnTitle: st.lrnKey && LEARN[st.lrnKey] ? LEARN[st.lrnKey][LX('es', 'en')][0] : '',
       lrnSub: st.lrnKey && LEARN[st.lrnKey] ? LEARN[st.lrnKey][LX('es', 'en')][1] : '',
       lrnParas: st.lrnKey && LEARN[st.lrnKey] ? LEARN[st.lrnKey][LX('es', 'en')][2].map(function (x) { return { h: x[0], p: x[1] }; }) : [],
@@ -4924,6 +4964,18 @@ class Component extends DCLogic {
       fCustomTip: LX('Personaliza el orden con «Añadir al final» y la × de cada bloque.', 'Customize the order with “Add at the end” and each block’s ×.'),
       fTotal: (function () { var bars = formArr.reduce(function (a, L) { return a + barsOf(L); }, 0), sec = Math.round(bars * barEN * e8N); return fmtBars(bars) + (LX(' compases · ', ' bars · ')) + Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') + ' · ' + bpmN + ' BPM · ' + tsN; })(),
 
+      starterTxt: chs.length ? LX('¿Ya tienes acordes? Añádelos en orden con «Añadir acorde». ¿Quieres probar otra base? Elige una progresión conocida (reemplaza la actual):', 'Already have chords? Add them in order with “Add chord”. Want to try another base? Pick a well-known progression (replaces the current one):') : LX('¿Ya tienes acordes? Añádelos en orden con «Añadir acorde». ¿No tienes ninguno? Empieza con una progresión conocida o cualquier acorde que te guste:', 'Already have chords? Add them in order with “Add chord”. Have none? Start with a well-known progression or any chord you like:'),
+      starters: [['I–V–vi–IV', LX('Pop', 'Pop'), [[0,'M'],[7,'M'],[9,'m'],[5,'M']], 'Let It Be, With or Without You'],
+        ['vi–IV–I–V', LX('Emotivo', 'Emotional'), [[9,'m'],[5,'M'],[0,'M'],[7,'M']], 'Zombie, Someone Like You'],
+        ['I–vi–IV–V', LX('Años 50', '50s'), [[0,'M'],[9,'m'],[5,'M'],[7,'M']], 'Stand By Me'],
+        ['I–IV–V–IV', LX('Rock', 'Rock'), [[0,'M'],[5,'M'],[7,'M'],[5,'M']], 'La Bamba, Twist and Shout'],
+        ['ii–V–I', 'Jazz', [[2,'m'],[7,'M'],[0,'M']], 'Autumn Leaves'],
+        ['i–VI–III–VII', LX('Épico', 'Epic'), [[9,'m'],[5,'M'],[0,'M'],[7,'M']], LX('Música de cine', 'Film music')],
+        ['i–VII–VI–V', LX('Andaluz', 'Andalusian'), [[9,'m'],[7,'M'],[5,'M'],[4,'M']], 'Hit the Road Jack'],
+        ['?', LX('Al azar', 'Random'), null, LX('Una progresión cualquiera para inspirarte', 'Any progression to spark ideas')]
+      ].map(function (s) { var fl = false; return { names: s[2] ? s[2].map(function (x) { return spell(x[0], fl, st.lat) + (x[1] === 'm' ? 'm' : ''); }).join(' ') : '🎲', label: s[1] + ' · ' + s[0], hint: s[3],
+        pick: function () { var src = s[2]; if (!src) { var P = [[[0,'M'],[5,'M'],[9,'m'],[7,'M']], [[9,'m'],[2,'m'],[7,'M'],[0,'M']], [[0,'M'],[4,'m'],[5,'M'],[7,'M']], [[2,'m'],[5,'M'],[0,'M'],[7,'M']], [[0,'M'],[7,'M'],[5,'M'],[5,'m']], [[9,'m'],[0,'M'],[7,'M'],[5,'M']]], sh = Math.floor(Math.random() * 12); src = P[Math.floor(Math.random() * P.length)].map(function (x) { return [(x[0] + sh) % 12, x[1]]; }); }
+          self.setState({ chords: src.map(function (x) { return mk(x[0], x[1]); }), focus: null }); } }; }),
       undo: function () { self.setState({ chords: chs.slice(0, -1), focus: null }); },
       clear: function () { self.setState({ chords: [], focus: null }); },
 
@@ -4935,6 +4987,7 @@ class Component extends DCLogic {
           rank: String(i + 1), rankStyle: 'width:22px;flex:none;text-align:center;font-size:13px;font-weight:700;color:' + (on ? '#E8D872' : '#92AB98'),
           names: names, roman: ch.disp.map(function (d) { return d.p.r; }).join(' → '),
           fnLabel: FN[ch.c.p.f][lang], fnStyle: fnChip(ch.c.p.f), fit: pct + '%',
+          moodOk: st.mood !== 'any' && ch.disp.every(function (d) { return d.p && d.p.m && d.p.m.indexOf(st.mood) >= 0; }), moodTag: (MOODS.filter(function (m) { return m[0] === st.mood; })[0] || ['', '', ''])[es ? 1 : 2],
           barStyle: 'display:block;height:100%;width:' + pct + '%;background:' + (on ? '#E8D872' : '#7F9C87') + ';border-radius:9px',
           rowStyle: 'position:relative;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:16px;background:' + (on ? '#14241C' : '#0F1D16') + ';border:1.5px solid ' + (on ? '#E8D872' : '#24392E') + (on ? ';box-shadow:0 10px 30px rgba(232,216,114,.18)' : ''),
           stubStyle: 'position:absolute;left:-26px;top:50%;width:26px;height:2px;background:' + (on ? '#E8D872' : '#2F4A3B'),

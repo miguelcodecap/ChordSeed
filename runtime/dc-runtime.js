@@ -112,7 +112,7 @@
   }
   function morphAttrs(from, to) {
     var i, a;
-    for (i = from.attributes.length - 1; i >= 0; i--) { a = from.attributes[i]; if (!to.hasAttribute(a.name)) from.removeAttribute(a.name); }
+    for (i = from.attributes.length - 1; i >= 0; i--) { a = from.attributes[i]; if (!to.hasAttribute(a.name) && a.name !== 'data-fit') from.removeAttribute(a.name); }
     for (i = 0; i < to.attributes.length; i++) { a = to.attributes[i]; if (from.getAttribute(a.name) !== a.value) { if (a.namespaceURI) from.setAttributeNS(a.namespaceURI, a.name, a.value); else from.setAttribute(a.name, a.value); } }
     if (to.__value !== undefined && from.value !== to.__value && document.activeElement !== from) from.value = to.__value;
     from.__ev = to.__ev; bindEvents(from);
