@@ -341,6 +341,16 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .lbtn.is-on .lsw-k{transform:translateX(13px);background:#FFF6C8;box-shadow:0 0 8px rgba(232,216,114,.9)}
 .lbtn.is-on .lsw-t{color:#F0E39A}
 @media (max-width:640px){.lsw-t{display:none}}
+
+/* ===== Scrollbars del bosque (dorado, finas) ===== */
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:linear-gradient(90deg,transparent 5px,rgba(232,216,114,.10) 5px,rgba(232,216,114,.10) 7px,transparent 7px)}
+::-webkit-scrollbar-thumb{border-radius:99px;border:3px solid transparent;background:linear-gradient(180deg,#F7EDA8,#D9BE62 45%,#8A6A24) padding-box;box-shadow:0 0 8px rgba(232,216,114,.5)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#FFF6C8,#E8D872 45%,#B8963A) padding-box}
+::-webkit-scrollbar-corner{background:transparent}
+@supports (-moz-appearance:none){html,.lrn-card,main *{scrollbar-width:thin;scrollbar-color:#B8963A transparent}}
+.lrn-card{background:linear-gradient(180deg,#14261D,#0A140F)!important;border-color:#2F4A3B!important;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(232,216,114,.12)!important;scrollbar-gutter:stable}
+.lrn-card::-webkit-scrollbar-track{margin:26px 0}
 </style>
 
 </head>
