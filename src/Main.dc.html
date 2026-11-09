@@ -348,6 +348,9 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 @supports (-moz-appearance:none){html,.lrn-card,main *{scrollbar-width:thin;scrollbar-color:#B8963A transparent}}
 .lrn-card{background:linear-gradient(180deg,#14261D,#0A140F)!important;border-color:#2F4A3B!important;box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(232,216,114,.12)!important;scrollbar-gutter:stable}
 .lrn-card::-webkit-scrollbar-track{margin:26px 0}
+
+.xbtn{gap:6px;min-height:44px}
+.xpro{font:700 9px 'Figtree',sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872}
 </style>
 </helmet>
 
@@ -696,7 +699,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
           <h2 class="h2">{{fTitle}}</h2>
           <p style="margin:0;font-size:13px;line-height:1.5;color:#9FB3A4">{{fSub}}</p>
         </div>
-        <button class="btn" onClick="{{fPlay}}" style="box-shadow:none">{{fPlayText}}</button>
+        <button class="btn" onClick="{{fPlay}}" style="box-shadow:none">{{fPlayText}}</button><button class="ghost xbtn" onClick="{{fMidi}}" title="{{fMidiHint}}">⬇ MIDI<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button><button class="ghost xbtn" onClick="{{fPdf}}" title="{{fPdfHint}}">⬇ PDF<sc-if value="{{fLock}}" hint-placeholder-val="{{ true }}"><span class="xpro">PRO</span></sc-if></button>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <span class="lab">{{fPartsLab}}</span>
@@ -1657,10 +1660,10 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
               <section class="panel" style="flex:1 1 380px" aria-label="{{t.anaTension}}">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                   <span class="lab">06 · {{t.anaTension}}</span>
-                  <sc-if value="{{aLocked}}" hint-placeholder-val="{{ false }}"><span style="font:700 10px Figtree,sans-serif;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:#2C3520;color:#E8D872">PRO</span></sc-if>
+                  <sc-if value="{{aTenLocked}}" hint-placeholder-val="{{ false }}"><span style="font:700 10px Figtree,sans-serif;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:#2C3520;color:#E8D872">PRO</span></sc-if>
                 </div>
                 <p style="margin:0;font-size:13px;line-height:1.5;color:#9FB3A4">{{t.anaTensionSub}}</p>
-                <sc-if value="{{aUnlocked}}" hint-placeholder-val="{{ true }}">
+                <sc-if value="{{aTenUnlocked}}" hint-placeholder-val="{{ true }}">
                   <div style="overflow-x:auto">
                     <div style="display:flex;align-items:flex-end;gap:10px;height:150px;padding:8px 4px 0;border-bottom:1px solid #2F4A3B;width:max-content;min-width:100%;box-sizing:border-box">
                       <sc-for list="{{aBars}}" as="b" hint-placeholder-count="4">
@@ -1672,7 +1675,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
                     </div>
                   </div>
                 </sc-if>
-                <sc-if value="{{aLocked}}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{aTenLocked}}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:14px;border-radius:14px;background:#21281A;border:1px solid #5E6B34;color:#F4EDB8;font-size:14px"><span>{{t.anaProLock}}</span><button class="btn" onClick="{{goPro}}">{{t.seePro}}</button></div>
                 </sc-if>
               </section>
@@ -2452,6 +2455,87 @@ var OUT_CHIP = 'align-self:flex-start;font-size:12px;font-weight:600;padding:3px
 
 
 
+/* ===== Exportar canción: MIDI y PDF (Pro) ===== */
+function csCrc32(u8) { var c, crc = 0xFFFFFFFF, t = csCrc32.t; if (!t) { t = csCrc32.t = []; for (var n = 0; n < 256; n++) { c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } } for (var i = 0; i < u8.length; i++) crc = t[(crc ^ u8[i]) & 0xFF] ^ (crc >>> 8); return (crc ^ 0xFFFFFFFF) >>> 0; }
+function csZip(name, data) {
+  var nm = new TextEncoder().encode(name), crc = csCrc32(data), n = data.length;
+  var lh = new Uint8Array(30 + nm.length), cd = new Uint8Array(46 + nm.length), end = new Uint8Array(22);
+  var w = function (a, o, v, b) { for (var i = 0; i < b; i++) a[o + i] = (v >>> (8 * i)) & 255; };
+  w(lh, 0, 0x04034b50, 4); w(lh, 4, 20, 2); w(lh, 14, crc, 4); w(lh, 18, n, 4); w(lh, 22, n, 4); w(lh, 26, nm.length, 2); lh.set(nm, 30);
+  w(cd, 0, 0x02014b50, 4); w(cd, 4, 20, 2); w(cd, 6, 20, 2); w(cd, 16, crc, 4); w(cd, 20, n, 4); w(cd, 24, n, 4); w(cd, 28, nm.length, 2); cd.set(nm, 46);
+  w(end, 0, 0x06054b50, 4); w(end, 8, 1, 2); w(end, 10, 1, 2); w(end, 12, cd.length, 4); w(end, 16, lh.length + n, 4);
+  var out = new Uint8Array(lh.length + n + cd.length + end.length); out.set(lh, 0); out.set(data, lh.length); out.set(cd, lh.length + n); out.set(end, lh.length + n + cd.length); return out;
+}
+function csSave(filename, bytes, mime, onMsg) {
+  var blob = new Blob([bytes], { type: mime });
+  var direct = function () { try { var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = filename; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(u); a.remove(); }, 2000); } catch (e) {} };
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('downloads').then(function (d) {
+      if (!d) { direct(); return; }
+      var fn = filename, data = blob;
+      if (/\.mid$/i.test(filename)) { fn = filename.replace(/\.mid$/i, '.zip'); data = new Blob([csZip(filename, bytes)], { type: 'application/zip' }); }
+      d.save({ filename: fn, data: data }).catch(function (e) { if (onMsg && e && e.code !== 'declined') onMsg(e.code); });
+    }).catch(direct);
+    return;
+  }
+  direct();
+}
+function csMidi(items, bpm, ts, voiceFn) {
+  var PPQ = 480, qPerBar = { '4/4': 4, '3/4': 3, '6/8': 3, '5/4': 5, '12/8': 6 }[ts] || 4, bar = PPQ * qPerBar, ev = [], t = 0;
+  items.forEach(function (it) {
+    var len = Math.max(1, Math.round((it.bars || 1) * bar)), notes = voiceFn(it.c);
+    notes.forEach(function (m, i) { ev.push([t, 0x90, m, i === 0 ? 92 : 80]); ev.push([t + len - 10, 0x80, m, 0]); });
+    t += len;
+  });
+  ev.sort(function (a, b) { return a[0] - b[0] || (a[1] === 0x80 ? -1 : 1); });
+  var bytes = [], vlq = function (n) { var s = [n & 0x7F]; while ((n >>= 7)) s.unshift((n & 0x7F) | 0x80); return s; };
+  var push = function () { for (var i = 0; i < arguments.length; i++) bytes.push.apply(bytes, [].concat(arguments[i])); };
+  var us = Math.round(60000000 / (bpm || 90)), num = parseInt(ts, 10) || 4, den = ts.split('/')[1] === '8' ? 3 : 2;
+  push([0, 0xFF, 0x51, 3, (us >> 16) & 255, (us >> 8) & 255, us & 255]);
+  push([0, 0xFF, 0x58, 4, num, den, 24, 8]);
+  var nm = 'Chordseed'.split('').map(function (c) { return c.charCodeAt(0); });
+  push([0, 0xFF, 0x03, nm.length], nm);
+  push([0, 0xC0, 0]);
+  var last = 0; ev.forEach(function (e) { push(vlq(e[0] - last), [e[1], e[2], e[3]]); last = e[0]; });
+  push([0, 0xFF, 0x2F, 0]);
+  var hdr = [0x4D, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, PPQ >> 8, PPQ & 255];
+  var L = bytes.length, trk = [0x4D, 0x54, 0x72, 0x6B, (L >>> 24) & 255, (L >>> 16) & 255, (L >>> 8) & 255, L & 255];
+  return new Uint8Array(hdr.concat(trk, bytes));
+}
+function csPdf(lines) {
+  // lines: [{t:text, s:size, b:bold, g:gapBefore, c:[r,g,b]}]; simple Letter pages with Helvetica, WinAnsi text
+  var W = 612, H = 792, M = 54, pages = [], cur = [], y = H - M;
+  var esc = function (s) { return String(s).replace(/[♭]/g, 'b').replace(/[♯]/g, '#').replace(/[–—→]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/[^\x20-\xFF]/g, '').replace(/([\\()])/g, '\\$1'); };
+  var wrap = function (s, size) { var max = Math.floor((W - 2 * M) / (size * 0.5)), out = [], ln = ''; String(s).split(' ').forEach(function (w) { if ((ln + ' ' + w).trim().length > max) { out.push(ln); ln = w; } else ln = (ln + ' ' + w).trim(); }); out.push(ln); return out; };
+  lines.forEach(function (l) {
+    var size = l.s || 11, gap = (l.g || 0);
+    wrap(l.t, size).forEach(function (seg, k) {
+      var need = size * 1.45 + (k === 0 ? gap : 0);
+      if (y - need < M) { pages.push(cur); cur = []; y = H - M; }
+      y -= need;
+      var col = l.c || [0.1, 0.12, 0.1];
+      cur.push('BT ' + col.join(' ') + ' rg /' + (l.b ? 'F2' : 'F1') + ' ' + size + ' Tf ' + M + ' ' + y.toFixed(1) + ' Td (' + esc(seg) + ') Tj ET');
+    });
+  });
+  pages.push(cur);
+  var objs = [], add = function (s) { objs.push(s); return objs.length; };
+  var cat = add(''), pgs = add(''), f1 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'), f2 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  var kids = [];
+  pages.forEach(function (p) {
+    var foot = 'BT 0.45 0.5 0.45 rg /F1 8 Tf ' + M + ' 30 Td (' + esc('Made with Chordseed - Every song begins as a seed') + ') Tj ET';
+    var body = p.concat([foot]).join('\n'), c = add('<< /Length ' + body.length + ' >>\nstream\n' + body + '\nendstream');
+    kids.push(add('<< /Type /Page /Parent ' + pgs + ' 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /Font << /F1 ' + f1 + ' 0 R /F2 ' + f2 + ' 0 R >> >> /Contents ' + c + ' 0 R >>'));
+  });
+  objs[cat - 1] = '<< /Type /Catalog /Pages ' + pgs + ' 0 R >>';
+  objs[pgs - 1] = '<< /Type /Pages /Kids [' + kids.map(function (k) { return k + ' 0 R'; }).join(' ') + '] /Count ' + kids.length + ' >>';
+  var out = '%PDF-1.4\n', offs = [];
+  objs.forEach(function (o, i) { offs.push(out.length); out += (i + 1) + ' 0 obj\n' + o + '\nendobj\n'; });
+  var xref = out.length;
+  out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n' + offs.map(function (o) { return ('0000000000' + o).slice(-10) + ' 00000 n \n'; }).join('');
+  out += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root ' + cat + ' 0 R >>\nstartxref\n' + xref + '\n%%EOF';
+  var u8 = new Uint8Array(out.length); for (var i = 0; i < out.length; i++) u8[i] = out.charCodeAt(i) & 255; return u8;
+}
+
 var SAGE = { explain: '/_blob/48d48012a66681c4137c00ce0c524b41', think: '/_blob/6c0971d9e067a24781a61e967d406cd6', celebrate: '/_blob/a1bcb5be43be1bb1de4b50eccb33d492', encourage: '/_blob/59c41745f0aec0f2d5954978aabf7883', play: '/_blob/440c86fbc0a00111d14d8c556bbe7e24' };
 var LESSONS = [
   { id: 'notes',
@@ -2698,7 +2782,7 @@ var SCALES = {
   dim:{iv:[0,2,3,5,6,8,9,11], es:['Disminuida (tono-semitono)','Simétrica y misteriosa: para acordes disminuidos.'], en:['Diminished (whole-half)','Symmetrical and mysterious: for diminished chords.']}
 };
 var SCALE_ORDER = ['ion','aeo','Mpent','mpent','blues','dor','mix','lyd','phr','hmin','phd','loc','dim'];
-var SCALE_FREE = ['ion','aeo','Mpent','mpent'];
+var SCALE_FREE = ['ion','aeo','Mpent','mpent','blues'];
 function modeFromKey(c, k) {
   var sc = scaleOf(k), tones = chordIvls({ pc: c.pc, q: c.q, ext: '' }).map(function (i) { return (c.pc + i) % 12; });
   if (sc.indexOf(c.pc) < 0 || !tones.every(function (p) { return sc.indexOf(p) >= 0; })) return null;
@@ -3932,6 +4016,7 @@ class Component extends DCLogic {
       if (sTgt === 'all') { sRecs = sk.mode === 'maj' ? ['ion','Mpent','mix','lyd'] : ['aeo','mpent','blues','dor']; sRootPc = sk.t; sLockedIds = sRecs.slice(2); }
       else { sChord = sChs[sTgt]; sRecs = scalesForChord(sChord, sk); sRootPc = sChord.pc; sLockedIds = sRecs.slice(1); }
       sSel = st.sRec && sRecs.indexOf(st.sRec) >= 0 ? st.sRec : sRecs[0];
+      sLockedIds = sLockedIds.filter(function (id) { return SCALE_FREE.indexOf(id) < 0; });
       if (!st.isPro && sLockedIds.indexOf(sSel) >= 0) sSel = sRecs[0];
     } else { sRootPc = st.sRoot; sSel = st.sType; if (!st.isPro && SCALE_FREE.indexOf(sSel) < 0) sSel = 'mpent'; }
     var sIsMinorish = SCALES[sSel].iv.indexOf(3) >= 0;
@@ -4688,7 +4773,7 @@ class Component extends DCLogic {
       aBars: an ? an.items.map(function (x) { var tv = x.fn ? TENS[x.fn] : 0.75; var col = x.fn ? FN[x.fn].fg : '#C5D3C6'; return { name: anm(x.c), pct: Math.round(tv * 100) + '%', style: 'display:block;width:40px;height:' + Math.round(tv * 130) + 'px;border-radius:10px 10px 4px 4px;background:' + col }; }) : [],
       aDevices: an ? an.devices.map(function (d) { return { at: d.at, title: d.title, desc: d.desc }; }) : [],
       aNoDevices: !!(an && an.devices.length === 0),
-      aLocked: !st.isPro, aUnlocked: !!st.isPro,
+      aLocked: !st.isPro, aUnlocked: !!st.isPro, aTenLocked: false, aTenUnlocked: true,
       aDevicesTeaser: an ? T.anaTeaserA + an.devices.length + T.anaTeaserB : '',
       aToGen: function () { self.setState({ chords: aChs.slice(), view: 'gen', focus: null }); },
       aSave: function () { saveList(aChs, aKeyName); },
@@ -4933,6 +5018,28 @@ class Component extends DCLogic {
       fTitle: LX('Arma tu canción', 'Build your song'),
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       fPlay: function () { self.playArr(songItems, optsN('song')); },
+      fLock: !st.isPro,
+      fMidiHint: LX('Descarga tu canción en MIDI para abrirla en GarageBand, FL Studio, Ableton o Logic.', 'Download your song as MIDI to open it in GarageBand, FL Studio, Ableton or Logic.'),
+      fPdfHint: LX('Descarga una hoja de acordes en PDF para imprimir o compartir.', 'Download a chord sheet PDF to print or share.'),
+      fMidi: function () {
+        if (!self.state.isPro) { self.setState({ proMsg: LX('Exportar a MIDI es del plan Pro: lleva tu canción a GarageBand, FL Studio, Ableton o Logic con un clic.', 'MIDI export is part of Pro: take your song to GarageBand, FL Studio, Ableton or Logic in one click.') }); return; }
+        if (!songItems.length) return;
+        try { csSave('chordseed-song.mid', csMidi(songItems, bpmN, tsN, voicing), 'audio/midi', function () { self.setState({ saveMsg: LX('No se pudo descargar aquí. Prueba en la versión web.', 'Couldn’t download here. Try the web version.') }); }); } catch (e) {}
+      },
+      fPdf: function () {
+        if (!self.state.isPro) { self.setState({ proMsg: LX('Exportar a PDF es del plan Pro: una hoja de acordes lista para imprimir o compartir con tu banda.', 'PDF export is part of Pro: a chord sheet ready to print or share with your band.') }); return; }
+        if (!songItems.length) return;
+        var K = detect(homeList.length ? homeList : chs), fl = flatsFor(K.t, K.mode), nmx = function (c) { return spell(c.pc, fl, false) + c.sx; };
+        var L = [{ t: 'Chordseed', s: 10, b: true, c: [0.55, 0.45, 0.15] }, { t: LX('Mi canción', 'My song'), s: 24, b: true, g: 4 },
+          { t: LX('Tonalidad: ', 'Key: ') + keyNameOf(K) + '   ·   ' + LX('Tempo: ', 'Tempo: ') + bpmN + ' BPM   ·   ' + LX('Compás: ', 'Time: ') + tsN, s: 11, g: 6, c: [0.3, 0.35, 0.3] },
+          { t: LX('Orden: ', 'Song order: ') + formArr.join(' '), s: 12, b: true, g: 14 }];
+        lettersAll.forEach(function (Lt) { var pl = partList(Lt); if (!pl.length) return;
+          L.push({ t: pName(Lt), s: 14, b: true, g: 18, c: [0.1, 0.25, 0.18] });
+          L.push({ t: '| ' + pl.map(function (c) { var d = c.d || 1; return nmx(c) + (d !== 1 ? ' (' + fmtBars(d) + ')' : ''); }).join(' | ') + ' |', s: 16, g: 6 });
+        });
+        L.push({ t: LX('Los números entre paréntesis indican compases cuando no es 1.', 'Numbers in parentheses show bars when it isn’t 1.'), s: 9, g: 20, c: [0.45, 0.5, 0.45] });
+        try { csSave('chordseed-song.pdf', csPdf(L), 'application/pdf'); } catch (e) {}
+      },
       fPlayText: playingId === 'song' ? '■ ' + stopTxt : '▶ ' + (LX('Escuchar canción completa', 'Play the whole song')),
       fPartsLab: LX('Partes', 'Parts'),
       fParts: lettersAll.map(function (L) {
