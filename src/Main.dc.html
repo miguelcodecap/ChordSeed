@@ -296,7 +296,7 @@ body{background-color:#060D0A!important;background-image:linear-gradient(180deg,
 .sage-mini{width:92px;margin:-18px -8px -24px -12px;animation-duration:4.5s}
 .lbanner{position:relative;background:linear-gradient(90deg,rgba(232,216,114,.10),rgba(15,29,22,.85) 40%);border:1px solid #2F4A3B;overflow:hidden}
 .sage-ban{width:70px;margin:-18px 0 -26px -6px}
-footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;letter-spacing:.02em}
+footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;letter-spacing:.02em}footer .legal a{color:#7F9C87}footer .legal a:hover{color:#E8D872}
 @keyframes sageFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 @media (max-width:640px){.sage-top{width:92px;margin:-6px -6px -12px -10px}.sage-say{font-size:17px}.sage-bubble{padding:12px 14px;margin-bottom:16px}.sage-mini{width:48px}}
 @media (prefers-reduced-motion: reduce){.sage{animation:none}}
@@ -1899,7 +1899,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
     <footer style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;padding-top:8px;border-top:1px solid #1E2A2D;font-size:12px;color:#7F9C87">
       <span>{{soundStatus}}</span>
       <span>{{t.credits}}</span>
-      <span class="legal">{{legalLine}}</span>
+      <span class="legal">{{legalLine}} · <a href="privacy.html">{{privacyLab}}</a> · <a href="terms.html">{{termsLab}}</a></span>
     </footer>
   </main>
 
@@ -4635,6 +4635,7 @@ class Component extends DCLogic {
       sageTopSay: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? LX('¡Lo lograste! Ya sabes por qué los acordes funcionan. Ahora ve al generador y siembra tu primera canción.', 'You did it! Now you know why chords work. Head to the generator and plant your first song.') : lCur.k,
       sageQuiz: (lAns === null || lAns === undefined) ? SAGE.think : (lRight ? SAGE.celebrate : SAGE.encourage),
       sagePlay: SAGE.play,
+      privacyLab: LX('Privacidad', 'Privacy'), termsLab: LX('Términos', 'Terms'),
       legalLine: '© ' + new Date().getFullYear() + ' Chordseed. ' + LX('Creado en Nevada, EE. UU. Todos los derechos reservados.', 'Created in Nevada, USA. All rights reserved.'),
       lBannerCta: lDoneN === 0 ? (LX('Empezar la lección 1', 'Start lesson 1')) : (lDoneN >= LESSONS.length ? (LX('Repasar las lecciones', 'Review the lessons')) : (LX('Seguir con la lección ', 'Continue with lesson ')) + (lDoneN + 1)),
       showLearnBanner: view !== 'learn',
