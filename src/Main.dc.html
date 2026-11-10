@@ -76,7 +76,7 @@ details summary{cursor:pointer;list-style:none}
 .dials{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .dial{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:16px;background:#0A1510;border:1px solid #24392E;min-width:0}
 .dial-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0}
-.dial-eg{font-size:12px;color:#92AB98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dial-eg{font-size:12px;color:#92AB98;line-height:1.3}
 .dial-ctl{display:flex;align-items:center;gap:8px}
 .dial-b{position:relative;width:44px;height:44px;flex:none;border-radius:14px;border:1.5px solid #2F4A3B;background:#16271F;color:#E4EDE2;font:700 20px/1 'Figtree',sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:border-color .15s,transform .1s}
 .dial-b:hover{border-color:#E8D872}.dial-b:active{transform:scale(.94)}
@@ -115,7 +115,7 @@ details summary{cursor:pointer;list-style:none}
 @keyframes nsBob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
 .fold{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 14px;border-radius:14px;background:#0A1510;border:1px solid #24392E;color:#E4EDE2;font:600 14px 'Figtree',sans-serif}
 .fold:hover{border-color:#5E7F69}
-.fold-s{font:500 12px 'Figtree',sans-serif;color:#9FB3A4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fold-s{font:500 12px 'Figtree',sans-serif;color:#9FB3A4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}@media (max-width:640px){.fold-s{white-space:normal}}
 html,body{overflow-x:hidden;max-width:100%}
 .beatrow{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
 .lrn-host{position:relative}
@@ -251,9 +251,9 @@ body{background-color:#060D0A!important;background-image:linear-gradient(180deg,
 .lab{color:#A9C2AE!important;letter-spacing:.12em!important}
 .btn{background:linear-gradient(180deg,#F2E89A,#D9C55A)!important;color:#0E140A!important;box-shadow:0 0 22px rgba(232,216,114,.35),inset 0 1px 0 rgba(255,255,255,.5)!important}
 .btn:hover{box-shadow:0 0 34px rgba(232,216,114,.55),inset 0 1px 0 rgba(255,255,255,.5)!important}
-.ghost{background:rgba(10,20,15,.45)!important;border-color:#2F4A3B!important}
+.ghost:not([style*="background"]){background:rgba(10,20,15,.45)!important}.ghost:not([style*="border"]){border-color:#2F4A3B!important}
 .ghost:hover{border-color:#E8D872!important;box-shadow:0 0 14px rgba(232,216,114,.25)}
-.pill{background:rgba(22,39,31,.85)!important}
+.pill:not([style*="background"]){background:rgba(22,39,31,.85)!important}
 .tile{background-color:rgba(22,39,31,.88)!important;box-shadow:inset 0 1px 0 rgba(200,230,215,.08),0 10px 26px rgba(0,0,0,.4)}
 .tile .tname{font-family:'Cormorant Garamond',Georgia,serif!important;font-weight:700;font-size:34px!important;color:#F4F7EC;text-shadow:0 0 14px rgba(232,216,114,.25)}
 .song{background:rgba(17,33,26,.88)!important}
@@ -513,7 +513,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             </div>
           </sc-for>
           <sc-if value="{{noSaved}}" hint-placeholder-val="{{ false }}">
-            <div style="padding:12px 16px;border-radius:14px;border:1.5px dashed #2F4A3B;color:#9FB3A4;font-size:13px">{{t.savedEmpty}}</div>
+            <div style="padding:12px 16px;border-radius:14px;border:1.5px dashed #2F4A3B;color:#9FB3A4;font-size:13px;white-space:normal;flex:1 1 100%;min-width:0;max-width:calc(100vw - 48px);box-sizing:border-box">{{t.savedEmpty}}</div>
           </sc-if>
         </div>
       </div>
@@ -588,10 +588,10 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
         </sc-if>
       </div>
       <sc-if value="{{st2Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next2}}</span></div></sc-if>
-      <div class="starter">
+      <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}"><div class="starter">
         <span class="starter-t">{{starterTxt}}</span>
-        <div class="starter-row"><sc-for list="{{starters}}" as="sp" hint-placeholder-count="7"><button class="starter-b" onClick="{{sp.pick}}" title="{{sp.hint}}"><b>{{sp.names}}</b><small>{{sp.label}}</small></button></sc-for></div>
-      </div>
+        <div class="starter-row"><sc-for list="{{quickStarts}}" as="sp" hint-placeholder-count="7"><button class="starter-b" onClick="{{sp.pick}}" title="{{sp.hint}}"><b>{{sp.names}}</b><small>{{sp.label}}</small></button></sc-for></div>
+      </div></sc-if>
       <sc-if value="{{hasSaveMsg}}" hint-placeholder-val="{{ false }}"><p role="status" style="margin:0;font-size:14px;color:#F0E39A">{{saveMsg}}</p></sc-if>
       <sc-if value="{{hasPartTag}}" hint-placeholder-val="{{ false }}"><span style="{{partTagStyle}}"><span style="{{partTagDot}}">{{partTagL}}</span>{{partTag}}</span></sc-if>
       <div style="padding:6px 0 8px">
@@ -622,6 +622,43 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
           <button class="addtile" onClick="{{togglePicker}}" aria-expanded="{{pickerExpanded}}" style="{{addTileStyle}}"><span style="font-size:30px;line-height:1">+</span><span style="font:600 13px 'Figtree',sans-serif">{{t.addChord}}</span></button>
         </div>
       </div>
+      <sc-if value="{{pickerOpen}}" hint-placeholder-val="{{ false }}">
+        <div class="cs-picker" style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:#0A1510;border:1px solid #24392E;scroll-margin-top:90px">
+          <div style="display:flex;flex-wrap:wrap;gap:16px">
+            <div style="flex:2 1 360px;min-width:0;display:flex;flex-direction:column;gap:8px">
+              <span class="lab">{{t.pickNote}}</span>
+              <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px">
+                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:10px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
+              </div>
+            </div>
+            <div style="flex:1.4 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px">
+              <span class="lab">{{t.pickType}}</span>
+              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+                <sc-for list="{{quals}}" as="q" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{q.enter}}" onPointerLeave="{{q.leave}}"><button class="key" style="width:100%;{{q.style}}" aria-pressed="{{q.pressed}}" onClick="{{q.pick}}"><span style="font-size:15px">{{q.name}}</span><span style="font:500 11px 'Figtree',sans-serif;color:#9FB3A4">{{q.label}}</span></button><sc-if value="{{q.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{q.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+            <button onClick="{{focusSel}}" style="all:unset;cursor:pointer;display:flex;align-items:baseline;gap:12px" aria-label="{{t.seeHow}}">
+              <span class="mono" style="font-size:28px;font-weight:700">{{selName}}</span>
+              <span style="font-size:13px;color:#9FB3A4">{{selDesc}}</span>
+            </button>
+            <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
+              <button class="ghost" onClick="{{selShow}}" aria-expanded="{{selHovX}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3v18M13 3v18M5 9h14M5 15h14"></path></svg>{{t.seeHow}}</button>
+              <button class="ghost" onClick="{{playSel}}" aria-label="{{t.listen}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button>
+              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
+              <button class="btn" onClick="{{addSel}}">+ {{t.add}} {{selName}}</button>
+              <button class="ghost" onClick="{{togglePicker}}">{{t.close}}</button>
+            </div>
+          </div>
+          <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-top:10px;border-top:1px solid #24392E">
+              <span class="lab">{{t.inKey}}</span>
+              <sc-for list="{{diatonic}}" as="d" hint-placeholder-count="7"><div class="hovz" style="position:relative" onPointerEnter="{{d.enter}}" onPointerLeave="{{d.leave}}"><button class="pill" onClick="{{d.pick}}" aria-label="{{d.aria}}" style="display:inline-flex;align-items:baseline;gap:6px;padding:0 12px"><span class="mono" style="font-size:14px;font-weight:700">{{d.name}}</span><span class="mono" style="font-size:11px;color:#9FB3A4">{{d.roman}}</span></button><sc-if value="{{d.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{d.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
       <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
         <div class="lrn-host"><button class="fold" onClick="{{rToggle}}" aria-expanded="{{rExp}}"><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span>🎚 {{rFoldT}}</span><span class="fold-s">{{rFoldS}}</span></span><span style="color:#F0E39A;flex:none">{{rFoldI}}</span></button><sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_rhythm}}" aria-label="{{lrnTag_rhythm}}"><span class="lrn-tag">📖 {{lrnTag_rhythm}}</span></button></sc-if></div>
       </sc-if>
@@ -672,43 +709,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
         </div>
       </sc-if>
 
-      <sc-if value="{{pickerOpen}}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:#0A1510;border:1px solid #24392E">
-          <div style="display:flex;flex-wrap:wrap;gap:16px">
-            <div style="flex:2 1 360px;min-width:0;display:flex;flex-direction:column;gap:8px">
-              <span class="lab">{{t.pickNote}}</span>
-              <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px">
-                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:10px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
-              </div>
-            </div>
-            <div style="flex:1.4 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px">
-              <span class="lab">{{t.pickType}}</span>
-              <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
-                <sc-for list="{{quals}}" as="q" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{q.enter}}" onPointerLeave="{{q.leave}}"><button class="key" style="width:100%;{{q.style}}" aria-pressed="{{q.pressed}}" onClick="{{q.pick}}"><span style="font-size:15px">{{q.name}}</span><span style="font:500 11px 'Figtree',sans-serif;color:#9FB3A4">{{q.label}}</span></button><sc-if value="{{q.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{q.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
-              </div>
-            </div>
-          </div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
-            <button onClick="{{focusSel}}" style="all:unset;cursor:pointer;display:flex;align-items:baseline;gap:12px" aria-label="{{t.seeHow}}">
-              <span class="mono" style="font-size:28px;font-weight:700">{{selName}}</span>
-              <span style="font-size:13px;color:#9FB3A4">{{selDesc}}</span>
-            </button>
-            <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
-              <button class="ghost" onClick="{{selShow}}" aria-expanded="{{selHovX}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3v18M13 3v18M5 9h14M5 15h14"></path></svg>{{t.seeHow}}</button>
-              <button class="ghost" onClick="{{playSel}}" aria-label="{{t.listen}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button>
-              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
-              <button class="btn" onClick="{{addSel}}">+ {{t.add}} {{selName}}</button>
-              <button class="ghost" onClick="{{togglePicker}}">{{t.close}}</button>
-            </div>
-          </div>
-          <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
-            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-top:10px;border-top:1px solid #24392E">
-              <span class="lab">{{t.inKey}}</span>
-              <sc-for list="{{diatonic}}" as="d" hint-placeholder-count="7"><div class="hovz" style="position:relative" onPointerEnter="{{d.enter}}" onPointerLeave="{{d.leave}}"><button class="pill" onClick="{{d.pick}}" aria-label="{{d.aria}}" style="display:inline-flex;align-items:baseline;gap:6px;padding:0 12px"><span class="mono" style="font-size:14px;font-weight:700">{{d.name}}</span><span class="mono" style="font-size:11px;color:#9FB3A4">{{d.roman}}</span></button><sc-if value="{{d.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{d.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
-            </div>
-          </sc-if>
-        </div>
-      </sc-if>
+
     </section>
     </div></sc-if>
     <sc-if value="{{rv3}}" hint-placeholder-val="{{ true }}"><div id="stp-3">
@@ -1962,7 +1963,7 @@ var POOL = {
 };
 
 var TRANS = {T:{T:0.6,SD:1,D:0.8},SD:{T:0.6,SD:0.5,D:1},D:{T:1,SD:0.4,D:0.3}};
-var SF = [[1.2,0.45,0.15],[1,0.9,0.5],[0.55,1.25,1.3]];
+var SF = [[1.2,0.45,0.15],[1.15,0.6,0.3],[0.55,1.25,1.3]];
 
 var QUALS = [
   {id:'M',q:'M',sx:'',ext:'',es:'Mayor',en:'Major',des:'Estable y luminoso',den:'Stable and bright'},
@@ -3104,7 +3105,7 @@ function autoCorrelate(buf, sr) {
 }
 
 function mkSx(pc, sx) { var q = /^m(?!aj)/.test(sx) ? (sx === 'm7b5' ? 'dim' : 'm') : (sx.indexOf('dim') === 0 ? 'dim' : 'M'); var s2 = sx === 'M' ? '' : sx; return mkx(pc, q, s2); }
-var GENRE_CX = { pop:1, rock:0, folk:1, neo:4, lofi:3, citypop:4, jazz:3, gospel:4, funk:4, blues:3, bossa:3, bolero:2, urbano:3, hard:0, metal:0, cine:1, clasico:0 };
+var GENRE_CX = { pop:0, rock:0, folk:0, neo:4, lofi:3, citypop:4, jazz:3, gospel:4, funk:4, blues:3, bossa:3, bolero:2, urbano:3, hard:0, metal:0, cine:1, clasico:0 };
 var GENRE_RHY = {
   pop:    [{ p:'D-DU-UDU', bpm:100, es:'El rasgueo pop clásico: abajo, abajo-arriba, arriba-abajo-arriba.', en:'The classic pop strum: down, down-up, up-down-up.' }, { p:'D-D-DUDU', bpm:96, es:'Variante más empujada para estribillos.', en:'A pushier variation for choruses.' }],
   rock:   [{ p:'DDDDDDDD', bpm:124, es:'Corcheas hacia abajo, constantes y con energía.', en:'Steady, energetic downstroke eighths.' }, { p:'D-DUDUDU', bpm:118, es:'Rock más suelto, con arriba-abajo.', en:'Looser rock with up-down strokes.' }],
@@ -3658,7 +3659,7 @@ var LEARN = {
 };
 var NAV_ORDER = ['gen', 'rea', 'scl', 'mod', 'dic', 'tun', 'learn'];
 var NAV_TAB = { rea: ['Enriquecer mis acordes', 'Enrich my chords'], mod: ['Cambiar de tonalidad', 'Change key'], scl: ['Escalas para tu melodía', 'Scales for your melody'] };
-var NAV_ICON = { gen:'✦', ana:'◎', scl:'♪', rea:'⟲', mod:'⇄', dic:'▦', tun:'◐', learn:'✎' };
+var NAV_ICON = { gen:'✦', ana:'◎', scl:'♪', rea:'⟲', mod:'⇄', dic:'▦', tun:'♮', learn:'✎' };
 var CX_TIP = ['Indica cuántas notas tiene cada acorde. Pocas notas suenan sencillas y directas; más notas (séptimas, novenas) suenan más ricas, como en el jazz o el R&B.', 'How many notes each chord has. Fewer notes sound simple and direct; more notes (sevenths, ninths) sound richer, like jazz or R&B.'];
 var SUR_TIP = ['Decide si la app puede sugerirte acordes que no pertenecen a tu tonalidad. «Ninguno»: solo de tu tono, suena seguro. «Alguno»: a veces uno prestado que da color. «Muchos»: más sorpresas.', 'Whether the app may suggest chords outside your key. “None”: only your key, safe. “Some”: a borrowed chord now and then. “Lots”: more surprises.'];
 var COUNT_TIP = ['Cuántos acordes te propone cada sugerencia: 1 es el siguiente paso; 2 o 4 es una frase completa, útil para crear una parte nueva como el coro.', 'How many chords each suggestion gives you: 1 is the next step; 2 or 4 is a full phrase, useful for a new section like the chorus.'];
@@ -3717,8 +3718,10 @@ class Component extends DCLogic {
         if (!window.IntersectionObserver) return;
         var ob = new IntersectionObserver(function (ents) {
           ents.forEach(function (en) {
-            if (en.isIntersecting && !self._modTipDone && self.state.view === 'gen' && (self.state.chords || []).length) {
-              self._modTipDone = true; ob.disconnect();
+            var seen = false; try { seen = localStorage.getItem('cs_modtip') === '1'; } catch (e) {}
+            if (seen) { ob.disconnect(); return; }
+            if (en.isIntersecting && !self._modTipDone && self.state.view === 'gen' && (self.state.chords || []).length >= 3) {
+              self._modTipDone = true; ob.disconnect(); try { localStorage.setItem('cs_modtip', '1'); } catch (e) {}
               setTimeout(function () { if (self._mounted !== false) self.setState({ modTip: true }); }, 1200);
               setTimeout(function () { if (self._mounted !== false) self.setState({ modTip: false }); }, 11200);
             }
@@ -4926,7 +4929,7 @@ class Component extends DCLogic {
       hasChords: chs.length > 0,
       pickerOpen: pickerOpen,
       pickerExpanded: pickerOpen ? 'true' : 'false',
-      togglePicker: function () { self.setState({ pickerOpen: !pickerOpen }); },
+      togglePicker: function () { var open = !pickerOpen; self.setState({ pickerOpen: open }); if (open) setTimeout(function () { var el = document.querySelector('.cs-picker'); if (el) { var r = el.getBoundingClientRect(); if (r.top < 0 || r.top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 60); },
       addTileStyle: 'width:124px;height:124px;flex:none;box-sizing:border-box;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed ' + (pickerOpen ? '#E8D872' : '#2F4A3B') + ';background:' + (pickerOpen ? '#21281A' : 'transparent') + ';color:' + (pickerOpen ? '#F0E39A' : '#C5D3C6'),
       settingsOpen: st.settingsOpen,
       settingsExpanded: st.settingsOpen ? 'true' : 'false',
@@ -5038,7 +5041,7 @@ class Component extends DCLogic {
       anaMine: function () { self.setState({ aChords: chs.slice(), view: 'ana' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (x) {} },
       backGenLab: LX('Volver a tu progresión', 'Back to your progression'), backGen: function () { self.setState({ view: 'gen' }); },
       modCallTxt: (function () { var out1 = chs.filter(function (c) { return !findIn(pool, k.t, c); }); return out1.length ? LX('«' + out1.map(nm).join(', ') + '» está fuera de tu tonalidad (' + keyName + ') y puede sonar raro junto a los demás. ¿Quieres usarlo igual? El Modulador te da acordes puente para que el cambio suene natural.', '“' + out1.map(nm).join(', ') + '” is outside your key (' + keyName + ') and may sound odd next to the others. Want to keep it? The key changer gives you bridge chords so the change sounds natural.') : LX('¿Quieres poner un acorde tuyo pero junto al que ya tienes suena mal? Usa el Modulador: te da acordes puente para pasar de uno a otro sin que suene forzado.', 'Want to add a chord of yours but it sounds wrong next to the ones you have? Use the key changer: it gives you bridge chords so it doesn’t sound forced.'); })(),
-      modTipShow: !!st.modTip && view === 'gen' && chs.length > 0 && !st.lm, modTipClose: function () { self.setState({ modTip: false }); },
+      modTipShow: !!st.modTip && view === 'gen' && chs.length > 0 && !st.lm && !st.pickerOpen, modTipClose: function () { self.setState({ modTip: false }); },
       modCallBtn: LX('Modulador →', 'Key changer →'), goMod: function () { self.setState({ view: 'mod' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (x) {} },
       fNextT: LX('¿Y ahora?', 'What now?'),
       fNextP: LX('Sigue armando tu canción aquí arriba, escucha canciones populares que usan tu progresión o pasa a la siguiente herramienta.', 'Keep building your song above, listen to popular songs that use your progression, or move on to the next tool.'),
@@ -5313,7 +5316,7 @@ class Component extends DCLogic {
       fTotal: (function () { var bars = formArr.reduce(function (a, L) { return a + barsOf(L); }, 0), sec = Math.round(bars * barEN * e8N); return fmtBars(bars) + (LX(' compases · ', ' bars · ')) + Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') + ' · ' + bpmN + ' BPM · ' + tsN; })(),
 
       starterTxt: chs.length ? LX('¿Ya tienes acordes? Añádelos en orden con «Añadir acorde». ¿Quieres probar otra base? Elige una progresión conocida (reemplaza la actual):', 'Already have chords? Add them in order with “Add chord”. Want to try another base? Pick a well-known progression (replaces the current one):') : LX('¿Ya tienes acordes? Añádelos en orden con «Añadir acorde». ¿No tienes ninguno? Empieza con una progresión conocida o cualquier acorde que te guste:', 'Already have chords? Add them in order with “Add chord”. Have none? Start with a well-known progression or any chord you like:'),
-      starters: [['I–V–vi–IV', LX('Pop', 'Pop'), [[0,'M'],[7,'M'],[9,'m'],[5,'M']], 'Let It Be, With or Without You'],
+      quickStarts: [['I–V–vi–IV', LX('Pop', 'Pop'), [[0,'M'],[7,'M'],[9,'m'],[5,'M']], 'Let It Be, With or Without You'],
         ['vi–IV–I–V', LX('Emotivo', 'Emotional'), [[9,'m'],[5,'M'],[0,'M'],[7,'M']], 'Zombie, Someone Like You'],
         ['I–vi–IV–V', LX('Años 50', '50s'), [[0,'M'],[9,'m'],[5,'M'],[7,'M']], 'Stand By Me'],
         ['I–IV–V–IV', LX('Rock', 'Rock'), [[0,'M'],[5,'M'],[7,'M'],[5,'M']], 'La Bamba, Twist and Shout'],
