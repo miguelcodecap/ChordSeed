@@ -390,8 +390,8 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
     <div class="acct-hero"><img class="sage acct-sage" src="{{acctSage}}" alt="Lumen" width="70" height="165"><div class="sage-bubble"><span class="sage-name">{{sageName}}</span><span class="sage-say" style="font-size:17px">{{acctSay}}</span></div></div>
     <sc-if value="{{acctNoSvc}}" hint-placeholder-val="{{ false }}"><p class="acct-note">{{acctNoSvcTxt}}</p></sc-if>
     <sc-if value="{{acctShowLogin}}" hint-placeholder-val="{{ true }}">
-      <button class="acct-google" onClick="{{acctGoogle}}"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"></path></svg>{{acctGoogleLab}}</button>
-      <div class="acct-or"><span>{{acctOrLab}}</span></div>
+      <sc-if value="{{acctGoogleOn}}" hint-placeholder-val="{{ false }}"><button class="acct-google" onClick="{{acctGoogle}}"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"></path><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"></path><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"></path><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"></path></svg>{{acctGoogleLab}}</button>
+      <div class="acct-or"><span>{{acctOrLab}}</span></div></sc-if>
       <label class="acct-f"><span>{{acctEmailLab}}</span><input id="cs-email" type="email" autocomplete="email" placeholder="you@email.com"></label>
       <sc-if value="{{acctNeedPw}}" hint-placeholder-val="{{ true }}"><label class="acct-f"><span>{{acctPwLab}}</span><input id="cs-pw" type="password" autocomplete="{{acctPwAuto}}" placeholder="••••••••" onKeyDown="{{acctKey}}"></label></sc-if>
       <button class="btn" onClick="{{acctSubmit}}" style="min-height:46px;box-shadow:none">{{acctSubmitLab}}</button>
@@ -3727,6 +3727,7 @@ class Component extends DCLogic {
       try { self.sb = window.supabase.createClient(CS_SB.url, CS_SB.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }); }
       catch (e) { self.setState({ acctAvail: false }); return; }
       self.setState({ acctAvail: true });
+      fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) { self.setState({ acctGoogleOn: !!(cfg && cfg.external && cfg.external.google) }); }).catch(function () {});
       self.sb.auth.getSession().then(function (r) { var s = r && r.data && r.data.session; if (s && s.user) self.acctLoad(s.user); }).catch(function () {});
       self.sb.auth.onAuthStateChange(function (ev, session) {
         if (ev === 'PASSWORD_RECOVERY') { self.setState({ acctOpen: true, acctMode: 'newpw', acctMsg: '' }); return; }
@@ -5142,6 +5143,7 @@ class Component extends DCLogic {
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
       acctOpen: !!st.acctOpen,
+      acctGoogleOn: !!st.acctGoogleOn,
       acctBtnCls: st.user ? 'is-in' : '',
       acctInitial: st.user ? (st.user.email || '?').charAt(0).toUpperCase() : '☾',
       acctBtnLab: st.user ? (st.isPro ? 'Pro' : LX('Cuenta', 'Account')) : LX('Entrar', 'Sign in'),
@@ -5179,7 +5181,14 @@ class Component extends DCLogic {
         if (mode === 'signup') { sb.auth.signUp({ email: em, password: pw, options: { emailRedirectTo: back } }).then(function (r) { done(r, r && r.data && r.data.session ? '' : LX('¡Cuenta creada! Revisa tu correo y confirma para entrar.', 'Account created! Check your email and confirm to sign in.')); }).catch(fail); return; }
         sb.auth.signInWithPassword({ email: em, password: pw }).then(function (r) { done(r); }).catch(fail);
       },
-      acctGoogle: function () { if (!self.sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; } self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); }).catch(function (e) { self.setState({ acctMsg: csAuthErr(e, es), acctErr: true }); }); },
+      acctGoogle: function () {
+        if (!self.sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; }
+        var off = function () { self.setState({ acctMsg: LX('El inicio con Google todavía no está activado. Por ahora entra con tu correo.', 'Google sign-in isn’t enabled yet. For now, use your email.'), acctErr: true }); };
+        fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) {
+          if (!cfg || !cfg.external || !cfg.external.google) { off(); return; }
+          self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0].split('?')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); });
+        }).catch(off);
+      },
       acctSetPw: function () { var pw = (document.getElementById('cs-newpw') || {}).value || ''; if (!self.sb || pw.length < 6) { self.setState({ acctMsg: csAuthErr({ message: 'Password should be at least 6' }, es), acctErr: true }); return; } self.sb.auth.updateUser({ password: pw }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); else self.setState({ acctMode: 'login', acctMsg: LX('Contraseña actualizada.', 'Password updated.'), acctErr: false }); }); },
       acctSignOut: function () { if (self.sb) self.sb.auth.signOut(); CS_SYNC = null; self.setState({ user: null, isPro: false, cloudSongs: [], acctOpen: false }); },
       acctEmail: st.user ? st.user.email : '',
