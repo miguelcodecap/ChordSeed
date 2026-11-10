@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://miguelcodecap.github.io/ChordSeed/sitemap.xml

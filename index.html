@@ -127,7 +127,7 @@ details[open] summary::after{content:"–"}
 details p{margin:0 0 18px;color:var(--ink2)}
 
 .journal{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
-.post{padding:22px;border-radius:18px;border:1px dashed var(--line2);background:rgba(10,21,16,.6)}
+.post{display:block;padding:22px;border-radius:18px;border:1px solid var(--line);background:rgba(15,29,22,.75);text-decoration:none;color:inherit;transition:border-color .15s}.post:hover{border-color:var(--gold)}
 .post small{color:var(--gold);font-weight:700;letter-spacing:.08em;font-size:11px;text-transform:uppercase}
 .post b{display:block;font:600 22px/1.2 'Cormorant Garamond',Georgia,serif;margin:8px 0 6px}
 .post span{color:var(--muted);font-size:14px}
@@ -146,7 +146,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
   .hero .lumen{display:none}
   .trio,.steps,.journal{grid-template-columns:1fr}
   .tools{grid-template-columns:1fr 1fr}
-  .links a:not(.btn){display:none}
+  .links a:not(.btn):not(.keep){display:none}
   .lumenrow{grid-template-columns:1fr;text-align:center;justify-items:center}
 }
 @media (max-width:640px){
@@ -171,7 +171,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
   <div class="wrap">
     <a class="brand" href="./" aria-label="Chordseed home"><img src="assets/img/logo.png" alt="" width="52" height="52"><b>Chordseed</b></a>
     <div class="links">
-      <a href="#features">Features</a><a href="#learn">Learn</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+      <a href="#features">Features</a><a href="#learn">Learn</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a class="keep" href="blog/">Blog</a>
       <a class="btn sm" href="app/">Open the app</a>
     </div>
   </div>
@@ -261,7 +261,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
 
 <section>
   <div class="wrap center reveal">
-    <span class="eyebrow">Seven tools, one app</span>
+    <span class="eyebrow">Eight tools, one app</span>
     <h2>Everything a songwriter reaches for</h2>
   </div>
   <div class="wrap tools">
@@ -270,7 +270,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
     <div class="tool reveal"><span class="em">♪</span><b>Scales for your melody</b><span>Which notes to sing or solo over your chords.</span></div>
     <div class="tool reveal"><span class="em">⇄</span><b>Change key</b><span>Lift the last chorus, smoothly.</span></div>
     <div class="tool reveal"><span class="em">▦</span><b>Chord dictionary</b><span>Any chord, every shape, or name the notes you press.</span></div>
-    <div class="tool reveal"><span class="em">◐</span><b>Tuner</b><span>Tune with your microphone.</span></div>
+    <div class="tool reveal"><span class="em">♮</span><b>Tuner</b><span>Tune with your microphone.</span></div>
     <div class="tool reveal"><span class="em">🔍</span><b>Analyze my progression</b><span>Key, functions and the tension curve.</span></div>
     <div class="tool reveal"><span class="em">✎</span><b>Learn from scratch</b><span>Seven lessons with sound and a quiz.</span></div>
   </div>
@@ -301,7 +301,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
     <div class="plan pro reveal">
       <span class="badge">FREE DURING BETA</span>
       <h3>Pro</h3>
-      <div class="price">Beta <small>· pricing announced at launch</small></div>
+      <div class="price">$0 <small>· free during the beta, price announced before launch</small></div>
       <ul><li>Everything in Free</li><li>Export songs to MIDI and PDF</li><li>Save full songs to the cloud, synced on every device</li><li>Unlimited saved progressions</li><li>Extended chords, bolder surprises and 8-chord phrases</li><li>All scales, modes and key-change routes</li></ul>
       <a class="btn" href="app/">Get Pro free →</a>
     </div>
@@ -321,11 +321,13 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
 </section>
 
 <section id="journal">
-  <div class="wrap center reveal"><span class="eyebrow">The Chordseed Journal</span><h2>Songwriting, one chord at a time</h2><p class="sub">Guides and song breakdowns are on the way.</p></div>
+  <div class="wrap center reveal"><span class="eyebrow">The Chordseed Journal</span><h2>Songwriting, one chord at a time</h2><p class="sub">Plain-language guides to chords, moods and song structure.</p></div>
   <div class="wrap journal">
-    <div class="post reveal"><small>Coming soon</small><b>Sad chord progressions that always work</b><span>Why minor chords and a falling bass pull at your heart.</span></div>
-    <div class="post reveal"><small>Coming soon</small><b>What chord comes after G?</b><span>The ear’s favorite moves, explained with sound.</span></div>
-    <div class="post reveal"><small>Coming soon</small><b>The 4 chords behind hundreds of hits</b><span>I–V–vi–IV, and how to make it your own.</span></div>
+    <a class="post reveal" href="blog/sad-chord-progressions/"><small>Moods · 6 min read</small><b>Sad chord progressions that always work</b><span>Why minor chords and a falling bass pull at your heart.</span></a>
+    <a class="post reveal" href="blog/what-chord-comes-after-g/"><small>Next chord · 5 min read</small><b>What chord comes after G?</b><span>The ear’s favorite moves, explained with sound.</span></a>
+    <a class="post reveal" href="blog/four-chords-hundreds-of-hits/"><small>Song structure · 6 min read</small><b>The 4 chords behind hundreds of hits</b><span>I–V–vi–IV, and how to make it your own.</span></a>
+  </div>
+  <div class="wrap center" style="margin-top:26px"><a class="ghost" href="blog/">All articles →</a>
   </div>
 </section>
 
@@ -341,7 +343,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
 <footer>
   <div class="wrap">
     <span>© 2026 Chordseed. Created in Nevada, USA by <a href="https://github.com/miguelcodecap" target="_blank" rel="noopener" style="margin:0;color:var(--gold)">@miguelcodecap</a>.</span>
-    <span><a href="app/">App</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:miguel.nun.code@gmail.com">Contact</a></span>
+    <span><a href="app/">App</a><a href="blog/">Blog</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:miguel.nun.code@gmail.com">Contact</a></span>
   </div>
 </footer>
 
