@@ -375,6 +375,19 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .cs-load{all:unset;cursor:pointer;padding:7px 12px;font:600 13px 'JetBrains Mono',monospace;color:#EAF2E6}.cs-load:hover{color:#F0E39A}
 .cs-del{all:unset;cursor:pointer;padding:7px 10px;color:#9FB3A4;border-left:1px solid #2F4A3B}.cs-del:hover{color:#FF9A9D}
 @media (max-width:640px){.acct-lab{display:none}}
+
+/* ===== Rendimiento: scroll fluido ===== */
+.fo-atmo{contain:strict;transform:translateZ(0)}
+.fo-fog,.fo-rays,.fo-cloud,.fo-moon{filter:none!important}
+.fo-rays{animation:none!important;opacity:.7}
+.fo-fog,.fo-cloud{will-change:transform}
+.fo-cloud{background:radial-gradient(ellipse at 50% 50%,rgba(14,26,24,.7),rgba(14,26,24,.35) 35%,rgba(14,26,24,0) 70%)!important}
+.fo-fly{box-shadow:0 0 8px 3px rgba(225,240,120,.55)!important;will-change:transform,opacity}
+.fo-fly:nth-of-type(2n){display:none}
+.panel,.snd,.start,.tools .hs{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.panel,.snd,.start{background:linear-gradient(180deg,rgba(18,34,27,.94),rgba(9,18,14,.96))!important}
+.tools .hs{background:rgba(10,21,16,.94)!important}
+body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused!important}
 </style>
 </helmet>
 
@@ -1899,7 +1912,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
     <footer style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;padding-top:8px;border-top:1px solid #1E2A2D;font-size:12px;color:#7F9C87">
       <span>{{soundStatus}}</span>
       <span>{{t.credits}}</span>
-      <span class="legal">{{legalLine}} · <a href="privacy.html">{{privacyLab}}</a> · <a href="terms.html">{{termsLab}}</a></span>
+      <span class="legal">{{legalLine}} · <a href="privacy.html">{{privacyLab}}</a> · <a href="terms.html">{{termsLab}}</a> · {{createdBy}} <a href="https://github.com/miguelcodecap" target="_blank" rel="noopener">@miguelcodecap</a></span>
     </footer>
   </main>
 
@@ -3667,6 +3680,11 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 class Component extends DCLogic {
   componentDidMount() {
     var self = this;
+    try {
+      var scT = null;
+      this._onScroll = function () { if (!document.body.classList.contains('cs-scrolling')) document.body.classList.add('cs-scrolling'); clearTimeout(scT); scT = setTimeout(function () { document.body.classList.remove('cs-scrolling'); }, 160); };
+      window.addEventListener('scroll', this._onScroll, { passive: true });
+    } catch (e) {}
     try { this.acctInit(); } catch (e) {}
     try {
       var fitAll = function () {
@@ -4635,6 +4653,7 @@ class Component extends DCLogic {
       sageTopSay: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? LX('¡Lo lograste! Ya sabes por qué los acordes funcionan. Ahora ve al generador y siembra tu primera canción.', 'You did it! Now you know why chords work. Head to the generator and plant your first song.') : lCur.k,
       sageQuiz: (lAns === null || lAns === undefined) ? SAGE.think : (lRight ? SAGE.celebrate : SAGE.encourage),
       sagePlay: SAGE.play,
+      createdBy: LX('Creado por', 'Created by'),
       privacyLab: LX('Privacidad', 'Privacy'), termsLab: LX('Términos', 'Terms'),
       legalLine: '© ' + new Date().getFullYear() + ' Chordseed. ' + LX('Creado en Nevada, EE. UU. Todos los derechos reservados.', 'Created in Nevada, USA. All rights reserved.'),
       lBannerCta: lDoneN === 0 ? (LX('Empezar la lección 1', 'Start lesson 1')) : (lDoneN >= LESSONS.length ? (LX('Repasar las lecciones', 'Review the lessons')) : (LX('Seguir con la lección ', 'Continue with lesson ')) + (lDoneN + 1)),

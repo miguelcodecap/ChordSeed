@@ -29,17 +29,17 @@ img{max-width:100%;height:auto;display:block}
 .serif{font-family:'Cormorant Garamond',Georgia,serif}
 
 /* atmosphere */
-.sky{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+.sky{position:fixed;inset:0;z-index:-1;transform:translateZ(0);pointer-events:none;background:
   radial-gradient(900px 520px at 82% -8%,rgba(200,222,228,.13),transparent 62%),
   radial-gradient(700px 420px at 8% 22%,rgba(232,216,114,.06),transparent 64%),
   linear-gradient(180deg,#07110D 0%,#060D0A 55%,#040806 100%)}
-.moon{position:fixed;top:-160px;right:-120px;width:460px;height:460px;border-radius:50%;z-index:-1;pointer-events:none;opacity:.32;filter:blur(1px);
+.moon{position:fixed;top:-160px;right:-120px;width:460px;height:460px;border-radius:50%;z-index:-1;pointer-events:none;opacity:.32;
   background:radial-gradient(circle at 38% 36%,#E9EFE4 0%,#B9C6BC 38%,#7F8F86 62%,transparent 72%)}
-.fly{position:fixed;width:4px;height:4px;border-radius:50%;background:#F7EDA8;box-shadow:0 0 10px 3px rgba(232,216,114,.6);z-index:-1;pointer-events:none;animation:drift 9s ease-in-out infinite;opacity:.7}
+.fly{position:fixed;will-change:transform,opacity;width:4px;height:4px;border-radius:50%;background:#F7EDA8;box-shadow:0 0 10px 3px rgba(232,216,114,.6);z-index:-1;pointer-events:none;animation:drift 9s ease-in-out infinite;opacity:.7}
 @keyframes drift{0%,100%{transform:translate(0,0);opacity:.15}50%{transform:translate(18px,-26px);opacity:.85}}
 
 /* nav */
-nav{position:sticky;top:0;z-index:20;background:rgba(6,13,10,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(36,57,46,.6)}
+nav{position:sticky;top:0;z-index:20;background:rgba(6,13,10,.95);border-bottom:1px solid rgba(36,57,46,.6)}
 nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
 .brand{display:flex;align-items:center;gap:6px;text-decoration:none}
 .brand img{width:52px;height:52px;margin:-8px -6px -8px -8px}
@@ -340,7 +340,7 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}footer a:hover{
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Chordseed. Created in Nevada, USA.</span>
+    <span>© 2026 Chordseed. Created in Nevada, USA by <a href="https://github.com/miguelcodecap" target="_blank" rel="noopener" style="margin:0;color:var(--gold)">@miguelcodecap</a>.</span>
     <span><a href="app/">App</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:miguel.nun.code@gmail.com">Contact</a></span>
   </div>
 </footer>
