@@ -59,5 +59,10 @@ ChordseedRuntime.mount('Main', document.getElementById('app'));
 </body>
 </html>
 '''
-(ROOT / 'index.html').write_text(html, encoding='utf-8')
-print('index.html', len(html), 'bytes')
+# The app lives in /app/; shared assets stay at the site root.
+html = (html.replace('"assets/', '"../assets/').replace("'assets/", "'../assets/")
+            .replace('src="runtime/', 'src="../runtime/')
+            .replace('href=\\"privacy.html\\"', 'href=\\"../privacy.html\\"').replace('href=\\"terms.html\\"', 'href=\\"../terms.html\\"'))
+(ROOT / 'app').mkdir(exist_ok=True)
+(ROOT / 'app' / 'index.html').write_text(html, encoding='utf-8')
+print('app/index.html', len(html), 'bytes')
