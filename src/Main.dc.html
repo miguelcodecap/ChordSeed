@@ -4164,11 +4164,11 @@ class Component extends DCLogic {
     box.classList.toggle('gc-pending', !!box._chosen && gc.keepOk());
     var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) { keepBtn.disabled = !gc.keepOk(); if (gc.keepLab && keepBtn.textContent !== gc.keepLab) keepBtn.textContent = gc.keepLab; keepBtn.style.display = gc.keepLab ? '' : 'none'; }
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
-    ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = Math.min(r.height + 12, 520) + 'px';
+    ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = (gc.full ? r.height + 12 : Math.min(r.height + 12, 520)) + 'px';
     box.style.display = 'block';
-    var bw = box.offsetWidth, bh = box.offsetHeight, below = gc.up ? r.top < bh + 30 : (r.top + Math.min(r.height, 520) + 14 + bh < window.innerHeight - 110 || r.top < bh + 30);
+    var bw = box.offsetWidth, bh = box.offsetHeight, below = gc.full ? true : gc.up ? r.top < bh + 30 : (r.top + Math.min(r.height, 520) + 14 + bh < window.innerHeight - 110 || r.top < bh + 30);
     var left = Math.max(12, Math.min(W - bw - 12, r.left + Math.min(r.width, 360) / 2 - 40));
-    var top = below ? r.top + Math.min(r.height, 520) + 14 : r.top - bh - 14;
+    var top = below ? r.top + (gc.full ? r.height : Math.min(r.height, 520)) + 14 : r.top - bh - 14;
     box.style.left = (left + sx) + 'px'; box.style.top = (top + sy) + 'px';
     box.classList.toggle('gc-up', !below);
     var ar = box.querySelector('.gc-ar'); if (ar) ar.style.left = Math.max(14, Math.min(bw - 30, r.left + 24 - left)) + 'px';
@@ -5201,7 +5201,6 @@ class Component extends DCLogic {
           backLab: gi > 0 ? LX('← Atrás', '← Back') : '', back: gi > 0 ? function () { self.gUnmark(GC_SUBS[gi - 1][1]); } : null,
           waitLab: LX('✓ Bien elegido. Puedes seguir probando; cuando estés listo, toca «Listo».', '✓ Nice pick. Keep trying options if you like; when you’re ready, tap “Done”.'),
           keep: function () { self.gMark(k); } };
-        if (k === 'add' && chs.length && st.pickerOpen) { self._gc = null; return 0; }
         if (k === 'add' && chs.length) {
           self._gc.key = 'add1:' + LX('es', 'en');
           self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
@@ -5210,6 +5209,7 @@ class Component extends DCLogic {
           self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker') || document.querySelector('#stp-2 .addtile'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
           self._gc.keepLab = LX('No, ayúdame →', 'No, help me →');
           self._gc.keepOk = function () { return true; };
+          if (st.pickerOpen) { self._gc.sel = '.cs-picker'; self._gc.full = true; self._gc.up = false; }
         } else if (k === 'add') { self._gc.keepLab = ''; self._gc.keepOk = function () { return false; }; }
         if (k === 'sugs' && st.addedSug) self._gc.keepLab = LX('Listo, siguiente paso →', 'Done, next step →');
         if (k === 'songs' && st.strummed) self._gc.keepLab = LX('Terminar ✓', 'Finish ✓');
