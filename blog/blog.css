@@ -50,3 +50,4 @@ footer a{color:var(--ink2);text-decoration:none;margin-left:18px}
 
 article .cover{display:block;width:100%;height:auto;border-radius:20px;border:1px solid var(--line2);margin:0 0 30px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
 .card .thumb{display:block;width:calc(100% + 44px);max-width:none;height:auto;aspect-ratio:16/9;object-fit:cover;margin:-22px -22px 14px;border-radius:18px 18px 0 0}
+.sky{background:linear-gradient(180deg,rgba(6,13,10,.6) 0%,rgba(6,13,10,.85) 35%,rgba(6,13,10,.95) 100%),url('../assets/img/brand/fondos/panoramico-luna-16x9.webp') center top/cover no-repeat!important}
