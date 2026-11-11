@@ -2275,7 +2275,7 @@ function sampleBus(ctx, out) {
   ctx._sbus = input; return input;
 }
 /* ===== Sonido v2: loops de sustain, ensemble, sala, synth nuevo ===== */
-var INST_LVL = { piano: 5.4, guitar: 2.9, eguitar: 0.5, flute: 3.8, strings: 3.0, synth: 1 };
+var INST_LVL = { piano: 5.4, guitar: 2.9, eguitar: 0.42, flute: 3.8, strings: 3.0, synth: 1 };
 var LOOP_INST = { flute: [0.9, 2.95], strings: [0.9, 2.95] };
 function prepLoop(ctx, b, ls, le) {
   var sr = b.sampleRate, s0 = Math.floor(ls * sr), e0 = Math.min(b.length - 64, Math.floor(le * sr)), xf = Math.floor(0.3 * sr);
@@ -2365,7 +2365,7 @@ function playSample(ctx, out, inst, m, st, len, vel, ring) {
     var node3 = g3;
     if (ctx.createStereoPanner) { var pn3 = ctx.createStereoPanner(); pn3.pan.value = Math.max(-0.45, Math.min(0.45, (m - 60) / (pr ? 36 : 28))); g3.connect(pn3); node3 = pn3; }
     node3.connect(roomBus(ctx, out, inst));
-    return true;
+    return { g: g3, s: s3 };
   }
   var src2 = smpVoice(ctx, smp, m, st, st + hold + (ring ? 1.4 : 0.12) + 0.05, 0);
   var g2 = ctx.createGain(), rel2 = ring ? 1.4 : 0.12;
@@ -3931,6 +3931,27 @@ class Component extends DCLogic {
         if (playSample(ctx, out, inst, m, time, len, vel, ring)) return;
         if (gtr) playGtr(ctx, out, m, time, len, vel, false, ring); else playNote(ctx, out, inst, m, time, len);
       };
+      // realistic strumming: per-string timing, dynamics, humanize and string choke
+      var gStr = {}, sTempo = Math.max(0.6, Math.min(1.5, 100 / bpm));
+      var choke = function (sIdx, t) { var h = gStr[sIdx]; if (h && h.g) { try { h.g.gain.cancelScheduledValues(t); h.g.gain.setTargetAtTime(0.0001, t, 0.018); } catch (e) {} } };
+      var scratch = function (t, v, up) { if (inst !== 'guitar') return; try { var nz = ctx.createBufferSource(); nz.buffer = noiseBuf(ctx); var bp2 = ctx.createBiquadFilter(); bp2.type = 'bandpass'; bp2.frequency.value = up ? 4200 : 3000; bp2.Q.value = 0.9; var ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.linearRampToValueAtTime(0.035 * v, t + 0.004); ng.gain.setTargetAtTime(0.0001, t + 0.01, up ? 0.012 : 0.02); nz.connect(bp2); bp2.connect(ng); ng.connect(out._sb || out); nz.start(t); nz.stop(t + 0.15); } catch (e) {} };
+      var gStrum = function (ns, time, dir, vel, dur, ring, top, mute) {
+        var n = ns.length, list = ns.map(function (m, k) { return { m: m, s: 5 - (n - 1 - k), k: k }; });
+        if (top && list.length > top) list = list.slice(-top);
+        if (dir === 'U') list.reverse();
+        var gap = (dir === 'U' ? 0.0085 : (heavy ? 0.006 : 0.0135)) * sTempo, t0s = time + (Math.random() - 0.5) * 0.012 + (dir === 'U' ? 0.004 : 0);
+        scratch(t0s, vel, dir === 'U');
+        list.forEach(function (x, j) {
+          var t = t0s + j * gap * (0.85 + Math.random() * 0.3);
+          var v = vel * (dir === 'U' ? (0.72 + 0.06 * j) : (1.04 - 0.035 * j)) * (0.9 + Math.random() * 0.14);
+          v = Math.max(0.2, Math.min(1, v));
+          if (inst === 'eguitar') { egStrike(ctx, out, x.m, t, mute ? Math.min(dur, 0.12) : dur, v, ring, mute, wide); return; }
+          choke(x.s, t);
+          var h = playSample(ctx, out, inst, x.m, t, mute ? Math.min(dur, 0.09) : (ring ? dur : dur + 0.9), v, ring);
+          if (!h) playGtr(ctx, out, x.m, t, mute ? 0.09 : dur, v, false, ring);
+          else if (h.g) gStr[x.s] = h;
+        });
+      };
       var chordAt = [];
       items.forEach(function (it, ii) {
         var c = it.c, notes = it.v ? it.v.slice() : (gtr ? guitarVoicing(c, (self.state.pos || {})[ckey(c)]) : voicing(c));
@@ -3957,6 +3978,11 @@ class Component extends DCLogic {
             if (SP) {
               var ch8 = SP.charAt(bp), up4 = notes.length > 3 ? notes.slice(1) : notes;
               if (inst === 'eguitar' && ch8 !== 'B' && ch8 !== 'A') egPick(ctx, out, time, wide);
+              var bb = bp === 0 ? 0.08 : (bp === 2 || bp === 6 ? 0.04 : (bp % 2 ? -0.06 : 0));
+              if (gtr && ch8 === 'D') { gStrum(notes, time, 'D', 0.8 + bb, dur, ring); return; }
+              if (gtr && ch8 === 'U') { gStrum(notes, time, 'U', 0.62 + bb, dur, ring, 4); return; }
+              if (gtr && ch8 === 'm') { gStrum(notes, time, 'D', 0.62, dur, false, 3, true); return; }
+              if (gtr && ch8 === 'C') { gStrum(notes, time, 'D', 0.66 + bb, dur, ring, 4); return; }
               if (ch8 === 'm') { notes.slice(0, 3).forEach(function (m, k) { strike(m, time + k * 0.004, Math.min(dur, e8 * 0.45), 0.6, false, true); }); return; }
               if (ch8 === 'B') { strike(notes[0], time, Math.max(dur, e8 * 1.6), 0.8, ring); return; }
               if (ch8 === 'C') { up4.forEach(function (m, k) { strike(m, time + k * (gtr ? 0.008 : 0), Math.max(dur, e8 * 1.2), 0.62, ring); }); return; }
@@ -3970,8 +3996,8 @@ class Component extends DCLogic {
             else if (feel === 'off' && pat.charAt(bp) !== 'x') { if (!o.band) strike(notes[0], time, dur, 0.85, ring); }
             else if (feel === 'off') { notes.slice(1).forEach(function (m, k) { strike(m, time + k * 0.006, ring ? dur : Math.min(dur, e8 * 0.7), 0.62, ring); }); }
             else if (gtr) {
-              if (bp % 2 === 0 || feel === 'long') notes.forEach(function (m, k) { strike(m, time + k * (heavy ? 0.004 : 0.011), dur, 0.74 + accent, ring); });
-              else notes.slice(-4).reverse().forEach(function (m, k) { strike(m, time + k * 0.009, dur, 0.56, ring); });
+              if (bp % 2 === 0 || feel === 'long') gStrum(notes, time, 'D', 0.76 + accent + (bp === 2 || bp === 6 ? 0.04 : 0), dur, ring);
+              else gStrum(notes, time, 'U', 0.6, dur, ring, 4);
             }
             else { (e === 0 ? notes : notes.slice(1)).forEach(function (m) { strike(m, time, dur, 0.8, ring); }); }
           });
@@ -4380,7 +4406,7 @@ class Component extends DCLogic {
       tStatusText = (Math.abs(tCents) < 5 ? T.tOk : (tCents < 0 ? T.tLow : T.tHigh)) + ' · ' + (tCents > 0 ? '+' : '') + tCents.toFixed(0) + ' cents';
     } else if (tNear >= 0 && tTun.notes[tNear] !== undefined) { tNoteName = spell(tTun.notes[tNear] % 12, true, st.lat); tStatusText = T.tRefPlaying; }
     var genre = st.reStyle || 'pop';
-    var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[(st.rhyIdx || 0) % gRhyList.length];
+    var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[((st.rhyIdx || 0) + (genre === 'rock' && st.inst === 'guitar' ? 1 : 0)) % gRhyList.length];
     (function () { var sn = (RE_STYLES[genre] || RE_STYLES.pop), allA = /^[A-]+$/.test(gRhy.p);
       FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing,
         p: { '4/4': gRhy.p.replace(/[^-]/g, 'x'), '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
