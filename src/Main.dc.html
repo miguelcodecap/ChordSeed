@@ -3356,6 +3356,31 @@ var GEN_T = {
   min: [[[8,'M'],[10,'M'],[0,'m'],[0,'m']], [[5,'m'],[0,'m'],[10,'M'],[3,'M']], [[3,'M'],[10,'M'],[8,'M'],[7,'M']], [[8,'M'],[3,'M'],[10,'M'],[0,'m']], [[0,'m'],[5,'m'],[7,'M'],[0,'m']], [[0,'m'],[8,'M'],[3,'M'],[10,'M']], [[5,'m'],[8,'M'],[10,'M'],[0,'m']], [[3,'M'],[7,'M'],[0,'m'],[10,'M']]]
 };
 var SONG_RHY = {
+  'Counting Stars': { bpm:122, ts:'4/4', f:'sync', p:[[9,'m',1],[0,'M',1],[7,'M',1],[5,'M',1]] },
+  'Hey, Soul Sister': { bpm:97, ts:'4/4', f:'sync', p:[[0,'M',1],[7,'M',1],[9,'m',1],[5,'M',1]] },
+  'Someone You Loved': { bpm:110, ts:'4/4', f:'pulse', p:[[0,'M',1],[7,'M',1],[9,'m',1],[5,'M',1]] },
+  'Stay with Me': { bpm:84, ts:'4/4', f:'pulse', p:[[9,'m',1],[5,'M',1],[0,'M',2]] },
+  'Photograph': { bpm:108, ts:'4/4', f:'arp', p:[[0,'M',1],[9,'m',1],[7,'M',1],[5,'M',1]] },
+  'Mad World': { bpm:90, ts:'4/4', f:'long', p:[[0,'m',1],[3,'M',1],[10,'M',1],[5,'M',1]] },
+  'Poker Face': { bpm:120, ts:'4/4', f:'drive', p:[[0,'m',1],[8,'M',1],[3,'M',1],[10,'M',1]] },
+  'Save Tonight': { bpm:120, ts:'4/4', f:'pulse', p:[[0,'m',1],[8,'M',1],[3,'M',1],[10,'M',1]] },
+  'Clocks': { bpm:131, ts:'4/4', f:'arp', p:[[0,'M',1],[7,'m',1],[7,'m',1],[2,'m',1]] },
+  'Riptide': { bpm:102, ts:'4/4', f:'sync', p:[[9,'m',1],[7,'M',1],[0,'M',2]] },
+  'Blowin’ in the Wind': { bpm:88, ts:'4/4', f:'pulse', p:[[0,'M',1],[5,'M',1],[7,'M',1],[0,'M',1]] },
+  'Fade to Black': { bpm:70, ts:'4/4', f:'arp', p:[[0,'m',1],[3,'M',1],[10,'M',1],[7,'m',1]] },
+  'Summertime': { bpm:80, ts:'4/4', f:'swing', p:[[0,'m6',2],[7,'7',2]] },
+  'Satin Doll': { bpm:120, ts:'4/4', f:'swing', p:[[2,'m7',0.5],[7,'7',0.5],[2,'m7',0.5],[7,'7',0.5],[4,'m7',0.5],[9,'7',0.5],[4,'m7',0.5],[9,'7',0.5]] },
+  'Uptown Funk': { bpm:115, ts:'4/4', f:'sync', p:[[0,'m7',1],[5,'7',1]] },
+  'Le Freak': { bpm:120, ts:'4/4', f:'sync', p:[[0,'m7',1],[5,'M',1]] },
+  'Helplessly Hoping': { bpm:92, ts:'4/4', f:'arp', p:[[2,'m',1],[5,'M',1],[0,'M',2],[7,'M',1]] },
+  'Take On Me': { bpm:169, ts:'4/4', f:'drive', p:[[0,'M',1],[7,'M',1],[9,'m',1],[5,'M',1]] },
+  'Every Breath You Take': { bpm:117, ts:'4/4', f:'arp', p:[[0,'M',1],[9,'m',1],[5,'M',1],[7,'M',1]] },
+  'Free Fallin’': { bpm:84, ts:'4/4', f:'pulse', p:[[0,'M',0.5],[5,'M',0.5],[0,'M',0.5],[7,'M',0.5]] },
+  'Bad Moon Rising': { bpm:180, ts:'4/4', f:'drive', p:[[0,'M',1],[7,'M',0.5],[5,'M',0.5],[0,'M',2]] },
+  'Losing My Religion': { bpm:125, ts:'4/4', f:'sync', p:[[0,'m',1],[7,'m',1],[0,'m',1],[7,'m',1],[5,'m',1],[10,'M',1]] },
+  'Beat It': { bpm:139, ts:'4/4', f:'drive', p:[[0,'m',1],[10,'M',1]] },
+  'Hey Ya!': { bpm:159, ts:'4/4', f:'drive', p:[[0,'M',1],[5,'M',1],[7,'M',1],[9,'M',1]] },
+  'Sweet Dreams (Are Made of This)': { bpm:126, ts:'4/4', f:'drive', p:[[0,'m',1],[8,'M',0.5],[7,'M',0.5]] },
   'Hey Jude': { bpm:74, ts:'4/4', f:'pulse', p:[[0,'M',1],[7,'M',1],[7,'7',1],[0,'M',1],[5,'M',1],[0,'M',1],[7,'7',1],[0,'M',1]] },
   'Wake Me Up': { bpm:124, ts:'4/4', f:'sync', p:[[9,'m',1],[5,'M',1],[0,'M',1],[7,'M',1]] },
   'Brown Eyed Girl': { bpm:150, ts:'4/4', f:'drive', p:[[0,'M',1],[5,'M',1],[0,'M',1],[7,'M',1]] },
@@ -3505,6 +3530,31 @@ var DRUMS = {
 var GENRE_DRUM = { pop:'pop', rock:'rock', hard:'rock', metal:'metal', folk:'ballad', neo:'lofi', lofi:'lofi', citypop:'pop', jazz:'jazz', gospel:'ballad', funk:'funk', blues:'shuffle', bossa:'bossa', bolero:'bolero', urbano:'dembow', cine:'', clasico:'' };
 function bandFor(style, ts) { if (!style || !DRUMS[style]) return null; if (ts === '4/4') return style; if (ts === '3/4') return 'waltz'; if (ts === '6/8') return 'six8'; if (ts === '5/4') return 'five'; return null; }
 var SONG_ARR = {
+  'Counting Stars':['guitar','pop'],
+  'Hey, Soul Sister':['guitar','pop'],
+  'Someone You Loved':['piano','ballad'],
+  'Stay with Me':['piano','ballad'],
+  'Photograph':['guitar','pop'],
+  'Mad World':['piano',''],
+  'Poker Face':['synth','pop'],
+  'Save Tonight':['guitar','rock'],
+  'Clocks':['piano','rock'],
+  'Riptide':['guitar','pop'],
+  'Blowin’ in the Wind':['guitar',''],
+  'Fade to Black':['guitar','','clean'],
+  'Summertime':['piano','jazz'],
+  'Satin Doll':['piano','jazz'],
+  'Uptown Funk':['eguitar','funk','clean'],
+  'Le Freak':['eguitar','funk','clean'],
+  'Helplessly Hoping':['guitar',''],
+  'Take On Me':['synth','pop'],
+  'Every Breath You Take':['eguitar','pop','clean'],
+  'Free Fallin’':['guitar','pop'],
+  'Bad Moon Rising':['guitar','rock'],
+  'Losing My Religion':['guitar','pop'],
+  'Beat It':['eguitar','rock','dist'],
+  'Hey Ya!':['guitar','pop'],
+  'Sweet Dreams (Are Made of This)':['synth','pop'],
   'Hey Jude':['piano','ballad'], 'Wake Me Up':['guitar','pop'], 'Brown Eyed Girl':['guitar','rock'], 'Rock Around the Clock':['eguitar','shuffle','crunch'],
   'Nothing Else Matters':['guitar',''], 'Hit the Road Jack':['piano','shuffle'], 'When the Saints Go Marching In':['piano','shuffle'], 'Historia de un amor':['guitar','bolero'],
   'Tusa':['guitar','dembow'], 'Himno de la alegría|Ode to Joy':['strings',''],
@@ -5744,7 +5794,7 @@ class Component extends DCLogic {
               var S = x.S, fl = flatsFor(S.k, S.m), title = bi(S.t), moved = id === 'moved';
               var R = SONG_RHY[S.t] || { bpm: 90, ts: '4/4', f: 'pulse', p: S.c.map(function (q) { return [q[0], q[1], 1]; }) }, pid = 'so:' + S.t;
               var patL = function (s2) { return R.p.map(function (q) { return Object.assign(mkSx((S.k + q[0] + s2 + 24) % 12, q[1]), { d: q[2] }); }); };
-              var AR = SONG_ARR[S.t] || [INSTS[0][0], GENRE_DRUM[S.g] || ''], sInst = AR[0], sTone = AR[2] || EG_TONE[S.g];
+              var AR = SONG_ARR[S.t] || [st.inst || INSTS[0][0], GENRE_DRUM[S.g] || ''], sInst = AR[0], sTone = AR[2] || EG_TONE[S.g];
               var semi = moved ? (((x.shift + 6) % 12) - 6) : 0;
               var sOpts = { id: pid, bpm: R.bpm, ts: R.ts, feel: R.f, tone: sTone, inst: sInst, band: bandFor(AR[1], R.ts), ap: R.ap, u: R.u, hb: R.hb, mi: R.mi, mel: R.mel ? { start: R.mel.start, n: R.mel.n.map(function (q) { return [q[0] ? q[0] + semi : 0, q[1]]; }) } : null };
               var useR = function (list) { self.setState({ strummed: true, chords: list, focus: null, bpm: R.bpm, ts: R.ts, feel: R.f }); };
