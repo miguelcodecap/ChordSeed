@@ -446,6 +446,12 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
 .fo-atmo .fo-moon,.fo-atmo .fo-branch,.fo-atmo .fo-cloud{display:none!important}
 @media (max-width:640px){.fo-atmo{background:linear-gradient(180deg,rgba(5,11,8,.38) 0%,rgba(5,11,8,.7) 40%,rgba(5,11,8,.88) 100%),url('assets/img/brand/fondos/bosque-app-9x16.webp') center top/cover no-repeat}}
 .lr-dark{background:linear-gradient(180deg,rgba(15,29,22,.9),rgba(8,16,12,.95)),url('assets/img/brand/fondos/textura-luciernagas-1x1.webp') center/cover}
+/* luciérnagas y ambiente sobre el fondo */
+.fo-atmo .fo-fly:nth-of-type(2n){display:block}
+.fo-atmo .fo-fly{box-shadow:0 0 7px 2px rgba(240,230,130,.85),0 0 20px 7px rgba(232,200,90,.32)!important}
+.fo-atmo .fo-fly:nth-of-type(3n){background:#FFD98A;box-shadow:0 0 7px 2px rgba(255,200,110,.85),0 0 22px 8px rgba(240,170,70,.3)!important}
+.fo-atmo::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 380px at 18% 100%,rgba(232,190,90,.10),transparent 70%),radial-gradient(700px 320px at 85% 92%,rgba(232,200,110,.07),transparent 70%),radial-gradient(600px 300px at 70% 8%,rgba(200,222,228,.06),transparent 70%)}
+@media (max-width:640px){.fo-atmo .fo-fly:nth-of-type(4n){display:none}}
 </style>
 </helmet>
 
