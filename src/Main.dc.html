@@ -102,6 +102,8 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .sug-next{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 4px;padding:10px 12px 10px 14px;border-radius:14px;background:linear-gradient(90deg,rgba(111,211,156,.12),rgba(232,216,114,.08));border:1px solid rgba(111,211,156,.45);animation:gcIn .35s ease-out}
 .sug-next-t{font:500 13.5px/1.45 Figtree,sans-serif;color:#C9D6C6;min-width:0;flex:1 1 240px}.sug-next-t b{color:#BFF0D2}
 .sug-next-b{flex:none;min-height:38px;padding:0 16px;border-radius:12px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 14px Figtree,sans-serif;cursor:pointer}
+.dial-rec{align-self:flex-start;margin-top:8px;padding:5px 10px;border-radius:99px;border:1px dashed rgba(232,216,114,.55);background:rgba(232,216,114,.07);color:#F3E79A;font:600 12px Figtree,sans-serif;cursor:pointer;text-align:left}.dial-rec:hover{background:rgba(232,216,114,.16)}
+.dial-rec.ok{border-style:solid;border-color:rgba(111,211,156,.45);background:rgba(111,211,156,.08);color:#9FE3BC;cursor:default}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -592,6 +594,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div class="dial-mid"><span class="dial-val" aria-live="polite">{{cxName}}</span><span class="meter" aria-hidden="true"><sc-for list="{{cxMeter}}" as="b" hint-placeholder-count="6"><span style="{{b.style}}"></span></sc-for></span></div>
             <button class="dial-b" onClick="{{cxUp}}" disabled="{{cxMax}}" aria-label="{{cxUpLabel}}">+<sc-if value="{{cxUpPro}}" hint-placeholder-val="{{ false }}"><span class="dial-pro">PRO</span></sc-if></button>
           </div>
+          <button class="dial-rec {{cxRecCls}}" onClick="{{cxRecUse}}" title="{{cxRecTip}}">{{cxRecTxt}}</button>
         </div>
         <div class="dial lrn-host" data-g="sur"><sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_sur}}" aria-label="{{lrnTag_sur}}"><span class="lrn-tag">📖 {{lrnTag_sur}}</span></button></sc-if>
           <div class="dial-top"><span class="tipw" tabindex="0"><span class="lab">{{t.surTitle}}</span><span class="tip-i" aria-hidden="true">i</span><span class="tipbox" role="tooltip">{{surTip}}</span></span><span class="dial-eg">{{surEg}}</span></div>
@@ -600,6 +603,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div class="dial-mid"><span class="dial-val" aria-live="polite">{{surName}}</span><span class="meter" aria-hidden="true"><sc-for list="{{surMeter}}" as="b" hint-placeholder-count="3"><span style="{{b.style}}"></span></sc-for></span></div>
             <button class="dial-b" onClick="{{surUp}}" disabled="{{surMax}}" aria-label="{{surUpLabel}}">+<sc-if value="{{surUpPro}}" hint-placeholder-val="{{ false }}"><span class="dial-pro">PRO</span></sc-if></button>
           </div>
+          <button class="dial-rec {{surRecCls}}" onClick="{{surRecUse}}" title="{{surRecTip}}">{{surRecTxt}}</button>
         </div>
         <div class="dial lrn-host" data-g="count"><sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_count}}" aria-label="{{lrnTag_count}}"><span class="lrn-tag">📖 {{lrnTag_count}}</span></button></sc-if>
           <div class="dial-top"><span class="tipw" tabindex="0"><span class="lab">{{t.countTitle}}</span><span class="tip-i" aria-hidden="true">i</span><span class="tipbox" role="tooltip">{{countTip}}</span></span><span class="dial-eg">{{countEg}}</span></div>
@@ -608,6 +612,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div class="dial-mid"><span class="dial-val mono" aria-live="polite">{{countName}}</span><span class="meter" aria-hidden="true"><sc-for list="{{countMeter}}" as="b" hint-placeholder-count="8"><span style="{{b.style}}"></span></sc-for></span></div>
             <button class="dial-b" onClick="{{countUp}}" disabled="{{countMax}}" aria-label="{{countUpLabel}}">+<sc-if value="{{countUpPro}}" hint-placeholder-val="{{ false }}"><span class="dial-pro">PRO</span></sc-if></button>
           </div>
+          <button class="dial-rec {{countRecCls}}" onClick="{{countRecUse}}" title="{{countRecTip}}">{{countRecTxt}}</button>
         </div>
       </div>
       <sc-if value="{{cxAskShow}}" hint-placeholder-val="{{ false }}"><div class="askcard" role="dialog" aria-label="{{cxAskQ}}"><div style="display:flex;flex-direction:column;gap:4px;min-width:0"><b style="font-size:14px">{{cxAskQ}}</b><span class="mono" style="font-size:13px;color:#C5D3C6">{{cxAskPrev}}</span></div><div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" onClick="{{cxAskYes}}" style="min-height:42px;box-shadow:none">{{cxAskYesLab}}</button><button class="ghost" onClick="{{cxAskNo}}" style="min-height:42px">{{cxAskNoLab}}</button></div></div></sc-if>
@@ -3183,6 +3188,7 @@ function autoCorrelate(buf, sr) {
 }
 
 function mkSx(pc, sx) { var q = /^m(?!aj)/.test(sx) ? (sx === 'm7b5' ? 'dim' : 'm') : (sx.indexOf('dim') === 0 ? 'dim' : 'M'); var s2 = sx === 'M' ? '' : sx; return mkx(pc, q, s2); }
+var GENRE_SUR = { pop:1, rock:1, hard:1, metal:1, folk:0, neo:1, lofi:1, citypop:1, jazz:2, gospel:1, funk:1, blues:1, bossa:1, bolero:1, urbano:0, cine:2, clasico:0 };
 var GENRE_CX = { pop:0, rock:0, folk:0, neo:4, lofi:3, citypop:4, jazz:3, gospel:4, funk:4, blues:3, bossa:3, bolero:2, urbano:3, hard:0, metal:0, cine:1, clasico:0 };
 var GENRE_RHY = {
   pop:    [{ p:'D-DU-UDU', bpm:100, es:'El rasgueo pop clásico: abajo, abajo-arriba, arriba-abajo-arriba.', en:'The classic pop strum: down, down-up, up-down-up.' }, { p:'D-D-DUDU', bpm:96, es:'Variante más empujada para estribillos.', en:'A pushier variation for choruses.' }],
@@ -5267,6 +5273,7 @@ class Component extends DCLogic {
           backLab: gi > 0 ? LX('← Atrás', '← Back') : '', back: gi > 0 ? function () { self.gUnmark(GC_SUBS[gi - 1][1]); } : null,
           waitLab: LX('✓ Bien elegido. Puedes seguir probando; cuando estés listo, toca «Listo».', '✓ Nice pick. Keep trying options if you like; when you’re ready, tap “Done”.'),
           keep: function () { self.gMark(k); } };
+        if (k === 'cx' || k === 'sur') { var snG = (RE_STYLES[genre] || RE_STYLES.pop)[lang][0], rG = k === 'cx' ? (GENRE_CX[genre] || 0) : (GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1), nmG = (k === 'cx' ? CXS : SURS)[rG][es ? 0 : 1]; self._gc.text += ' ' + LX('Para tu estilo (', 'For your style (') + snG + LX(') lo que mejor suena es «', '), what sounds best is “') + nmG + LX('»: lo ves marcado con ★ debajo.', '”: it’s marked with ★ below.'); }
         if (k === 'add' && chs.length) {
           self._gc.key = 'add1:' + LX('es', 'en');
           self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
@@ -5289,6 +5296,14 @@ class Component extends DCLogic {
       sugNextHead: LX('Agregaste ', 'You added ') + (chs.length ? nm(chs[chs.length - 1]) : '') + '.', sugNextText: LX('Puedes agregar otro, o seguir con el siguiente paso: armar tu canción.', 'Add another, or move on to the next step: building your song.'),
       sugNextLab: LX('Siguiente paso →', 'Next step →'),
       sugNextGo: function () { self.gMark('sugs'); setTimeout(function () { self.gdJump(4); }, 30); },
+      cxRecTxt: (function () { var r = GENRE_CX[genre] != null ? GENRE_CX[genre] : 0, sn = (RE_STYLES[genre] || RE_STYLES.pop)[lang][0]; return st.cx === r ? LX('✓ Ideal para ', '✓ Right for ') + sn : LX('★ Para ', '★ For ') + sn + ': ' + CXS[r][es ? 0 : 1] + LX(' · Usar', ' · Use'); })(),
+      cxRecCls: st.cx === (GENRE_CX[genre] || 0) ? 'ok' : '', cxRecTip: LX('Lo que mejor suena en tu estilo', 'What sounds best in your style'),
+      cxRecUse: function () { var r = GENRE_CX[genre] || 0; if (st.cx !== r) self.setState({ cx: r }); },
+      surRecTxt: (function () { var r = GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1, sn = (RE_STYLES[genre] || RE_STYLES.pop)[lang][0]; return st.sur === r ? LX('✓ Ideal para ', '✓ Right for ') + sn : LX('★ Para ', '★ For ') + sn + ': ' + SURS[r][es ? 0 : 1] + LX(' · Usar', ' · Use'); })(),
+      surRecCls: st.sur === (GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1) ? 'ok' : '', surRecTip: LX('Lo que mejor suena en tu estilo', 'What sounds best in your style'),
+      surRecUse: function () { var r = GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1; if (st.sur === r) return; if (r === 2 && !st.isPro) { self.setState({ proMsg: T.proMsgSur }); return; } self.setState({ sur: r }); },
+      countRecTxt: st.count === 1 ? LX('✓ Ideal para empezar', '✓ Best to start') : LX('★ Para empezar: 1 acorde · Usar', '★ To start: 1 chord · Use'), countRecCls: st.count === 1 ? 'ok' : '', countRecTip: LX('Con 1 eliges acorde por acorde', 'With 1 you pick chord by chord'),
+      countRecUse: function () { if (st.count !== 1) self.setState({ count: 1 }); },
       gdTipsBtn: !!st.guided && !!st.gcOff && !st.lm, gdTipsLab: LX('Explicaciones', 'Tips'), gdTipsTip: LX('Vuelve a mostrar las explicaciones paso a paso', 'Show the step-by-step explanations again'),
       gdTipsOn: function () { try { localStorage.removeItem('cs_gcoff'); } catch (e) {} if (self._gcEl) self._gcEl._k = null; self.setState({ gcOff: false }); },
       gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
