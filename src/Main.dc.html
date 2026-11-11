@@ -99,6 +99,9 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gd-tip::after{content:'';position:absolute;right:46px;bottom:-7px;width:12px;height:12px;background:#F2E9C4;border-right:1px solid #E2CF78;border-bottom:1px solid #E2CF78;transform:rotate(45deg)}
 .gd-tip-x{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:#7D866F;font:400 18px/1 Figtree,sans-serif;cursor:pointer}
 @media (max-width:640px){.gd-tip{left:8px;right:8px;max-width:none}.gd-tip::after{right:56px}}
+.sug-next{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 4px;padding:10px 12px 10px 14px;border-radius:14px;background:linear-gradient(90deg,rgba(111,211,156,.12),rgba(232,216,114,.08));border:1px solid rgba(111,211,156,.45);animation:gcIn .35s ease-out}
+.sug-next-t{font:500 13.5px/1.45 Figtree,sans-serif;color:#C9D6C6;min-width:0;flex:1 1 240px}.sug-next-t b{color:#BFF0D2}
+.sug-next-b{flex:none;min-height:38px;padding:0 16px;border-radius:12px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 14px Figtree,sans-serif;cursor:pointer}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -764,6 +767,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_sugs}}" aria-label="{{lrnTag_sugs}}"><span class="lrn-tag">📖 {{lrnTag_sugs}}</span></button></sc-if>
         <div class="sec-h" style="display:flex;align-items:center;gap:10px"><button class="colbtn" onClick="{{col_sugs}}" aria-expanded="{{colExp_sugs}}"><span>{{colIco_sugs}}</span><span>{{colLab_sugs}}</span></button><span class="mono" style="{{st4Badge}}">{{st4Num}}</span><h2 class="h2">{{t.sugTitle}}</h2></div>
         <sc-if value="{{st4Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next4}}</span></div></sc-if>
+        <sc-if value="{{sugNextShow}}" hint-placeholder-val="{{ false }}"><div class="sug-next" role="status"><span class="sug-next-t"><b>✓ {{sugNextHead}}</b> {{sugNextText}}</span><button class="sug-next-b" onClick="{{sugNextGo}}">{{sugNextLab}}</button></div></sc-if>
         <sc-if value="{{noChords}}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:#9FB3A4;font-size:15px">{{t.noSug}}</p></sc-if>
         <div style="display:flex;flex-direction:column;gap:8px">
           <sc-for list="{{sugs}}" as="s" hint-placeholder-count="5">
@@ -4215,6 +4219,7 @@ class Component extends DCLogic {
       if (sig !== box._sig0 && gc.keepOk() && gc.k !== 'add') { box._chosen = true; var kb2 = box.querySelector('.gc-keep'); if (kb2) { kb2.classList.remove('gc-pulse'); void kb2.offsetWidth; kb2.classList.add('gc-pulse'); } }
     }
     box.classList.toggle('gc-pending', !!box._chosen && gc.keepOk());
+    var altBtn = box.querySelector('.gc-alt'); if (altBtn) altBtn.style.display = gc.alt ? '' : 'none';
     var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) { keepBtn.disabled = !gc.keepOk(); if (gc.keepLab && keepBtn.textContent !== gc.keepLab) keepBtn.textContent = gc.keepLab; keepBtn.style.display = gc.keepLab ? '' : 'none'; }
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
     ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = (gc.full ? r.height + 12 : Math.min(r.height + 12, 520)) + 'px';
@@ -5280,6 +5285,10 @@ class Component extends DCLogic {
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
       gTipShow: !!st.gTip && !!st.guided && view === 'gen', gTipHead: LX('¿Prefieres explorar a tu manera?', 'Rather explore on your own?'), gTipText: LX('Apaga «Modo guiado» aquí abajo y usa la app libremente. Puedes volver a encenderlo cuando quieras.', 'Turn off “Guided mode” right here and use the app freely. You can turn it back on anytime.'), gTipCloseLab: LX('Cerrar', 'Close'),
       gTipClose: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} self.setState({ gTip: false }); },
+      sugNextShow: !!st.addedSug && view === 'gen' && chs.length > 0 && !(st.gd || {}).sugs && !st.lm && (!st.guided || !!st.gcOff),
+      sugNextHead: LX('Agregaste ', 'You added ') + (chs.length ? nm(chs[chs.length - 1]) : '') + '.', sugNextText: LX('Puedes agregar otro, o seguir con el siguiente paso: armar tu canción.', 'Add another, or move on to the next step: building your song.'),
+      sugNextLab: LX('Siguiente paso →', 'Next step →'),
+      sugNextGo: function () { self.gMark('sugs'); setTimeout(function () { self.gdJump(4); }, 30); },
       gdTipsBtn: !!st.guided && !!st.gcOff && !st.lm, gdTipsLab: LX('Explicaciones', 'Tips'), gdTipsTip: LX('Vuelve a mostrar las explicaciones paso a paso', 'Show the step-by-step explanations again'),
       gdTipsOn: function () { try { localStorage.removeItem('cs_gcoff'); } catch (e) {} if (self._gcEl) self._gcEl._k = null; self.setState({ gcOff: false }); },
       gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
