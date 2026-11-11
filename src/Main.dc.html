@@ -54,7 +54,7 @@ details summary{cursor:pointer;list-style:none}
 .mg-in{opacity:0;animation:mgIn .55s ease-out forwards}
 @keyframes mgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.mg-star,.mg-pulse{animation:none!important}.mg-path{animation:none!important;stroke-dashoffset:0!important}.mg-in{animation:none!important;opacity:1!important}}
-html{scroll-padding-bottom:96px}
+html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bottom:130px}}
 .guide{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:14px;width:min(820px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px 10px 14px;border-radius:18px;background:rgba(9,18,14,.96);border:1px solid #3A5646;box-shadow:0 14px 40px rgba(0,0,0,.55)}
 .gd-dots{display:flex;gap:6px;flex:none}
 .gd-dot{width:28px;height:28px;border-radius:99px;border:1.5px solid #2F4A3B;background:#16271F;color:#9FB3A4;font:700 12px Figtree,sans-serif;cursor:pointer;padding:0}
@@ -62,9 +62,17 @@ html{scroll-padding-bottom:96px}
 .gd-txt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.3}.gd-txt b{font:700 14px Figtree,sans-serif;color:#F1F4EA}.gd-txt span{font:500 13px Figtree,sans-serif;color:#B5C7B8}
 .gd-go{flex:none;min-height:40px;padding:0 16px;border-radius:12px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 14px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .gd-flash{animation:gdFlash 1.6s ease-out 1}@keyframes gdFlash{0%{box-shadow:0 0 0 3px #E8D872,0 0 40px rgba(232,216,114,.45)}100%{box-shadow:0 0 0 0 rgba(232,216,114,0)}}
-@media (max-width:640px){.guide{bottom:8px;gap:10px;padding:8px 8px 8px 10px}.gd-dots{display:none}.gd-txt span{font-size:12px}.gd-go{min-height:38px;padding:0 12px;font-size:13px}}
+@media (max-width:640px){.guide{bottom:8px;gap:8px;padding:10px;flex-wrap:wrap}.gd-dots{display:none}.gd-txt{flex:1 1 100%}.gd-txt span{font-size:12px}.gd-go{flex:1;min-height:38px;padding:0 12px;font-size:13px}}
 .prog-hd{display:flex;flex-direction:column;gap:3px;min-width:0}.prog-sub{margin:-2px 0 0 42px;max-width:720px;font:italic 500 14px/1.5 Figtree,sans-serif;color:#A9BDAE;letter-spacing:.005em}
 @media (max-width:640px){.prog-sub{margin-left:0}}
+.mainwrap.guided > section:not(#stp-0), .mainwrap.guided > .tip, .mainwrap.guided #stp-0, .mainwrap.guided #stp-1, .mainwrap.guided #stp-2, .mainwrap.guided #stp-3, .mainwrap.guided #stp-4, .mainwrap.guided #stp-5{filter:grayscale(.9) brightness(.55);opacity:.45;transition:filter .6s ease,opacity .6s ease}
+.mainwrap.guided > section:not(#stp-0):hover, .mainwrap.guided > .tip:hover, .mainwrap.guided [id^="stp-"]:hover{filter:grayscale(.35) brightness(.85);opacity:.85}
+.mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
+.gd-mode{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #2F4A3B;background:transparent;color:#B5C7B8;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
+.gd-mode:hover{border-color:#E8D872;color:#F1F4EA}
+.gd-sw{position:relative;width:26px;height:15px;border-radius:99px;background:#2A3D33;transition:background .2s}.gd-sw i{position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#9FB3A4;transition:transform .2s,background .2s}
+.gd-mode.on .gd-sw{background:#6E6327}.gd-mode.on .gd-sw i{transform:translateX(11px);background:#F3E79A}
+@media (max-width:640px){.gd-mode{padding:0 8px;font-size:11px}.gd-mode .gd-lab-long{display:none}}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -482,7 +490,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
   <sc-if value="{{hasNavMsg}}" hint-placeholder-val="{{ false }}">
     <p role="status" style="max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:0 24px;font-size:14px;color:#F0E39A">{{navMsg}}</p>
   </sc-if>
-  <main class="mainwrap" style="max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:12px 24px 120px;display:flex;flex-direction:column;gap:20px">
+  <main class="mainwrap {{guideCls}}" style="max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:12px 24px 120px;display:flex;flex-direction:column;gap:20px">
     <section id="stp-0" aria-label="{{t.startTitle}}" class="start lrn-host {{st1Class}} {{colCls_start}}" style="display:flex;flex-direction:column;gap:12px;padding:16px 18px;border-radius:22px;background:linear-gradient(180deg,#11211A,#0C1712);border:1px solid #3B5A47">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_start}}" aria-label="{{lrnTag_start}}"><span class="lrn-tag">📖 {{lrnTag_start}}</span></button></sc-if>
       <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_start}}" aria-expanded="{{colExp_start}}"><span>{{colIco_start}}</span><span>{{colLab_start}}</span></button>
@@ -1932,6 +1940,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><div class="gd-dots"><sc-for list="{{gdSteps}}" as="g" hint-placeholder-count="5"><button class="gd-dot {{g.cls}}" onClick="{{g.go}}" title="{{g.label}}" aria-label="{{g.label}}">{{g.n}}</button></sc-for></div></sc-if>
     <div class="gd-txt"><b>{{gdHead}}</b><span>{{gdText}}</span></div>
     <button class="gd-go" onClick="{{gdGo}}">{{gdGoLab}}</button>
+    <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><button class="gd-mode {{gdModeCls}}" onClick="{{gdMode}}" aria-pressed="{{gdModePressed}}" title="{{gdModeTip}}"><span class="gd-sw" aria-hidden="true"><i></i></span>{{gdModeLab}}</button></sc-if>
   </nav></sc-if>
 
   <svg viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:110px;margin-top:auto">
@@ -3694,6 +3703,7 @@ function cxApply(c, lvl, tonic) {
   var T = q === 'm' ? ['m', 'madd9', 'm6', 'm7', 'm9', 'm11'] : (q === 'dim' ? ['dim', 'dim', 'dim', 'm7b5', 'm7b5', 'm7b5'] : (dom ? ['', 'add9', '6', '7', '9', '13'] : ['', 'add9', '6', 'maj7', 'maj9', 'maj13']));
   return Object.assign(mkSx(c.pc, T[lvl] || T[0] || ''), { d: c.d });
 }
+function loadGuided() { try { return window.localStorage.getItem('cs_guided') !== '0'; } catch (e) { return true; } }
 function loadOnb() { try { return window.localStorage.getItem('chordseed.onb.v1') === '1'; } catch (e) { return false; } }
 function loadLrnSeen() { try { return window.localStorage.getItem('chordseed.lrnseen.v1') === '1'; } catch (e) { return false; } }
 function storeFlag(k) { try { window.localStorage.setItem(k, '1'); } catch (e) {} }
@@ -3818,7 +3828,7 @@ class Component extends DCLogic {
 
   constructor(props) {
     super(props);
-    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
+    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
   }
   _bus() {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -4267,6 +4277,7 @@ class Component extends DCLogic {
     var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[(st.rhyIdx || 0) % gRhyList.length];
     var stepDone = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
+    var guidedOn = !!st.guided && view === 'gen' && stepNow < 5 && !st.lm;
     var badge = function (i) { var done = stepDone[i], now = stepNow === i; return 'flex:none;width:32px;height:32px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;' + (done ? 'background:#0F3A2C;color:#6FD39C;border:1.5px solid #6FD39C' : (now ? 'background:#E8D872;color:#0E140A;border:1.5px solid #E8D872' : 'background:#16271F;color:#9FB3A4;border:1.5px solid #2F4A3B')); };
     var gTonicMaj = k.mode === 'maj' ? k.t : (k.t + 3) % 12, gTonicMin = k.mode === 'min' ? k.t : (k.t + 9) % 12;
     var hvr = function (id) { return {
@@ -5072,6 +5083,9 @@ class Component extends DCLogic {
       anaMine: function () { self.setState({ aChords: chs.slice(), view: 'ana' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (x) {} },
       backGenLab: LX('Volver a tu progresión', 'Back to your progression'), backGen: function () { self.setState({ view: 'gen' }); },
       modCallTxt: (function () { var out1 = chs.filter(function (c) { return !findIn(pool, k.t, c); }); return out1.length ? LX('«' + out1.map(nm).join(', ') + '» está fuera de tu tonalidad (' + keyName + ') y puede sonar raro junto a los demás. ¿Quieres usarlo igual? El Modulador te da acordes puente para que el cambio suene natural.', '“' + out1.map(nm).join(', ') + '” is outside your key (' + keyName + ') and may sound odd next to the others. Want to keep it? The key changer gives you bridge chords so the change sounds natural.') : LX('¿Quieres poner un acorde tuyo pero junto al que ya tienes suena mal? Usa el Modulador: te da acordes puente para pasar de uno a otro sin que suene forzado.', 'Want to add a chord of yours but it sounds wrong next to the ones you have? Use the key changer: it gives you bridge chords so it doesn’t sound forced.'); })(),
+      guideCls: guidedOn ? 'guided gn-' + stepNow : '',
+      gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
+      gdMode: function () { var v = !st.guided; try { localStorage.setItem('cs_guided', v ? '1' : '0'); } catch (e) {} self.setState({ guided: v }); if (v && stepNow < 5) self.gdJump(stepNow); },
       gdShow: !st.lm && !(!!st.modTip && view === 'gen' && chs.length > 0 && !st.pickerOpen) && !st.acctOpen && view !== 'learn', gdIsGen: view === 'gen', gdAria: LX('Guía: tu siguiente paso', 'Guide: your next step'),
       gdSteps: GD_STEPS.map(function (g, i) { return { n: stepDone[i] ? '✓' : String(i + 1), cls: stepDone[i] ? 'done' : (stepNow === i ? 'now' : ''), label: (i + 1) + '. ' + LX(g[0], g[1]), go: function () { self.gdJump(i); } }; }),
       gdHead: view !== 'gen' ? LX('Estás en: ', 'You are in: ') + ((NAV.filter(function (n) { return n[0] === view; })[0] || [0, '', ''])[LX(1, 2)]) : (stepNow < 5 ? LX('Paso ', 'Step ') + (stepNow + 1) + LX(' de 5 · ', ' of 5 · ') + LX(GD_STEPS[stepNow][0], GD_STEPS[stepNow][1]) : LX('¡Tu canción ya tiene forma!', 'Your song is taking shape!')),
