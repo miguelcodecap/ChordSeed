@@ -54,7 +54,7 @@ html = f'''<!doctype html>
 <script>
 ChordseedRuntime.define('Diagram', {js(blobs(dt))}, {js(ds)});
 ChordseedRuntime.define('Main', {js(blobs(mt))}, {js(blobs(ms))});
-ChordseedRuntime.mount('Main', document.getElementById('app'));
+window.__cs = ChordseedRuntime.mount('Main', document.getElementById('app'));
 </script>
 </body>
 </html>
