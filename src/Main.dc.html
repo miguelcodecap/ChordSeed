@@ -67,7 +67,7 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 @media (max-width:640px){.prog-sub{margin-left:0}}
 .mainwrap.guided > section:not(#stp-0), .mainwrap.guided > .tip, .mainwrap.guided #stp-0, .mainwrap.guided #stp-1, .mainwrap.guided #stp-2, .mainwrap.guided #stp-3, .mainwrap.guided #stp-4, .mainwrap.guided #stp-5{filter:grayscale(.9) brightness(.55);opacity:.45;transition:filter .6s ease,opacity .6s ease}
 .mainwrap.guided > section:not(#stp-0):hover, .mainwrap.guided > .tip:hover, .mainwrap.guided [id^="stp-"]:hover{filter:grayscale(.35) brightness(.85);opacity:.85}
-.mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
+.mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-4, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
 .gd-mode{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #2F4A3B;background:transparent;color:#B5C7B8;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .gd-mode:hover{border-color:#E8D872;color:#F1F4EA}
 .gd-sw{position:relative;width:26px;height:15px;border-radius:99px;background:#2A3D33;transition:background .2s}.gd-sw i{position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#9FB3A4;transition:transform .2s,background .2s}
@@ -2756,8 +2756,9 @@ var GC_SUBS = [
   [1, 'sur', '[data-g="sur"]', '¿Quieres sorpresas?', 'Want surprises?', '«None» solo usa acordes de la familia de tu canción. «Some» de vez en cuando mete uno de afuera que da un giro inesperado. Ajusta con − y + y toca «Listo».', '“None” only uses chords from your song’s family. “Some” now and then adds one from outside for an unexpected twist. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'count', '[data-g="count"]', '¿Cuántos acordes te sugerimos?', 'How many chords should we suggest?', 'Con 1 eliges el siguiente acorde paso a paso. Con más, te proponemos frases completas de varios acordes de una vez. Usa + las veces que quieras y luego toca «Listo».', 'With 1 you pick the next chord step by step. With more, we suggest whole phrases of several chords at once. Press + as many times as you like, then tap “Done”.', 'Así está bien', 'This is fine'],
   [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below.', '', ''],
-  [3, 'sugs', '#stp-3 .sec-h', 'Te ayudamos: estos acordes encajan', 'Here’s some help: these chords fit', 'Estos acordes encajan después de los tuyos. Toca ▶ para oír cómo suena con tu progresión y + para agregarlo.', 'These chords fit after yours. Tap ▶ to hear how it sounds with your progression and + to add it.', 'Saltar este paso', 'Skip this step'],
-  [4, 'fork', '#stp-5 .sec-h', '¡Tu progresión ya tiene forma!', 'Your progression is taking shape!', '¿Sigo explicándote esta página (las canciones reales que usan tus acordes) o prefieres conocer la siguiente herramienta, también con su explicación?', 'Shall I keep explaining this page (the real songs that use your chords), or would you rather meet the next tool, also explained?', '', ''],
+  [3, 'sugs', '#stp-3 .sec-h', 'Te ayudamos: estos acordes encajan', 'Here’s some help: these chords fit', 'Estos acordes encajan después de los tuyos, ordenados del más recomendado al menos. Toca ▶ para oír cómo suena con tu progresión y + en el que te guste para agregarlo.', 'These chords fit after yours, best match first. Tap ▶ to hear how it sounds with your progression and + on the one you like to add it.', 'Saltar este paso', 'Skip this step'],
+  [4, 'song', '#stp-4 .sec-h', 'Arma tu canción', 'Build your song', 'Tu progresión ahora es la parte A de tu canción. Toca «▶ Play the whole song» para escucharla con banda, o crea más partes (verso, coro, puente…) con «+ New part».', 'Your progression is now part A of your song. Tap “▶ Play the whole song” to hear it with a band, or create more parts (verse, chorus, bridge…) with “+ New part”.', '', ''],
+  [4, 'fork', '#stp-5 .sec-h', '¿Seguimos?', 'Shall we continue?', 'Justo aquí abajo están las canciones reales que usan tus acordes. ¿Te las explico, o prefieres conocer la siguiente herramienta, también con su explicación?', 'Right below are real songs that use your chords. Shall I walk you through them, or would you rather meet the next tool, also explained?', '', ''],
   [4, 'songs', '#stp-5 .sec-h', 'Canciones que usan tus acordes', 'Songs that use your chords', 'Escucha canciones reales con tu misma progresión. Toca ▶ para oírlas con su ritmo, o usa una como parte nueva de tu canción.', 'Hear real songs with your same progression. Tap ▶ to hear them with their rhythm, or use one as a new part of your song.', 'Saltar este paso', 'Skip this step']
 ];
 var GD_STEPS = [
@@ -2765,7 +2766,7 @@ var GD_STEPS = [
   ['Cómo debe sonar', 'How it should feel', 'Elige una emoción: las sugerencias se adaptan a ella.', 'Pick a mood: the suggestions adapt to it.', 'stp-1', 'snd'],
   ['Tus acordes', 'Your chords', 'Agrega los acordes que tengas, o pide ayuda para el siguiente.', 'Add the chords you have, or ask for help with the next one.', 'stp-2', 'prog'],
   ['El siguiente acorde', 'The next chord', 'Escucha las sugerencias con ▶ y agrega una con +.', 'Listen to the suggestions with ▶ and add one with +.', 'stp-3', 'sugs'],
-  ['Canciones reales', 'Real songs', 'Escucha canciones con tus acordes y toma ideas.', 'Hear songs that use your chords and borrow ideas.', 'stp-5', 'songs']
+  ['Tu canción', 'Your song', 'Escúchala completa, agrega partes y mira canciones reales con tus acordes.', 'Play it in full, add parts and see real songs with your chords.', 'stp-4', 'struct']
 ];
 var NAV = [
   ['gen','Generador de acordes','Chord generator',false,
@@ -3915,8 +3916,11 @@ class Component extends DCLogic {
       var heavy = inst === 'eguitar' && (EG_NOW === 'dist' || EG_NOW === 'metal'), wide = inst === 'eguitar' && (EG_NOW === 'dist' || EG_NOW === 'metal' || EG_NOW === 'crunch');
       var ts = BAR_E[o.ts] ? o.ts : '4/4', barE = BAR_E[ts], bpm = o.bpm || 90, comp = ts === '6/8' || ts === '12/8';
       var e8 = comp ? 60 / bpm / 3 : 60 / bpm / 2, s16 = e8 / 2, beat = comp ? 3 * e8 : 2 * e8;
-      var feel = inst === 'flute' ? 'arp' : (FEELS[o.feel] ? o.feel : 'pulse'), pat = FEELS[feel].p[ts] || new Array(barE + 1).join('x');
-      var swing = feel === 'swing';
+      var feel = inst === 'flute' ? 'arp' : (FEELS[o.feel] ? o.feel : 'pulse');
+      if (feel === 'style' && FEELS.style.arpAll) feel = 'arp';
+      var pat = FEELS[feel].p[ts] || new Array(barE + 1).join('x');
+      var SP = feel === 'style' && ts === '4/4' ? FEELS.style.sp : null;
+      var swing = feel === 'swing' || (feel === 'style' && FEELS.style.swing);
       var t0 = ctx.currentTime + 0.1, pos = 0;
       if (o.mel && o.mel.start < 0) t0 += -o.mel.start * beat;
       var strike = function (m, time, len, vel, ring, mute) {
@@ -3948,6 +3952,17 @@ class Component extends DCLogic {
             if (ring) dur = Math.max(dur, 1.4);
             var accent = bp === 0 ? 0.1 : 0;
             if (heavy && feel === 'drive' && e !== 0 && bp % 4 !== 0 && !ring) { egPick(ctx, out, time, wide); notes.slice(0, 2).forEach(function (m, k) { strike(m, time + k * 0.003, Math.min(dur, 0.11), 0.7, false, true); }); return; }
+            if (SP) {
+              var ch8 = SP.charAt(bp), up4 = notes.length > 3 ? notes.slice(1) : notes;
+              if (inst === 'eguitar' && ch8 !== 'B' && ch8 !== 'A') egPick(ctx, out, time, wide);
+              if (ch8 === 'm') { notes.slice(0, 3).forEach(function (m, k) { strike(m, time + k * 0.004, Math.min(dur, e8 * 0.45), 0.6, false, true); }); return; }
+              if (ch8 === 'B') { strike(notes[0], time, Math.max(dur, e8 * 1.6), 0.8, ring); return; }
+              if (ch8 === 'C') { up4.forEach(function (m, k) { strike(m, time + k * (gtr ? 0.008 : 0), Math.max(dur, e8 * 1.2), 0.62, ring); }); return; }
+              if (ch8 === 'A') { strike(arpSeq[Math.floor(e / 2) % arpSeq.length], time, Math.max(dur, e8 * 3), 0.7 + accent, ring); return; }
+              if (ch8 === 'U') { (gtr ? notes.slice(-4).reverse() : up4).forEach(function (m, k) { strike(m, time + k * (gtr ? 0.009 : 0), dur, 0.55, ring); }); return; }
+              notes.forEach(function (m, k) { strike(m, time + k * (gtr ? (heavy ? 0.004 : 0.011) : 0), dur, 0.76 + accent, ring); });
+              return;
+            }
             if (inst === 'eguitar') egPick(ctx, out, time, wide);
             if (feel === 'arp') { strike(arpSeq[Math.floor(e / 2) % arpSeq.length], time, Math.max(dur, e8 * 3), 0.7 + accent, ring); }
             else if (feel === 'off' && pat.charAt(bp) !== 'x') { if (!o.band) strike(notes[0], time, dur, 0.85, ring); }
@@ -4133,7 +4148,7 @@ class Component extends DCLogic {
   gMark(k) { var g = Object.assign({}, this.state.gd || {}); if (g[k]) return; g[k] = true; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); }
   gMarkMany(ks, extra) { var g = Object.assign({}, this.state.gd || {}); ks.forEach(function (k) { g[k] = true; }); delete g.tourDone; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState(Object.assign({ gd: g }, extra || {})); }
   gUnmark(k) { var g = Object.assign({}, this.state.gd || {}), i = -1; GC_SUBS.forEach(function (x, j) { if (x[1] === k) i = j; }); GC_SUBS.forEach(function (x, j) { if (j >= i) delete g[x[1]]; }); this._gcPend = null; if (this._gcEl) this._gcEl._hid = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); var self = this; setTimeout(function () { var tg = self._gc && document.querySelector(self._gc.sel); if (tg) try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 80); }
-  gSig(k) { var st = this.state, n = (st.chords || []).length; return k === 'inst' ? st.inst : k === 'genre' ? st.reStyle : k === 'mood' ? st.mood : k === 'cx' ? st.cx : k === 'sur' ? st.sur : k === 'count' ? st.count : k === 'add' ? n : k === 'sugs' ? n + '|' + !!st.addedSug : k === 'songs' ? String(!!st.strummed) + (st.playing ? st.playing.id : '') : ''; }
+  gSig(k) { var st = this.state, n = (st.chords || []).length; return k === 'inst' ? st.inst : k === 'genre' ? st.reStyle : k === 'mood' ? st.mood : k === 'cx' ? st.cx : k === 'sur' ? st.sur : k === 'count' ? st.count : k === 'add' ? n : k === 'sugs' ? n + '|' + !!st.addedSug : k === 'songs' ? String(!!st.strummed) + (st.playing ? st.playing.id : '') : k === 'song' ? (st.playing ? st.playing.id : '') + '|' + JSON.stringify(st.form || []) : ''; }
   gcTick() {
     var self = this, gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
@@ -4364,6 +4379,9 @@ class Component extends DCLogic {
     } else if (tNear >= 0 && tTun.notes[tNear] !== undefined) { tNoteName = spell(tTun.notes[tNear] % 12, true, st.lat); tStatusText = T.tRefPlaying; }
     var genre = st.reStyle || 'pop';
     var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[(st.rhyIdx || 0) % gRhyList.length];
+    (function () { var sn = (RE_STYLES[genre] || RE_STYLES.pop), allA = /^[A-]+$/.test(gRhy.p);
+      FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing,
+        p: { '4/4': gRhy.p.replace(/[^-]/g, 'x'), '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
     var gd = st.gd || {}, gOn = !!st.guided;
     var stepDone = gOn ? [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 1, !!gd.sugs, !!gd.songs] : [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
@@ -4391,7 +4409,7 @@ class Component extends DCLogic {
     var stopTxt = LX('Detener', 'Stop');
     var tsN = BAR_E[st.ts] ? st.ts : '4/4', barEN = BAR_E[tsN];
     var bpmN = st.bpm || ((GENRE_RHY[genre] || [])[0] || { bpm: 90 }).bpm;
-    var feelN = FEELS[st.feel] ? st.feel : (GENRE_FEEL[genre] || 'pulse');
+    var feelN = FEELS[st.feel] ? st.feel : 'style';
     var e8N = (tsN === '6/8' || tsN === '12/8') ? 60 / bpmN / 3 : 60 / bpmN / 2;
     var LETS = 'ABCDEFGH'.split('');
     var partsSt = st.parts || {}, editP = st.editPart || 'A';
@@ -4504,11 +4522,14 @@ class Component extends DCLogic {
       var bE = BAR_E[ts] || 8, pat = (FEELS[feel] && FEELS[feel].p[ts]) || new Array(bE + 1).join('x');
       var comp = ts === '6/8' || ts === '12/8', per = comp ? 3 : 2, g = isGtr(ins), heavy = ins === 'eguitar' && (tone === 'dist' || tone === 'metal');
       if (ins === 'flute') feel = 'arp';
+      if (feel === 'style' && FEELS.style.arpAll) feel = 'arp';
+      var SPc = feel === 'style' && ts === '4/4' ? FEELS.style.sp : null;
       var used = {};
       var cells = Array.from({ length: bE }, function (_, j) {
         var on = feel === 'long' ? j === 0 : pat.charAt(j) === 'x', bs = j % per === 0;
         var sym = '·';
-        if (feel === 'off' && !on && bs) sym = 'B';
+        if (SPc) { var cc = SPc.charAt(j); sym = cc === '-' ? '·' : cc === 'D' ? (g ? '↓' : '●') : cc === 'U' ? (g ? '↑' : '●') : cc === 'm' ? '×' : cc === 'B' ? 'B' : cc === 'C' ? '●' : cc === 'A' ? '♪' : '●'; }
+        else if (feel === 'off' && !on && bs) sym = 'B';
         else if (on) sym = feel === 'arp' ? '♪' : (feel === 'off' ? (g ? '↑' : '●') : (heavy && feel === 'drive' && j % 4 !== 0 ? '×' : (g ? (bs || feel === 'long' || j % 2 === 0 ? '↓' : '↑') : '●')));
         used[sym] = 1;
         var cnt = bs ? String(j / per + 1) : (comp ? '' : (LX('y', '&')));
@@ -5211,9 +5232,9 @@ class Component extends DCLogic {
           self._gc.keepOk = function () { return true; };
           if (st.pickerOpen) { self._gc.sel = '.cs-picker'; self._gc.full = true; self._gc.up = false; }
         } else if (k === 'add') { self._gc.keepLab = ''; self._gc.keepOk = function () { return false; }; }
-        if (k === 'sugs' && st.addedSug) self._gc.keepLab = LX('Listo, siguiente paso →', 'Done, next step →');
-        if (k === 'songs' && st.strummed) self._gc.keepLab = LX('Terminar ✓', 'Finish ✓');
-        if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['fork', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
+        if (k === 'sugs') { if (st.addedSug) self._gc.keepLab = LX('Listo, siguiente paso →', 'Done, next step →'); else { self._gc.keepLab = ''; self._gc.keepOk = function () { return !!self.state.addedSug; }; self._gc.altLab = LX('Seguir sin agregar →', 'Continue without adding →'); self._gc.alt = function () { self.gMark('sugs'); }; } }
+        if (k === 'songs') { if (st.strummed) self._gc.keepLab = LX('Terminar la guía ✓', 'Finish the guide ✓'); else { self._gc.keepLab = ''; self._gc.keepOk = function () { return !!self.state.strummed; }; self._gc.altLab = LX('Terminar la guía ✓', 'Finish the guide ✓'); self._gc.alt = function () { self.gMark('songs'); }; } }
+        if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['song', 'fork', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         return 1;
       })(),
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
@@ -5342,7 +5363,7 @@ class Component extends DCLogic {
       rTap: function () { var now = Date.now(), tp = (self._taps || []).filter(function (x) { return now - x < 2500; }); tp.push(now); self._taps = tp; if (tp.length >= 3) { var d = 0; for (var q = 1; q < tp.length; q++) d += tp[q] - tp[q - 1]; var v = Math.round(60000 / (d / (tp.length - 1))); if (v >= 30 && v <= 260) self.setState({ bpm: v, bpmDraft: null }); } },
       rSlowerLabel: LX('Más lento', 'Slower'), rFasterLabel: LX('Más rápido', 'Faster'),
       rMeters: ['4/4', '3/4', '6/8', '5/4'].map(function (m) { var on = tsN === m; return { label: m, pressed: on ? 'true' : 'false', style: seg(on), pick: function () { self.setState({ ts: m }); } }; }),
-      rFeels: Object.keys(FEELS).map(function (f) { var on = feelN === f; return { label: FEELS[f][lang], hint: FEELS[f][LX('des', 'den')], pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.setState({ feel: f }); if (chs.length) self.playArr(itemsOf(editP, -1), optsN('mine', { feel: f, force: true })); } }; }),
+      rFeels: ['style'].concat(Object.keys(FEELS).filter(function (f) { return f !== 'style'; })).map(function (f) { var on = feelN === f; return { label: FEELS[f][lang], hint: FEELS[f][LX('des', 'den')], pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.setState({ feel: f }); if (chs.length) self.playArr(itemsOf(editP, -1), optsN('mine', { feel: f, force: true })); } }; }),
       rBandLab: LX('Acompañamiento', 'Backing'),
       rBandText: (st.band === false ? (LX('Sin batería ni bajo', 'No drums or bass')) : (GENRE_DRUM[genre] ? (LX('🥁 Con batería y bajo', '🥁 With drums & bass')) : (LX('Este género va sin batería', 'No drums in this genre')))),
       rBandPressed: st.band === false ? 'false' : 'true', rBandStyle: pill(st.band !== false && !!GENRE_DRUM[genre]),
