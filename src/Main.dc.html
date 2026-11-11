@@ -2755,15 +2755,15 @@ var GC_SUBS = [
   [1, 'cx', '[data-g="cx"]', '¿Acordes simples o con más color?', 'Simple chords or more color?', '«Triads» son los acordes básicos de 3 notas, ideales para empezar. Con + les sumas notas (como 7 o 9) que suenan más ricas y jazzeras. Ajusta con − y + y toca «Listo».', '“Triads” are basic 3-note chords, perfect to start. Press + to add notes (like 7 or 9) that sound richer and jazzier. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'sur', '[data-g="sur"]', '¿Quieres sorpresas?', 'Want surprises?', '«None» solo usa acordes de la familia de tu canción. «Some» de vez en cuando mete uno de afuera que da un giro inesperado. Ajusta con − y + y toca «Listo».', '“None” only uses chords from your song’s family. “Some” now and then adds one from outside for an unexpected twist. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'count', '[data-g="count"]', '¿Cuántos acordes te sugerimos?', 'How many chords should we suggest?', 'Con 1 eliges el siguiente acorde paso a paso. Con más, te proponemos frases completas de varios acordes de una vez. Usa + las veces que quieras y luego toca «Listo».', 'With 1 you pick the next chord step by step. With more, we suggest whole phrases of several chords at once. Press + as many times as you like, then tap “Done”.', 'Así está bien', 'This is fine'],
-  [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo. Con 2 o más acordes, toca «Listo».', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below. Once you have 2 or more, tap “Done”.', '', ''],
-  [3, 'fork', '#stp-3 .sec-h', '¡Ya tienes tu progresión!', 'Your progression is ready!', '¿Sigo explicándote esta página (cómo elegir el siguiente acorde y las canciones reales que usan tus acordes) o prefieres conocer la siguiente herramienta, también con su explicación?', 'Shall I keep explaining this page (how to pick the next chord and the real songs that use your chords), or would you rather meet the next tool, also explained?', '', ''],
-  [3, 'sugs', '#stp-3 .sec-h', 'Escucha y elige el siguiente', 'Listen and pick the next one', 'Estos acordes encajan después de los tuyos. Toca ▶ para oír cómo suena con tu progresión y + para agregarlo.', 'These chords fit after yours. Tap ▶ to hear how it sounds with your progression and + to add it.', 'Saltar este paso', 'Skip this step'],
+  [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below.', '', ''],
+  [3, 'sugs', '#stp-3 .sec-h', 'Te ayudamos: estos acordes encajan', 'Here’s some help: these chords fit', 'Estos acordes encajan después de los tuyos. Toca ▶ para oír cómo suena con tu progresión y + para agregarlo.', 'These chords fit after yours. Tap ▶ to hear how it sounds with your progression and + to add it.', 'Saltar este paso', 'Skip this step'],
+  [4, 'fork', '#stp-5 .sec-h', '¡Tu progresión ya tiene forma!', 'Your progression is taking shape!', '¿Sigo explicándote esta página (las canciones reales que usan tus acordes) o prefieres conocer la siguiente herramienta, también con su explicación?', 'Shall I keep explaining this page (the real songs that use your chords), or would you rather meet the next tool, also explained?', '', ''],
   [4, 'songs', '#stp-5 .sec-h', 'Canciones que usan tus acordes', 'Songs that use your chords', 'Escucha canciones reales con tu misma progresión. Toca ▶ para oírlas con su ritmo, o usa una como parte nueva de tu canción.', 'Hear real songs with your same progression. Tap ▶ to hear them with their rhythm, or use one as a new part of your song.', 'Saltar este paso', 'Skip this step']
 ];
 var GD_STEPS = [
   ['Tu sonido', 'Your sound', 'Elige tu instrumento y tu estilo.', 'Choose your instrument and style.', 'stp-0', 'start'],
   ['Cómo debe sonar', 'How it should feel', 'Elige una emoción: las sugerencias se adaptan a ella.', 'Pick a mood: the suggestions adapt to it.', 'stp-1', 'snd'],
-  ['Tus acordes', 'Your chords', 'Agrega al menos dos acordes o empieza con una idea.', 'Add at least two chords, or start from an idea.', 'stp-2', 'prog'],
+  ['Tus acordes', 'Your chords', 'Agrega los acordes que tengas, o pide ayuda para el siguiente.', 'Add the chords you have, or ask for help with the next one.', 'stp-2', 'prog'],
   ['El siguiente acorde', 'The next chord', 'Escucha las sugerencias con ▶ y agrega una con +.', 'Listen to the suggestions with ▶ and add one with +.', 'stp-3', 'sugs'],
   ['Canciones reales', 'Real songs', 'Escucha canciones con tus acordes y toma ideas.', 'Hear songs that use your chords and borrow ideas.', 'stp-5', 'songs']
 ];
@@ -4147,7 +4147,7 @@ class Component extends DCLogic {
       var row = mk('div', 'gc-row');
       if (gc.back) { var bb = mk('button', 'gc-back', gc.backLab); bb.type = 'button'; bb.addEventListener('click', function () { var g = self._gc; if (g && g.back) g.back(); }); row.appendChild(bb); }
       if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
-      var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
+      var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; if (!gc.keepLab) kb.style.display = 'none'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
       box.appendChild(row);
       var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box._hid = box._k; box.style.display = 'none'; ring.style.display = 'none'; }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
@@ -4155,13 +4155,14 @@ class Component extends DCLogic {
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
     }
     // auto-advance: a change starts a short countdown; another change restarts it
+    var pEl = box.querySelector('p'); if (pEl && pEl.textContent !== gc.text) pEl.textContent = gc.text;
     var sig = this.gSig(gc.k), DL = { inst: 1700, genre: 1700, mood: 1900, cx: 2300, sur: 2300, count: 2300, add: 3200, sugs: 2200, songs: 2600 };
     if (sig !== box._sigL) {
       box._sigL = sig;
-      if (sig !== box._sig0 && gc.keepOk()) { box._chosen = true; var kb2 = box.querySelector('.gc-keep'); if (kb2) { kb2.classList.remove('gc-pulse'); void kb2.offsetWidth; kb2.classList.add('gc-pulse'); } }
+      if (sig !== box._sig0 && gc.keepOk() && gc.k !== 'add') { box._chosen = true; var kb2 = box.querySelector('.gc-keep'); if (kb2) { kb2.classList.remove('gc-pulse'); void kb2.offsetWidth; kb2.classList.add('gc-pulse'); } }
     }
     box.classList.toggle('gc-pending', !!box._chosen && gc.keepOk());
-    var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) keepBtn.disabled = !gc.keepOk();
+    var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) { keepBtn.disabled = !gc.keepOk(); if (gc.keepLab && keepBtn.textContent !== gc.keepLab) keepBtn.textContent = gc.keepLab; keepBtn.style.display = gc.keepLab ? '' : 'none'; }
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
     ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = Math.min(r.height + 12, 520) + 'px';
     box.style.display = 'block';
@@ -4364,7 +4365,7 @@ class Component extends DCLogic {
     var genre = st.reStyle || 'pop';
     var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[(st.rhyIdx || 0) % gRhyList.length];
     var gd = st.gd || {}, gOn = !!st.guided;
-    var stepDone = gOn ? [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 2, !!gd.sugs, !!gd.songs] : [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
+    var stepDone = gOn ? [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 1, !!gd.sugs, !!gd.songs] : [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
     var guidedOn = !!st.guided && view === 'gen' && stepNow < 5 && !st.lm;
     var badge = function (i) { var done = stepDone[i], now = stepNow === i; return 'flex:none;width:32px;height:32px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;' + (done ? 'background:#0F3A2C;color:#6FD39C;border:1.5px solid #6FD39C' : (now ? 'background:#E8D872;color:#0E140A;border:1.5px solid #E8D872' : 'background:#16271F;color:#9FB3A4;border:1.5px solid #2F4A3B')); };
@@ -5200,7 +5201,19 @@ class Component extends DCLogic {
           backLab: gi > 0 ? LX('← Atrás', '← Back') : '', back: gi > 0 ? function () { self.gUnmark(GC_SUBS[gi - 1][1]); } : null,
           waitLab: LX('✓ Bien elegido. Puedes seguir probando; cuando estés listo, toca «Listo».', '✓ Nice pick. Keep trying options if you like; when you’re ready, tap “Done”.'),
           keep: function () { self.gMark(k); } };
-        if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['fork', 'sugs', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
+        if (k === 'add' && chs.length && st.pickerOpen) { self._gc = null; return 0; }
+        if (k === 'add' && chs.length) {
+          self._gc.key = 'add1:' + LX('es', 'en');
+          self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
+          self._gc.text = LX('Ya tienes: ', 'So far: ') + chs.map(nm).join(' – ') + LX('. Si sabes cuál sigue, agrégalo. Si no, te ayudamos: te sugerimos acordes que encajan con tu estilo y tu emoción.', '. If you know what comes next, add it. If not, we’ll help: we’ll suggest chords that fit your style and mood.');
+          self._gc.altLab = LX('Sí, agregar otro', 'Yes, add another');
+          self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker') || document.querySelector('#stp-2 .addtile'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
+          self._gc.keepLab = LX('No, ayúdame →', 'No, help me →');
+          self._gc.keepOk = function () { return true; };
+        } else if (k === 'add') { self._gc.keepLab = ''; self._gc.keepOk = function () { return false; }; }
+        if (k === 'sugs' && st.addedSug) self._gc.keepLab = LX('Listo, siguiente paso →', 'Done, next step →');
+        if (k === 'songs' && st.strummed) self._gc.keepLab = LX('Terminar ✓', 'Finish ✓');
+        if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['fork', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         return 1;
       })(),
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
