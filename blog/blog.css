@@ -47,3 +47,6 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
 footer a{color:var(--ink2);text-decoration:none;margin-left:18px}
 @media (max-width:860px){.cards{grid-template-columns:1fr}.links a:not(.btn):not(.keep){display:none}}
 @media (max-width:640px){body{font-size:17px}.wrap{padding:0 16px}article{padding:36px 16px 30px}article h2{font-size:28px}footer a{margin:0 14px 0 0}.more{padding:0 16px 48px}}
+
+article .cover{display:block;width:100%;height:auto;border-radius:20px;border:1px solid var(--line2);margin:0 0 30px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.card .thumb{display:block;width:calc(100% + 44px);max-width:none;height:auto;aspect-ratio:16/9;object-fit:cover;margin:-22px -22px 14px;border-radius:18px 18px 0 0}
