@@ -104,6 +104,8 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .sug-next-b{flex:none;min-height:38px;padding:0 16px;border-radius:12px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 14px Figtree,sans-serif;cursor:pointer}
 .dial-rec{align-self:flex-start;margin-top:8px;padding:5px 10px;border-radius:99px;border:1px dashed rgba(232,216,114,.55);background:rgba(232,216,114,.07);color:#F3E79A;font:600 12px Figtree,sans-serif;cursor:pointer;text-align:left}.dial-rec:hover{background:rgba(232,216,114,.16)}
 .dial-rec.ok{border-style:solid;border-color:rgba(111,211,156,.45);background:rgba(111,211,156,.08);color:#9FE3BC;cursor:default}
+.fold-x{font:500 12px/1.4 Figtree,sans-serif;color:#C9B977;white-space:normal}
+.cnt-hint{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:-2px 0 2px;font:500 13px/1.45 Figtree,sans-serif;color:#A9BDAE}.cnt-hint-b{border:0;background:none;padding:0;color:#E8D872;font:600 13px Figtree,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -714,7 +716,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
         </div>
       </sc-if>
       <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
-        <div class="lrn-host"><button class="fold" onClick="{{rToggle}}" aria-expanded="{{rExp}}"><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span>🎚 {{rFoldT}}</span><span class="fold-s">{{rFoldS}}</span></span><span style="color:#F0E39A;flex:none">{{rFoldI}}</span></button><sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_rhythm}}" aria-label="{{lrnTag_rhythm}}"><span class="lrn-tag">📖 {{lrnTag_rhythm}}</span></button></sc-if></div>
+        <div class="lrn-host" data-g="rhythm"><button class="fold" onClick="{{rToggle}}" aria-expanded="{{rExp}}"><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span>🎚 {{rFoldT}}</span><span class="fold-s">{{rFoldS}}</span><span class="fold-x">{{rFoldX}}</span></span><span style="color:#F0E39A;flex:none">{{rFoldI}}</span></button><sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_rhythm}}" aria-label="{{lrnTag_rhythm}}"><span class="lrn-tag">📖 {{lrnTag_rhythm}}</span></button></sc-if></div>
       </sc-if>
       <sc-if value="{{rOpen}}" hint-placeholder-val="{{ false }}">
         <div class="rhy">
@@ -771,6 +773,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
       <section class="panel lrn-host {{st4Class}} {{colCls_sugs}}" style="flex:1.4 1 460px" aria-label="{{t.sugTitle}}">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_sugs}}" aria-label="{{lrnTag_sugs}}"><span class="lrn-tag">📖 {{lrnTag_sugs}}</span></button></sc-if>
         <div class="sec-h" style="display:flex;align-items:center;gap:10px"><button class="colbtn" onClick="{{col_sugs}}" aria-expanded="{{colExp_sugs}}"><span>{{colIco_sugs}}</span><span>{{colLab_sugs}}</span></button><span class="mono" style="{{st4Badge}}">{{st4Num}}</span><h2 class="h2">{{t.sugTitle}}</h2></div>
+        <div class="cnt-hint"><span>{{cntHintTxt}}</span><button class="cnt-hint-b" onClick="{{cntHintGo}}">{{cntHintLab}}</button></div>
         <sc-if value="{{st4Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next4}}</span></div></sc-if>
         <sc-if value="{{sugNextShow}}" hint-placeholder-val="{{ false }}"><div class="sug-next" role="status"><span class="sug-next-t"><b>✓ {{sugNextHead}}</b> {{sugNextText}}</span><button class="sug-next-b" onClick="{{sugNextGo}}">{{sugNextLab}}</button></div></sc-if>
         <sc-if value="{{noChords}}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:#9FB3A4;font-size:15px">{{t.noSug}}</p></sc-if>
@@ -2767,6 +2770,7 @@ var GC_SUBS = [
   [1, 'sur', '[data-g="sur"]', '¿Quieres sorpresas?', 'Want surprises?', '«None» solo usa acordes de la familia de tu canción. «Some» de vez en cuando mete uno de afuera que da un giro inesperado. Ajusta con − y + y toca «Listo».', '“None” only uses chords from your song’s family. “Some” now and then adds one from outside for an unexpected twist. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'count', '[data-g="count"]', '¿Cuántos acordes te sugerimos?', 'How many chords should we suggest?', 'Con 1 eliges el siguiente acorde paso a paso. Con más, te proponemos frases completas de varios acordes de una vez. Usa + las veces que quieras y luego toca «Listo».', 'With 1 you pick the next chord step by step. With more, we suggest whole phrases of several chords at once. Press + as many times as you like, then tap “Done”.', 'Así está bien', 'This is fine'],
   [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below.', '', ''],
+  [2, 'rhythm', '[data-g="rhythm"]', 'Ritmo y velocidad', 'Rhythm and speed', 'Antes de escuchar tu progresión, mira cómo va a sonar: BPM es la velocidad (pulsos por minuto: 70 es lento, 120 es movido). El compás (4/4, 3/4…) dice cuántos tiempos tiene cada vuelta. «Cómo se toca» es el rasgueo: ya viene el de tu estilo, con sus flechas. Y puedes poner o quitar batería y bajo.', 'Before you listen to your progression, see how it will sound: BPM is the speed (beats per minute: 70 is slow, 120 is lively). The time signature (4/4, 3/4…) is how many beats each bar has. “How it’s played” is the strum: your style’s one is already set, with its arrows. You can also turn drums and bass on or off.', '', ''],
   [3, 'sugs', '#stp-3 .sec-h', 'Te ayudamos: estos acordes encajan', 'Here’s some help: these chords fit', 'Estos acordes encajan después de los tuyos, ordenados del más recomendado al menos. Toca ▶ para oír cómo suena con tu progresión y + en el que te guste para agregarlo.', 'These chords fit after yours, best match first. Tap ▶ to hear how it sounds with your progression and + on the one you like to add it.', 'Saltar este paso', 'Skip this step'],
   [4, 'song', '#stp-4 .sec-h', 'Arma tu canción', 'Build your song', 'Tu progresión ahora es la parte A de tu canción. Toca «▶ Play the whole song» para escucharla con banda, o crea más partes (verso, coro, puente…) con «+ New part».', 'Your progression is now part A of your song. Tap “▶ Play the whole song” to hear it with a band, or create more parts (verse, chorus, bridge…) with “+ New part”.', '', ''],
   [4, 'fork', '#stp-5 .sec-h', '¿Seguimos?', 'Shall we continue?', 'Justo aquí abajo están las canciones reales que usan tus acordes. ¿Te las explico, o prefieres conocer la siguiente herramienta, también con su explicación?', 'Right below are real songs that use your chords. Shall I walk you through them, or would you rather meet the next tool, also explained?', '', ''],
@@ -3199,10 +3203,10 @@ var GENRE_RHY = {
   neo:    [{ p:'A-AA-AA-', bpm:76, es:'Arpegio suave, nota a nota, como un teclado neo-soul.', en:'Soft note-by-note arpeggio, like neo-soul keys.' }],
   lofi:   [{ p:'D--U-UD-', bpm:80, es:'Rasgueo perezoso con swing: relajado y con espacio.', en:'Lazy swung strum: relaxed with space.', swing:true }],
   citypop:[{ p:'D-DU-UDU', bpm:106, es:'Rasgueo brillante y saltarín de los 80.', en:'Bright, bouncy 80s strum.' }],
-  jazz:   [{ p:'--D---D-', bpm:120, es:'«Comping»: acordes cortos en los tiempos 2 y 4.', en:'Comping: short chords on beats 2 and 4.', swing:true }],
+  jazz:   [{ p:'--J---J-', bpm:120, es:'«Comping»: acordes cortos y en registro medio que van cambiando de lugar (tiempos 2 y 4, Charleston…), sobre swing y bajo caminante.', en:'Comping: short mid-register chords that move around (beats 2 and 4, Charleston…), over swing and a walking bass.', swing:true, comp:true }],
   gospel: [{ p:'D-UD-UD-', bpm:80, es:'Rítmico y emotivo, con acentos a contratiempo.', en:'Rhythmic and emotional, with off-beat accents.' }],
-  funk:   [{ p:'mUmUmUmU', bpm:100, es:'Rasgueo apagado y percusivo: el funk vive del ritmo.', en:'Muted, percussive strum: funk lives on rhythm.' }],
-  blues:  [{ p:'D-D-D-D-', bpm:88, es:'Shuffle: corcheas con swing, el balanceo del blues.', en:'Shuffle: swung eighths, the blues sway.', swing:true }],
+  funk:   [{ p:'D-mUm-DUm-mUD-mU', bpm:100, es:'Rasgueo apagado y percusivo: el funk vive del ritmo.', en:'Muted, percussive strum: funk lives on rhythm.' }],
+  blues:  [{ p:'DDDDDDDD', bpm:88, es:'Shuffle con «boogie»: la nota grave alterna entre la 5.ª y la 6.ª, el sonido clásico del blues.', en:'Boogie shuffle: the low note alternates between the 5th and 6th, the classic blues sound.', swing:true, boogie:true }],
   bossa:  [{ p:'B-C-BC-C', bpm:120, es:'Bajo con el pulgar y acorde con los dedos, a contratiempo.', en:'Thumb bass and finger chords on the off-beats.' }],
   bolero: [{ p:'D--DUDU-', bpm:80, es:'El ritmo de bolero: romántico y con cadencia.', en:'The bolero rhythm: romantic and lilting.' }],
   urbano: [{ p:'D--D--D-', bpm:92, es:'Patrón 3-3-2, la base del dembow y el reggaetón.', en:'3-3-2 pattern, the base of dembow and reggaeton.' }],
@@ -3983,8 +3987,9 @@ class Component extends DCLogic {
           for (var e2 = 0; e2 < len; e2 += u) { var idx = o.ap[(e2 / u) % o.ap.length]; strike(notes[Math.min(idx, notes.length - 1)], t0 + (pos + e2) * s16, u * s16 * 2.5, 0.62 + (e2 === 0 ? 0.1 : 0), last && e2 + u >= len); }
         } else {
           var hits = [];
-          if (SP && inst === 'guitar') { for (var gq = 0; gq < len; gq += 2) { var gp = pos + gq, gbp = Math.floor(gp / 2) % barE; if (SP.charAt(gbp) === '-' && Math.random() < 0.45) ghost(t0 + gp * s16 + GROOVE[gbp % 8] * sTempo, 0.6 + Math.random() * 0.4); } }
-          for (var e = 0; e < len; e++) { var p16 = pos + e; if (e === 0 || (feel !== 'long' && p16 % 2 === 0 && pat.charAt((p16 / 2) % barE) === 'x')) hits.push(e); }
+          if (SP && SP.length === 8 && !FEELS.style.comp && inst === 'guitar') { for (var gq = 0; gq < len; gq += 2) { var gp = pos + gq, gbp = Math.floor(gp / 2) % barE; if (SP.charAt(gbp) === '-' && Math.random() < 0.45) ghost(t0 + gp * s16 + GROOVE[gbp % 8] * sTempo, 0.6 + Math.random() * 0.4); } }
+          var SP16 = SP && SP.length === 16;
+          for (var e = 0; e < len; e++) { var p16 = pos + e; if (SP16 ? (e === 0 || SP.charAt(p16 % 16) !== '-') : (e === 0 || (feel !== 'long' && p16 % 2 === 0 && pat.charAt((p16 / 2) % barE) === 'x'))) hits.push(e); }
           var upper = notes.length > 3 ? notes.slice(1) : notes;
           var arpSeq = [notes[0]].concat(upper, upper.slice(1, -1).reverse());
           hits.forEach(function (e, hi) {
@@ -3996,7 +4001,26 @@ class Component extends DCLogic {
             var accent = bp === 0 ? 0.1 : 0;
             if (heavy && feel === 'drive' && e !== 0 && bp % 4 !== 0 && !ring) { egPick(ctx, out, time, wide); notes.slice(0, 2).forEach(function (m, k) { strike(m, time + k * 0.003, Math.min(dur, 0.11), 0.7, false, true); }); return; }
             if (SP) {
-              var ch8 = SP.charAt(bp), up4 = notes.length > 3 ? notes.slice(1) : notes;
+              var ch8 = SP.length === 16 ? SP.charAt(p16 % 16) : SP.charAt(bp), up4 = notes.length > 3 ? notes.slice(1) : notes;
+              if (SP.length === 16 && e === 0 && ch8 === '-') ch8 = 'D';
+              if (FEELS.style.comp) {
+                if (bp === 0 || !self._compPat) self._compPat = ['--J---J-', 'J--J----', '---J--J-', 'J-----J-', '-J---J--', '--J--J--'][Math.floor(Math.random() * 6)];
+                var cc = self._compPat.charAt(bp); if (e === 0 && bp !== 0 && cc === '-') cc = 'J';
+                if (cc === '-') return;
+                var uq = []; notes.forEach(function (m) { if (uq.indexOf(m) < 0) uq.push(m); }); uq.sort(function (a, b) { return a - b; });
+                var shell = (o.band && uq.length > 3 ? uq.slice(1) : uq).slice(-4).map(function (m) { while (m > 74) m -= 12; while (m < 50) m += 12; return m; });
+                var cd = e8 * (0.75 + Math.random() * 0.5), cv = 0.6 + Math.random() * 0.15 + (bp === 2 || bp === 6 ? 0.05 : 0);
+                if (gtr) gStrum(shell, time + e8 * 0.02, 'D', cv, cd, false, 0, false, bp);
+                else shell.forEach(function (m, k) { strike(m, time + k * 0.004 + (Math.random() - 0.5) * 0.01, cd, cv, false); });
+                return;
+              }
+              if (FEELS.style.boogie && gtr) {
+                var rt = notes[0]; while (rt > 47) rt -= 12; while (rt < 40) rt += 12;
+                var six = (Math.floor(bp / 2) % 2) === 1, dy = [rt, rt + (six ? 9 : 7)];
+                if (inst === 'eguitar') egPick(ctx, out, time, wide);
+                dy.forEach(function (m, k) { strike(m, time + k * 0.006, Math.min(dur, e8 * 1.1), 0.72 + (bp % 2 ? 0 : 0.08), false, inst === 'eguitar'); });
+                return;
+              }
               if (inst === 'eguitar' && ch8 !== 'B' && ch8 !== 'A') egPick(ctx, out, time, wide);
               var bb = bp === 0 ? 0.08 : (bp === 2 || bp === 6 ? 0.04 : (bp % 2 ? -0.06 : 0));
               if (gtr && ch8 === 'D') { gStrum(notes, time, 'D', 0.8 + bb, chgCut(dur), ring, 0, false, bp); return; }
@@ -4038,7 +4062,7 @@ class Component extends DCLogic {
         var bassHits = [];
         for (var p = 0; p < pos; p++) {
           var sb = p % plen, time = t0 + p * s16 + sw(sb), ca = chordAt[p];
-          ['k', 's', 'h', 'r', 'y'].forEach(function (kd) { if (D[kd] && D[kd].charAt(sb) === 'x') drumHit(ctx, dg, kd, time, kd === 'h' && sb % 4 !== 0 ? 0.7 : 1); });
+          ['k', 's', 'h', 'r', 'y'].forEach(function (kd) { if (D[kd] && D[kd].charAt(sb) === 'x') drumHit(ctx, dg, kd, time, D.walk ? (kd === 'k' ? 0.28 : kd === 'y' ? (sb % 4 === 0 ? 0.9 : 0.62) : 0.8) : (kd === 'h' && sb % 4 !== 0 ? 0.7 : 1)); });
           if (D.walk) { if (sb % 4 === 0) bassHits.push(p); }
           else if (ca.start || bpat.charAt(sb) === 'x') bassHits.push(p);
         }
@@ -4196,7 +4220,7 @@ class Component extends DCLogic {
   gMark(k) { var g = Object.assign({}, this.state.gd || {}); if (g[k]) return; g[k] = true; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); }
   gMarkMany(ks, extra) { var g = Object.assign({}, this.state.gd || {}); ks.forEach(function (k) { g[k] = true; }); delete g.tourDone; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState(Object.assign({ gd: g }, extra || {})); }
   gUnmark(k) { var g = Object.assign({}, this.state.gd || {}), i = -1; GC_SUBS.forEach(function (x, j) { if (x[1] === k) i = j; }); GC_SUBS.forEach(function (x, j) { if (j >= i) delete g[x[1]]; }); this._gcPend = null; if (this._gcEl) this._gcEl._hid = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); var self = this; setTimeout(function () { var tg = self._gc && document.querySelector(self._gc.sel); if (tg) try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 80); }
-  gSig(k) { var st = this.state, n = (st.chords || []).length; return k === 'inst' ? st.inst : k === 'genre' ? st.reStyle : k === 'mood' ? st.mood : k === 'cx' ? st.cx : k === 'sur' ? st.sur : k === 'count' ? st.count : k === 'add' ? n : k === 'sugs' ? n + '|' + !!st.addedSug : k === 'songs' ? String(!!st.strummed) + (st.playing ? st.playing.id : '') : k === 'song' ? (st.playing ? st.playing.id : '') + '|' + JSON.stringify(st.form || []) : ''; }
+  gSig(k) { var st = this.state, n = (st.chords || []).length; return k === 'inst' ? st.inst : k === 'genre' ? st.reStyle : k === 'mood' ? st.mood : k === 'cx' ? st.cx : k === 'sur' ? st.sur : k === 'count' ? st.count : k === 'add' ? n : k === 'sugs' ? n + '|' + !!st.addedSug : k === 'songs' ? String(!!st.strummed) + (st.playing ? st.playing.id : '') : k === 'song' ? (st.playing ? st.playing.id : '') + '|' + JSON.stringify(st.form || []) : k === 'rhythm' ? [st.bpm, st.ts, st.feel, st.band].join('|') : ''; }
   gcTick() {
     var self = this, gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
@@ -4429,10 +4453,11 @@ class Component extends DCLogic {
     var genre = st.reStyle || 'pop';
     var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[((st.rhyIdx || 0) + (genre === 'rock' && st.inst === 'guitar' ? 1 : 0)) % gRhyList.length];
     (function () { var sn = (RE_STYLES[genre] || RE_STYLES.pop), allA = /^[A-]+$/.test(gRhy.p);
-      FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing,
-        p: { '4/4': gRhy.p.replace(/[^-]/g, 'x'), '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
+      var p8 = gRhy.p.length === 16 ? gRhy.p.replace(/(.)(.)/g, function (_, a, b) { return a !== '-' || b !== '-' ? 'x' : '-'; }) : gRhy.p.replace(/[^-]/g, 'x');
+      FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing, comp: !!gRhy.comp, boogie: !!gRhy.boogie,
+        p: { '4/4': gRhy.comp ? 'xxxxxxxx' : p8, '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
     var gd = st.gd || {}, gOn = !!st.guided && !st.gcOff;
-    var gDoneA = [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 1, !!gd.sugs, !!gd.songs], sDoneA = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
+    var gDoneA = [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && !!gd.rhythm && chs.length >= 1, !!gd.sugs, !!gd.songs], sDoneA = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepDone = gOn ? gDoneA : (st.guided ? gDoneA.map(function (v, i) { return v || sDoneA[i]; }) : sDoneA);
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
     var guidedOn = !!st.guided && view === 'gen' && stepNow < 5 && !st.lm;
@@ -4574,19 +4599,20 @@ class Component extends DCLogic {
       if (ins === 'flute') feel = 'arp';
       if (feel === 'style' && FEELS.style.arpAll) feel = 'arp';
       var SPc = feel === 'style' && ts === '4/4' ? FEELS.style.sp : null;
+      if (SPc && SPc.length === 16) { bE = 16; per = 4; }
       var used = {};
       var cells = Array.from({ length: bE }, function (_, j) {
         var on = feel === 'long' ? j === 0 : pat.charAt(j) === 'x', bs = j % per === 0;
         var sym = '·';
-        if (SPc) { var cc = SPc.charAt(j); sym = cc === '-' ? '·' : cc === 'D' ? (g ? '↓' : '●') : cc === 'U' ? (g ? '↑' : '●') : cc === 'm' ? '×' : cc === 'B' ? 'B' : cc === 'C' ? '●' : cc === 'A' ? '♪' : '●'; }
+        if (SPc) { var cc = SPc.charAt(j); if (FEELS.style.boogie && g) cc = 'Bo';  sym = cc === '-' ? '·' : cc === 'D' ? (g ? '↓' : '●') : cc === 'U' ? (g ? '↑' : '●') : cc === 'm' ? '×' : cc === 'B' ? 'B' : cc === 'C' ? '●' : cc === 'A' ? '♪' : cc === 'J' ? '●' : cc === 'Bo' ? (Math.floor(j / 2) % 2 ? '6' : '5') : '●'; }
         else if (feel === 'off' && !on && bs) sym = 'B';
         else if (on) sym = feel === 'arp' ? '♪' : (feel === 'off' ? (g ? '↑' : '●') : (heavy && feel === 'drive' && j % 4 !== 0 ? '×' : (g ? (bs || feel === 'long' || j % 2 === 0 ? '↓' : '↑') : '●')));
         used[sym] = 1;
-        var cnt = bs ? String(j / per + 1) : (comp ? '' : (LX('y', '&')));
+        var cnt = bs ? String(j / per + 1) : (bE === 16 ? ['', 'e', LX('y', '&'), 'a'][j % 4] : (comp ? '' : (LX('y', '&'))));
         var hit = sym !== '·', nowC = nowIdx === j;
         return { sym: sym, count: cnt, style: 'width:30px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border-radius:8px;' + (bs ? 'border-left:2px solid #2F4A3B;' : '') + 'background:' + (hit ? '#16271F' : 'transparent') + ';color:' + (hit ? '#F0E39A' : '#5E7F69') };
       });
-      var L = { '↓': LX('↓ golpe hacia abajo', '↓ down strum'), '↑': LX('↑ golpe hacia arriba', '↑ up strum'), '●': LX('● se toca el acorde', '● play the chord'), '♪': LX('♪ una nota del acorde cada vez (arpegio)', '♪ one chord note at a time (arpeggio)'), 'B': LX('B solo la nota grave', 'B bass note only'), '×': LX('× apagado con la palma (palm mute)', '× palm-muted'), '·': LX('· silencio o el acorde sigue sonando', '· rest or chord keeps ringing') };
+      var L = { '↓': LX('↓ golpe hacia abajo', '↓ down strum'), '↑': LX('↑ golpe hacia arriba', '↑ up strum'), '●': LX('● se toca el acorde', '● play the chord'), '♪': LX('♪ una nota del acorde cada vez (arpegio)', '♪ one chord note at a time (arpeggio)'), '5': LX('5 / 6 = nota grave con su 5.ª o su 6.ª (boogie)', '5 / 6 = low note with its 5th or 6th (boogie)'), 'B': LX('B solo la nota grave', 'B bass note only'), '×': LX('× apagado con la palma (palm mute)', '× palm-muted'), '·': LX('· silencio o el acorde sigue sonando', '· rest or chord keeps ringing') };
       return { cells: cells, legend: Object.keys(L).filter(function (k2) { return used[k2]; }).map(function (k2) { return L[k2]; }).join(' · ') };
     };
     var setDur = function (i, v) { self.setState({ chords: chs.map(function (c, j) { return j === i ? Object.assign({}, c, { d: v }) : c; }) }); };
@@ -5274,6 +5300,7 @@ class Component extends DCLogic {
           waitLab: LX('✓ Bien elegido. Puedes seguir probando; cuando estés listo, toca «Listo».', '✓ Nice pick. Keep trying options if you like; when you’re ready, tap “Done”.'),
           keep: function () { self.gMark(k); } };
         if (k === 'cx' || k === 'sur') { var snG = (RE_STYLES[genre] || RE_STYLES.pop)[lang][0], rG = k === 'cx' ? (GENRE_CX[genre] || 0) : (GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1), nmG = (k === 'cx' ? CXS : SURS)[rG][es ? 0 : 1]; self._gc.text += ' ' + LX('Para tu estilo (', 'For your style (') + snG + LX(') lo que mejor suena es «', '), what sounds best is “') + nmG + LX('»: lo ves marcado con ★ debajo.', '”: it’s marked with ★ below.'); }
+        if (k === 'rhythm') { self._gc.altLab = st.rOpen ? LX('▶ Escuchar así', '▶ Listen like this') : LX('Ver ajustes', 'Show settings'); self._gc.alt = function () { if (!self.state.rOpen) self.setState({ rOpen: true }); else { var v2 = self.renderVals(); if (v2.playMine) v2.playMine(); } }; self._gc.key = 'rhythm:' + (st.rOpen ? 1 : 0) + LX('es', 'en'); }
         if (k === 'add' && chs.length) {
           self._gc.key = 'add1:' + LX('es', 'en');
           self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
@@ -5304,6 +5331,10 @@ class Component extends DCLogic {
       surRecUse: function () { var r = GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1; if (st.sur === r) return; if (r === 2 && !st.isPro) { self.setState({ proMsg: T.proMsgSur }); return; } self.setState({ sur: r }); },
       countRecTxt: st.count === 1 ? LX('✓ Ideal para empezar', '✓ Best to start') : LX('★ Para empezar: 1 acorde · Usar', '★ To start: 1 chord · Use'), countRecCls: st.count === 1 ? 'ok' : '', countRecTip: LX('Con 1 eliges acorde por acorde', 'With 1 you pick chord by chord'),
       countRecUse: function () { if (st.count !== 1) self.setState({ count: 1 }); },
+      cntHintTxt: st.count === 1 ? LX('Te sugerimos 1 acorde a la vez: el siguiente que puede sonar después del tuyo.', 'We suggest 1 chord at a time: the next one that can follow yours.') : LX('Te sugerimos frases de ', 'We suggest phrases of ') + st.count + LX(' acordes seguidos.', ' chords in a row.'),
+      cntHintLab: LX('Cambiar cuántos acordes', 'Change how many chords'),
+      cntHintGo: function () { var c2 = Object.assign({}, st.col || {}); c2.snd = false; self.setState({ col: c2 }); setTimeout(function () { var el = document.querySelector('[data-g="count"]'); if (!el) return; try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} el.classList.remove('gd-flash'); void el.offsetWidth; el.classList.add('gd-flash'); setTimeout(function () { el.classList.remove('gd-flash'); }, 1700); }, 60); },
+      rFoldX: st.rOpen ? '' : LX('Antes de escuchar: elige la velocidad y cómo se toca. Ya viene ajustado a tu estilo.', 'Before you listen: choose the speed and how it’s played. It’s already set for your style.'),
       gdTipsBtn: !!st.guided && !!st.gcOff && !st.lm, gdTipsLab: LX('Explicaciones', 'Tips'), gdTipsTip: LX('Vuelve a mostrar las explicaciones paso a paso', 'Show the step-by-step explanations again'),
       gdTipsOn: function () { try { localStorage.removeItem('cs_gcoff'); } catch (e) {} if (self._gcEl) self._gcEl._k = null; self.setState({ gcOff: false }); },
       gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
