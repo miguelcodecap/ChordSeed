@@ -86,7 +86,8 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gcoach .gc-back{min-height:36px;padding:0 10px;border-radius:10px;border:1px solid rgba(43,53,40,.22);background:transparent;color:#4A5545;font:600 13px Figtree,sans-serif;cursor:pointer}.gcoach .gc-back:hover{background:rgba(43,53,40,.06)}
 .gcoach .gc-wait{display:none;margin-top:10px}.gcoach.gc-pending .gc-wait{display:block}
 .gcoach .gc-wait .gc-bar{display:block;height:4px;border-radius:99px;background:linear-gradient(90deg,#C9A63A,#E8D872);transform-origin:left;transform:scaleX(0)}
-.gcoach .gc-wait small{display:block;margin-top:5px;font:600 11.5px Figtree,sans-serif;color:#7A6418}
+.gcoach .gc-wait small{display:block;padding:7px 10px;border-radius:9px;background:rgba(111,211,156,.16);font:600 12.5px Figtree,sans-serif;color:#1E5A3A}
+.gcoach .gc-keep.gc-pulse{animation:gcPulse 1.4s ease-in-out 2}@keyframes gcPulse{0%,100%{box-shadow:0 6px 16px rgba(22,39,31,.25)}50%{box-shadow:0 0 0 5px rgba(232,216,114,.55),0 6px 16px rgba(22,39,31,.25)}}
 @keyframes gcBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .gcoach .gc-x{position:absolute;top:8px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#7D866F;font:400 20px/1 Figtree,sans-serif;cursor:pointer}.gcoach .gc-x:hover{color:#16200F;background:rgba(43,53,40,.07)}
 .gcoach .gc-ar{position:absolute;top:-8px;width:14px;height:14px;background:#FBF7E4;border-left:1px solid #E2CF78;border-top:1px solid #E2CF78;transform:rotate(45deg);border-radius:3px 0 0 0}
@@ -4140,9 +4141,9 @@ class Component extends DCLogic {
     if (!gc || !tg || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; if (!gc) this._gcPend = null; return; }
     var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
     if (box._k !== gc.key) {
-      box._k = gc.key; box.innerHTML = ''; this._gcPend = null; box._sig0 = this.gSig(gc.k); box._sigL = box._sig0;
+      box._k = gc.key; box.innerHTML = ''; this._gcPend = null; box._chosen = false; box._sig0 = this.gSig(gc.k); box._sigL = box._sig0;
       box.appendChild(mk('div', 'gc-k', gc.kick)); box.appendChild(mk('b', '', gc.title)); box.appendChild(mk('p', '', gc.text));
-      var pw = mk('div', 'gc-wait'); if (!gc.waitLab) pw.style.display = 'none'; pw.appendChild(mk('span', 'gc-bar')); pw.appendChild(mk('small', '', gc.waitLab)); box.appendChild(pw);
+      var pw = mk('div', 'gc-wait'); if (!gc.waitLab) pw.style.display = 'none'; pw.appendChild(mk('small', '', gc.waitLab)); box.appendChild(pw);
       var row = mk('div', 'gc-row');
       if (gc.back) { var bb = mk('button', 'gc-back', gc.backLab); bb.type = 'button'; bb.addEventListener('click', function () { var g = self._gc; if (g && g.back) g.back(); }); row.appendChild(bb); }
       if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
@@ -4157,12 +4158,10 @@ class Component extends DCLogic {
     var sig = this.gSig(gc.k), DL = { inst: 1700, genre: 1700, mood: 1900, cx: 2300, sur: 2300, count: 2300, add: 3200, sugs: 2200, songs: 2600 };
     if (sig !== box._sigL) {
       box._sigL = sig;
-      if (sig !== box._sig0 && gc.keepOk()) { this._gcPend = { k: gc.k, at: Date.now() + (DL[gc.k] || 2000) }; var bar = box.querySelector('.gc-bar'); if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = 'gcBar ' + (DL[gc.k] || 2000) + 'ms linear forwards'; } }
+      if (sig !== box._sig0 && gc.keepOk()) { box._chosen = true; var kb2 = box.querySelector('.gc-keep'); if (kb2) { kb2.classList.remove('gc-pulse'); void kb2.offsetWidth; kb2.classList.add('gc-pulse'); } }
     }
-    var pend = this._gcPend && this._gcPend.k === gc.k;
-    box.classList.toggle('gc-pending', !!pend);
+    box.classList.toggle('gc-pending', !!box._chosen && gc.keepOk());
     var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) keepBtn.disabled = !gc.keepOk();
-    if (pend && Date.now() >= this._gcPend.at) { this._gcPend = null; gc.keep(); return; }
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
     ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = Math.min(r.height + 12, 520) + 'px';
     box.style.display = 'block';
@@ -5199,7 +5198,7 @@ class Component extends DCLogic {
           keepLab: k === 'sugs' || k === 'songs' ? LX(cur[7], cur[8]) : (last ? LX('Listo, siguiente paso →', 'Done, next step →') : LX('Listo →', 'Done →')),
           keepOk: function () { return k !== 'add' || (self.state.chords || []).length >= 2; },
           backLab: gi > 0 ? LX('← Atrás', '← Back') : '', back: gi > 0 ? function () { self.gUnmark(GC_SUBS[gi - 1][1]); } : null,
-          waitLab: LX('Siguiente en un momento… (puedes seguir cambiando)', 'Moving on in a moment… (you can keep changing it)'),
+          waitLab: LX('✓ Bien elegido. Puedes seguir probando; cuando estés listo, toca «Listo».', '✓ Nice pick. Keep trying options if you like; when you’re ready, tap “Done”.'),
           keep: function () { self.gMark(k); } };
         if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['fork', 'sugs', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         return 1;
