@@ -1971,7 +1971,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <footer style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;padding-top:8px;border-top:1px solid #1E2A2D;font-size:12px;color:#7F9C87">
       <span>{{soundStatus}}</span>
       <span>{{t.credits}}</span>
-      <span class="legal">{{legalLine}} · <a href="privacy.html">{{privacyLab}}</a> · <a href="terms.html">{{termsLab}}</a> · {{createdBy}} <a href="https://github.com/miguelcodecap" target="_blank" rel="noopener">@miguelcodecap</a></span>
+      <span class="legal">{{legalLine}} · <a href="privacy.html">{{privacyLab}}</a> · <a href="terms.html">{{termsLab}}</a> · {{createdBy}} <a href="https://github.com/miguelcodecap" target="_blank" rel="noopener" style="color:#E8D872;font-weight:600">miguelcodecap</a> <span style="opacity:.7">(GitHub)</span></span>
     </footer>
   </main>
   <sc-if value="{{gdShow}}" hint-placeholder-val="{{ true }}"><nav class="guide" aria-label="{{gdAria}}">
@@ -3302,7 +3302,23 @@ var SONGS = [
   { t:'When the Saints Go Marching In', a:'Tradicional|Traditional', g:'gospel', tag:['Gospel / dixieland','Gospel / Dixieland'], k:5, m:'maj', r:'I–V7–I–I7–IV–I–V7–I', c:[[0,'M'],[7,'7'],[0,'M'],[0,'7'],[5,'M'],[0,'M'],[7,'7'],[0,'M']] },
   { t:'Historia de un amor', a:'Carlos Eleta Almarán', g:'bolero', k:0, m:'min', r:'i–V7–i–iv–V7–i', c:[[0,'m'],[7,'7'],[0,'m'],[5,'m'],[7,'7'],[0,'m']] },
   { t:'Tusa', a:'Karol G ft. Nicki Minaj', g:'urbano', tag:['Reguetón','Reggaeton'], k:2, m:'maj', r:'V–IV–vi–I', c:[[7,'M'],[5,'M'],[9,'m'],[0,'M']] },
-  { t:'Himno de la alegría|Ode to Joy', a:'Ludwig van Beethoven', g:'clasico', k:2, m:'maj', r:'I–V–I–V', c:[[0,'M'],[7,'M']] }
+  { t:'Himno de la alegría|Ode to Joy', a:'Ludwig van Beethoven', g:'clasico', k:2, m:'maj', r:'I–V–I–V', c:[[0,'M'],[7,'M']] },
+  { t:'Counting Stars', a:'OneRepublic', g:'pop', k:4, m:'maj', r:'vi–I–V–IV', c:[[9,'m'],[0,'M'],[7,'M'],[5,'M']] },
+  { t:'Hey, Soul Sister', a:'Train', g:'pop', k:4, m:'maj', r:'I–V–vi–IV', c:[[0,'M'],[7,'M'],[9,'m'],[5,'M']] },
+  { t:'Someone You Loved', a:'Lewis Capaldi', g:'pop', k:1, m:'maj', r:'I–V–vi–IV', c:[[0,'M'],[7,'M'],[9,'m'],[5,'M']] },
+  { t:'Stay with Me', a:'Sam Smith', g:'gospel', tag:['Soul / pop','Soul / pop'], k:0, m:'maj', r:'vi–IV–I', c:[[9,'m'],[5,'M'],[0,'M']] },
+  { t:'Photograph', a:'Ed Sheeran', g:'pop', k:4, m:'maj', r:'I–vi–V–IV', c:[[0,'M'],[9,'m'],[7,'M'],[5,'M']] },
+  { t:'Mad World', a:'Tears for Fears / Gary Jules', g:'pop', k:5, m:'min', r:'i–III–VII–IV', c:[[0,'m'],[3,'M'],[10,'M'],[5,'M']] },
+  { t:'Poker Face', a:'Lady Gaga', g:'pop', k:8, m:'min', r:'i–VI–III–VII', c:[[0,'m'],[8,'M'],[3,'M'],[10,'M']] },
+  { t:'Save Tonight', a:'Eagle-Eye Cherry', g:'rock', k:9, m:'min', r:'i–VI–III–VII', c:[[0,'m'],[8,'M'],[3,'M'],[10,'M']] },
+  { t:'Clocks', a:'Coldplay', g:'rock', k:3, m:'maj', r:'I–v–ii', c:[[0,'M'],[7,'m'],[2,'m']] },
+  { t:'Riptide', a:'Vance Joy', g:'folk', k:1, m:'maj', r:'vi–V–I', c:[[9,'m'],[7,'M'],[0,'M']] },
+  { t:'Blowin’ in the Wind', a:'Bob Dylan', g:'folk', k:7, m:'maj', r:'I–IV–V–I', c:[[0,'M'],[5,'M'],[7,'M'],[0,'M']] },
+  { t:'Fade to Black', a:'Metallica', g:'metal', tag:['Balada metal','Metal ballad'], k:9, m:'min', r:'i–III–VII–v', c:[[0,'m'],[3,'M'],[10,'M'],[7,'m']] },
+  { t:'Summertime', a:'George Gershwin', g:'jazz', k:9, m:'min', r:'i6–V7', c:[[0,'m6'],[7,'7']] },
+  { t:'Satin Doll', a:'Duke Ellington', g:'jazz', k:0, m:'maj', r:'ii7–V7–iii7–VI7', c:[[2,'m7'],[7,'7'],[4,'m7'],[9,'7']] },
+  { t:'Uptown Funk', a:'Mark Ronson ft. Bruno Mars', g:'funk', k:2, m:'min', r:'i7–IV7', c:[[0,'m7'],[5,'7']] },
+  { t:'Le Freak', a:'Chic', g:'funk', tag:['Disco / funk','Disco / funk'], k:9, m:'min', r:'i7–IV', c:[[0,'m7'],[5,'M']] }
 ];
 var BAR_E = { '4/4': 8, '3/4': 6, '6/8': 6, '5/4': 10, '12/8': 12 };
 var BPB = { '4/4': 4, '3/4': 3, '6/8': 2, '5/4': 5, '12/8': 4 };
@@ -4885,7 +4901,7 @@ class Component extends DCLogic {
       sageTopSay: (lDoneN >= LESSONS.length && lI === LESSONS.length - 1) ? LX('¡Lo lograste! Ya sabes por qué los acordes funcionan. Ahora ve al generador y siembra tu primera canción.', 'You did it! Now you know why chords work. Head to the generator and plant your first song.') : lCur.k,
       sageQuiz: (lAns === null || lAns === undefined) ? SAGE.think : (lRight ? SAGE.celebrate : SAGE.encourage),
       sagePlay: SAGE.play,
-      createdBy: LX('Creado por', 'Created by'),
+      createdBy: LX('Creador de la app:', 'App creator:'),
       privacyLab: LX('Privacidad', 'Privacy'), termsLab: LX('Términos', 'Terms'),
       legalLine: '© ' + new Date().getFullYear() + ' Chordseed. ' + LX('Creado en Nevada, EE. UU. Todos los derechos reservados.', 'Created in Nevada, USA. All rights reserved.'),
       lBannerCta: lDoneN === 0 ? (LX('Empezar la lección 1', 'Start lesson 1')) : (lDoneN >= LESSONS.length ? (LX('Repasar las lecciones', 'Review the lessons')) : (LX('Seguir con la lección ', 'Continue with lesson ')) + (lDoneN + 1)),
