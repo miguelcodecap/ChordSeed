@@ -63,6 +63,8 @@ html{scroll-padding-bottom:96px}
 .gd-go{flex:none;min-height:40px;padding:0 16px;border-radius:12px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 14px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .gd-flash{animation:gdFlash 1.6s ease-out 1}@keyframes gdFlash{0%{box-shadow:0 0 0 3px #E8D872,0 0 40px rgba(232,216,114,.45)}100%{box-shadow:0 0 0 0 rgba(232,216,114,0)}}
 @media (max-width:640px){.guide{bottom:8px;gap:10px;padding:8px 8px 8px 10px}.gd-dots{display:none}.gd-txt span{font-size:12px}.gd-go{min-height:38px;padding:0 12px;font-size:13px}}
+.prog-hd{display:flex;flex-direction:column;gap:3px;min-width:0}.prog-sub{margin:-2px 0 0 42px;max-width:720px;font:italic 500 14px/1.5 Figtree,sans-serif;color:#A9BDAE;letter-spacing:.005em}
+@media (max-width:640px){.prog-sub{margin-left:0}}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -588,14 +590,15 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
         <div style="display:flex;align-items:center;gap:10px"><span class="mono" style="{{st2Badge}}">{{st2Num}}</span><h2 class="h2">{{t.progTitle}}</h2></div>
         <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
           <div class="acts" style="display:flex;flex-wrap:wrap;gap:6px">
-            <button class="ghost" onClick="{{playMine}}">{{mineText}}</button>
-            <button class="ghost" onClick="{{anaMine}}">🔍 {{anaMineLab}}</button>
-            <button class="ghost" onClick="{{saveProg}}" style="{{saveStyle}}">{{saveLabel}}</button>
-            <button class="ghost" onClick="{{undo}}">{{t.undo}}</button>
-            <button class="ghost" onClick="{{clear}}">{{t.clear}}</button>
+            <button class="ghost" onClick="{{playMine}}" title="{{tipPlay}}">{{mineText}}</button>
+            <button class="ghost" onClick="{{anaMine}}" title="{{tipAna}}">🔍 {{anaMineLab}}</button>
+            <button class="ghost" onClick="{{saveProg}}" style="{{saveStyle}}" title="{{tipSave}}">{{saveLabel}}</button>
+            <button class="ghost" onClick="{{undo}}" title="{{tipUndo}}">{{t.undo}}</button>
+            <button class="ghost" onClick="{{clear}}" title="{{tipClear}}">{{t.clear}}</button>
           </div>
         </sc-if>
       </div>
+      <p class="prog-sub">{{progSub}}</p>
       <sc-if value="{{st2Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next2}}</span></div></sc-if>
       <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}"><div class="starter">
         <span class="starter-t">{{starterTxt}}</span>
@@ -5075,6 +5078,8 @@ class Component extends DCLogic {
       gdText: view !== 'gen' ? LX('Tus acordes siguen guardados mientras exploras.', 'Your chords stay saved while you explore.') : (stepNow < 5 ? LX(GD_STEPS[stepNow][2], GD_STEPS[stepNow][3]) : LX('Arma las partes, escucha la canción completa o guárdala.', 'Build its parts, play the whole song or save it.')),
       gdGoLab: view !== 'gen' ? LX('← Volver a mi canción', '← Back to my song') : (stepNow < 5 ? LX('Muéstrame →', 'Show me →') : LX('Armar mi canción →', 'Build my song →')),
       gdGo: function () { if (view !== 'gen') { self.setState({ view: 'gen' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; } self.gdJump(stepNow); },
+      progSub: chs.length ? LX('Tus acordes en el orden en que suenan. Con − y + decides cuánto dura cada uno, y con los botones del título puedes escucharla, analizarla, guardarla, deshacer o borrar.', 'Your chords, in the order they play. Use − and + to set how long each one lasts, and the buttons by the title to listen, analyze, save, undo or clear.') : LX('Aquí van los acordes de tu canción, en orden. Toca «Añadir acorde» para poner los que ya tienes, o empieza con una de las ideas de abajo.', 'This is where your song’s chords go, in order. Tap “Add chord” to enter the ones you already have, or start from one of the ideas below.'),
+      tipPlay: LX('Escucha tu progresión con tu instrumento y estilo', 'Hear your progression with your instrument and style'), tipAna: LX('Ve la tonalidad y el papel de cada acorde', 'See the key and each chord’s role'), tipSave: LX('Guárdala para abrirla cuando quieras', 'Keep it to open anytime'), tipUndo: LX('Deshace el último cambio', 'Undo the last change'), tipClear: LX('Borra todos los acordes y empieza de cero', 'Remove all chords and start over'),
       modTipShow: !!st.modTip && view === 'gen' && chs.length > 0 && !st.lm && !st.pickerOpen, modTipClose: function () { self.setState({ modTip: false }); },
       modCallBtn: LX('Modulador →', 'Key changer →'), goMod: function () { self.setState({ view: 'mod' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (x) {} },
       fNextT: LX('¿Y ahora?', 'What now?'),
