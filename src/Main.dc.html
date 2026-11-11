@@ -2361,7 +2361,7 @@ function playSample(ctx, out, inst, m, st, len, vel, ring) {
     g3.gain.setValueAtTime(0.0001, st); g3.gain.linearRampToValueAtTime(peak, st + (pr ? 0.004 : 0.003));
     g3.gain.setValueAtTime(peak, st + hold); g3.gain.setTargetAtTime(0.0001, st + hold, rel3 / 3);
     var s3 = smpVoice(ctx, smp, m, st, Math.min(end3, st + smp.b.duration / Math.pow(2, (m - smp.m) / 12)), (Math.random() - 0.5) * (pr ? 2 : 5));
-    s3.connect(g3);
+    if (!pr) { var tl = ctx.createBiquadFilter(); tl.type = 'lowpass'; tl.Q.value = 0.5; tl.frequency.setValueAtTime(1600 + (vel || 0.8) * 7500, st); tl.frequency.setTargetAtTime(1300 + (vel || 0.8) * 3200, st + 0.02, 0.35); s3.connect(tl); tl.connect(g3); } else s3.connect(g3);
     var node3 = g3;
     if (ctx.createStereoPanner) { var pn3 = ctx.createStereoPanner(); pn3.pan.value = Math.max(-0.45, Math.min(0.45, (m - 60) / (pr ? 36 : 28))); g3.connect(pn3); node3 = pn3; }
     node3.connect(roomBus(ctx, out, inst));
@@ -3935,16 +3935,22 @@ class Component extends DCLogic {
       var gStr = {}, sTempo = Math.max(0.6, Math.min(1.5, 100 / bpm));
       var choke = function (sIdx, t) { var h = gStr[sIdx]; if (h && h.g) { try { h.g.gain.cancelScheduledValues(t); h.g.gain.setTargetAtTime(0.0001, t, 0.018); } catch (e) {} } };
       var scratch = function (t, v, up) { if (inst !== 'guitar') return; try { var nz = ctx.createBufferSource(); nz.buffer = noiseBuf(ctx); var bp2 = ctx.createBiquadFilter(); bp2.type = 'bandpass'; bp2.frequency.value = up ? 4200 : 3000; bp2.Q.value = 0.9; var ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.linearRampToValueAtTime(0.035 * v, t + 0.004); ng.gain.setTargetAtTime(0.0001, t + 0.01, up ? 0.012 : 0.02); nz.connect(bp2); bp2.connect(ng); ng.connect(out._sb || out); nz.start(t); nz.stop(t + 0.15); } catch (e) {} };
-      var gStrum = function (ns, time, dir, vel, dur, ring, top, mute) {
+      var GROOVE = [0, 0.009, -0.002, 0.012, 0.001, 0.010, -0.003, 0.014], drift = 0, barLvl = 1;
+      var gStrum = function (ns, time, dir, vel, dur, ring, top, mute, bp) {
         var n = ns.length, list = ns.map(function (m, k) { return { m: m, s: 5 - (n - 1 - k), k: k }; });
-        if (top && list.length > top) list = list.slice(-top);
+        if (dir === 'U') { var reach = Math.min(n, (top || 4) - 1 + Math.floor(Math.random() * 3)); list = list.slice(-reach); }
+        else if (top && list.length > top) list = list.slice(-top);
+        else if (n > 4 && Math.random() < 0.25) list = list.slice(1);
         if (dir === 'U') list.reverse();
-        var gap = (dir === 'U' ? 0.0085 : (heavy ? 0.006 : 0.0135)) * sTempo, t0s = time + (Math.random() - 0.5) * 0.012 + (dir === 'U' ? 0.004 : 0);
-        scratch(t0s, vel, dir === 'U');
+        if (bp === 0) barLvl = 0.93 + Math.random() * 0.12;
+        drift = drift * 0.75 + (Math.random() - 0.5) * 0.007;
+        var vv = Math.max(0.25, Math.min(1, vel * barLvl));
+        var gap = (dir === 'U' ? 0.0075 : (heavy ? 0.006 : 0.016)) * sTempo * (1.25 - vv * 0.45), t0s = time + (bp != null ? GROOVE[bp % 8] * sTempo : 0) + drift;
+        scratch(t0s, vv, dir === 'U');
         list.forEach(function (x, j) {
-          var t = t0s + j * gap * (0.85 + Math.random() * 0.3);
-          var v = vel * (dir === 'U' ? (0.72 + 0.06 * j) : (1.04 - 0.035 * j)) * (0.9 + Math.random() * 0.14);
-          v = Math.max(0.2, Math.min(1, v));
+          var t = t0s + j * gap * (0.8 + Math.random() * 0.4);
+          var v = vv * (dir === 'U' ? (0.7 + 0.07 * j) : (1.05 - 0.04 * j)) * (0.93 + Math.random() * 0.1);
+          v = Math.max(0.18, Math.min(1, v));
           if (inst === 'eguitar') { egStrike(ctx, out, x.m, t, mute ? Math.min(dur, 0.12) : dur, v, ring, mute, wide); return; }
           choke(x.s, t);
           var h = playSample(ctx, out, inst, x.m, t, mute ? Math.min(dur, 0.09) : (ring ? dur : dur + 0.9), v, ring);
@@ -3952,6 +3958,8 @@ class Component extends DCLogic {
           else if (h.g) gStr[x.s] = h;
         });
       };
+      // ghost stroke: the strumming hand keeps moving and lightly brushes muted strings
+      var ghost = function (t, v) { if (inst !== 'guitar') return; try { var nz = ctx.createBufferSource(); nz.buffer = noiseBuf(ctx); var lp = ctx.createBiquadFilter(); lp.type = 'bandpass'; lp.frequency.value = 1500 + Math.random() * 700; lp.Q.value = 0.7; var ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.linearRampToValueAtTime(0.05 * v, t + 0.003); ng.gain.setTargetAtTime(0.0001, t + 0.006, 0.014); nz.connect(lp); lp.connect(ng); ng.connect(out._sb || out); nz.start(t); nz.stop(t + 0.1); } catch (e) {} };
       var chordAt = [];
       items.forEach(function (it, ii) {
         var c = it.c, notes = it.v ? it.v.slice() : (gtr ? guitarVoicing(c, (self.state.pos || {})[ckey(c)]) : voicing(c));
@@ -3965,6 +3973,7 @@ class Component extends DCLogic {
           for (var e2 = 0; e2 < len; e2 += u) { var idx = o.ap[(e2 / u) % o.ap.length]; strike(notes[Math.min(idx, notes.length - 1)], t0 + (pos + e2) * s16, u * s16 * 2.5, 0.62 + (e2 === 0 ? 0.1 : 0), last && e2 + u >= len); }
         } else {
           var hits = [];
+          if (SP && inst === 'guitar') { for (var gq = 0; gq < len; gq += 2) { var gp = pos + gq, gbp = Math.floor(gp / 2) % barE; if (SP.charAt(gbp) === '-' && Math.random() < 0.45) ghost(t0 + gp * s16 + GROOVE[gbp % 8] * sTempo, 0.6 + Math.random() * 0.4); } }
           for (var e = 0; e < len; e++) { var p16 = pos + e; if (e === 0 || (feel !== 'long' && p16 % 2 === 0 && pat.charAt((p16 / 2) % barE) === 'x')) hits.push(e); }
           var upper = notes.length > 3 ? notes.slice(1) : notes;
           var arpSeq = [notes[0]].concat(upper, upper.slice(1, -1).reverse());
@@ -3972,6 +3981,7 @@ class Component extends DCLogic {
             var p16 = pos + e, bp = Math.floor(p16 / 2) % barE, nxt = hi + 1 < hits.length ? hits[hi + 1] : len;
             var time = t0 + p16 * s16 + (swing && p16 % 2 === 0 && bp % 2 === 1 ? e8 * 0.33 : 0);
             var dur = (nxt - e) * s16 * 0.96, ring = last && hi === hits.length - 1;
+            var chgCut = function (d) { return (!last && hi === hits.length - 1 && gtr) ? d * 0.72 : d; };
             if (ring) dur = Math.max(dur, 1.4);
             var accent = bp === 0 ? 0.1 : 0;
             if (heavy && feel === 'drive' && e !== 0 && bp % 4 !== 0 && !ring) { egPick(ctx, out, time, wide); notes.slice(0, 2).forEach(function (m, k) { strike(m, time + k * 0.003, Math.min(dur, 0.11), 0.7, false, true); }); return; }
@@ -3979,10 +3989,10 @@ class Component extends DCLogic {
               var ch8 = SP.charAt(bp), up4 = notes.length > 3 ? notes.slice(1) : notes;
               if (inst === 'eguitar' && ch8 !== 'B' && ch8 !== 'A') egPick(ctx, out, time, wide);
               var bb = bp === 0 ? 0.08 : (bp === 2 || bp === 6 ? 0.04 : (bp % 2 ? -0.06 : 0));
-              if (gtr && ch8 === 'D') { gStrum(notes, time, 'D', 0.8 + bb, dur, ring); return; }
-              if (gtr && ch8 === 'U') { gStrum(notes, time, 'U', 0.62 + bb, dur, ring, 4); return; }
-              if (gtr && ch8 === 'm') { gStrum(notes, time, 'D', 0.62, dur, false, 3, true); return; }
-              if (gtr && ch8 === 'C') { gStrum(notes, time, 'D', 0.66 + bb, dur, ring, 4); return; }
+              if (gtr && ch8 === 'D') { gStrum(notes, time, 'D', 0.8 + bb, chgCut(dur), ring, 0, false, bp); return; }
+              if (gtr && ch8 === 'U') { gStrum(notes, time, 'U', 0.62 + bb, chgCut(dur), ring, 4, false, bp); return; }
+              if (gtr && ch8 === 'm') { gStrum(notes, time, 'D', 0.62, dur, false, 3, true, bp); return; }
+              if (gtr && ch8 === 'C') { gStrum(notes, time, 'D', 0.66 + bb, chgCut(dur), ring, 4, false, bp); return; }
               if (ch8 === 'm') { notes.slice(0, 3).forEach(function (m, k) { strike(m, time + k * 0.004, Math.min(dur, e8 * 0.45), 0.6, false, true); }); return; }
               if (ch8 === 'B') { strike(notes[0], time, Math.max(dur, e8 * 1.6), 0.8, ring); return; }
               if (ch8 === 'C') { up4.forEach(function (m, k) { strike(m, time + k * (gtr ? 0.008 : 0), Math.max(dur, e8 * 1.2), 0.62, ring); }); return; }
@@ -3996,8 +4006,8 @@ class Component extends DCLogic {
             else if (feel === 'off' && pat.charAt(bp) !== 'x') { if (!o.band) strike(notes[0], time, dur, 0.85, ring); }
             else if (feel === 'off') { notes.slice(1).forEach(function (m, k) { strike(m, time + k * 0.006, ring ? dur : Math.min(dur, e8 * 0.7), 0.62, ring); }); }
             else if (gtr) {
-              if (bp % 2 === 0 || feel === 'long') gStrum(notes, time, 'D', 0.76 + accent + (bp === 2 || bp === 6 ? 0.04 : 0), dur, ring);
-              else gStrum(notes, time, 'U', 0.6, dur, ring, 4);
+              if (bp % 2 === 0 || feel === 'long') gStrum(notes, time, 'D', 0.76 + accent + (bp === 2 || bp === 6 ? 0.04 : 0), chgCut(dur), ring, 0, false, bp);
+              else gStrum(notes, time, 'U', 0.6, chgCut(dur), ring, 4, false, bp);
             }
             else { (e === 0 ? notes : notes.slice(1)).forEach(function (m) { strike(m, time, dur, 0.8, ring); }); }
           });
