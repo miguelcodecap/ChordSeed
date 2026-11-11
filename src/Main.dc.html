@@ -79,6 +79,8 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gcoach .gc-k::before{content:'';width:6px;height:6px;border-radius:50%;background:#F7EDA8;box-shadow:0 0 8px 2px rgba(232,216,114,.7)}
 .gcoach b{display:block;font:600 20px/1.2 'Cormorant Garamond',Georgia,serif;color:#F6EBB0;margin-bottom:5px}.gcoach p{margin:0;color:#C9D6C6}
 .gcoach .gc-keep{margin-top:12px;min-height:36px;padding:0 16px;border-radius:11px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 13px Figtree,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(232,216,114,.22)}
+.gcoach .gc-x{position:absolute;top:6px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#9FB3A4;font:400 20px/1 Figtree,sans-serif;cursor:pointer}.gcoach .gc-x:hover{color:#F6EBB0;background:rgba(255,255,255,.06)}
+.gcoach b{padding-right:22px}
 .gcoach .gc-ar{position:absolute;top:-8px;width:14px;height:14px;background:#1B3125;border-left:1px solid rgba(232,216,114,.55);border-top:1px solid rgba(232,216,114,.55);transform:rotate(45deg);border-radius:2px 0 0 0}
 .gcoach.gc-up .gc-ar{top:auto;bottom:-8px;background:#12231A;border:0;border-right:1px solid rgba(232,216,114,.55);border-bottom:1px solid rgba(232,216,114,.55);border-radius:0 0 2px 0}
 .gc-ring{position:absolute;z-index:44;border-radius:18px;pointer-events:none;box-shadow:0 0 0 2px #E8D872,0 0 30px rgba(232,216,114,.35);animation:stepGlow 2.4s ease-in-out infinite}
@@ -4116,12 +4118,13 @@ class Component extends DCLogic {
     var gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
     var tg = gc && document.querySelector(gc.sel);
-    if (!gc || !tg || !tg.getBoundingClientRect().width) { box.style.display = 'none'; ring.style.display = 'none'; return; }
+    if (!gc || !tg || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; return; }
     if (box._k !== gc.key) {
       box._k = gc.key; box.innerHTML = '';
       var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
       box.appendChild(mk('div', 'gc-k', gc.kick)); box.appendChild(mk('b', '', gc.title)); box.appendChild(mk('p', '', gc.text));
       if (gc.keep) { var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; kb.addEventListener('click', function () { var g = self_gc(); if (g && g.keep) g.keep(); }); box.appendChild(kb); }
+      var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box._hid = box._k; box.style.display = 'none'; ring.style.display = 'none'; }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
       box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in');
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
@@ -4130,7 +4133,7 @@ class Component extends DCLogic {
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
     ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = Math.min(r.height + 12, 520) + 'px';
     box.style.display = 'block';
-    var bw = box.offsetWidth, bh = box.offsetHeight, below = r.top + Math.min(r.height, 520) + 14 + bh < window.innerHeight - 110 || r.top < bh + 30;
+    var bw = box.offsetWidth, bh = box.offsetHeight, below = gc.up ? r.top < bh + 30 : (r.top + Math.min(r.height, 520) + 14 + bh < window.innerHeight - 110 || r.top < bh + 30);
     var left = Math.max(12, Math.min(W - bw - 12, r.left + Math.min(r.width, 360) / 2 - 40));
     var top = below ? r.top + Math.min(r.height, 520) + 14 : r.top - bh - 14;
     box.style.left = (left + sx) + 'px'; box.style.top = (top + sy) + 'px';
@@ -5143,7 +5146,7 @@ class Component extends DCLogic {
         var cur = null, idx = 0;
         for (var q = 0; q < subs.length; q++) { var g = subs[q], k = g[1], ok = k === 'mood' ? gd.mood : (k === 'add' ? chs.length >= 2 : (k === 'sugs' ? (st.addedSug || gd.sugs) : (k === 'songs' ? (st.strummed || gd.songs) : gd[k]))); if (!ok) { cur = g; idx = q; break; } }
         if (!cur) { self._gc = null; return 0; }
-        self._gc = { key: cur[1] + ':' + stepNow + ':' + LX('es', 'en'), sel: cur[2], kick: LX('Paso ', 'Step ') + (stepNow + 1) + (subs.length > 1 ? ' · ' + (idx + 1) + LX(' de ', ' of ') + subs.length : ''), title: LX(cur[3], cur[4]), text: LX(cur[5], cur[6]), keepLab: cur[1] === 'sugs' || cur[1] === 'songs' ? LX(cur[7], cur[8]) : (cur[1] === 'add' ? '' : (idx === subs.length - 1 ? LX('Listo, siguiente paso →', 'Done, next step →') : LX('Listo, siguiente →', 'Done, next →'))), keep: cur[1] === 'add' ? null : function () { self.gMark(cur[1]); } };
+        self._gc = { key: cur[1] + ':' + stepNow + ':' + LX('es', 'en'), up: cur[1] === 'add' || cur[1] === 'count', sel: cur[2], kick: LX('Paso ', 'Step ') + (stepNow + 1) + (subs.length > 1 ? ' · ' + (idx + 1) + LX(' de ', ' of ') + subs.length : ''), title: LX(cur[3], cur[4]), text: LX(cur[5], cur[6]), keepLab: cur[1] === 'sugs' || cur[1] === 'songs' ? LX(cur[7], cur[8]) : (cur[1] === 'add' ? '' : (idx === subs.length - 1 ? LX('Listo, siguiente paso →', 'Done, next step →') : LX('Listo, siguiente →', 'Done, next →'))), keep: cur[1] === 'add' ? null : function () { self.gMark(cur[1]); } };
         return 1;
       })(),
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
@@ -5225,7 +5228,7 @@ class Component extends DCLogic {
       onbQInst: LX('¿Qué instrumento tocas?', 'Which instrument do you play?'), onbQGenre: LX('¿Qué música quieres hacer?', 'What music do you want to make?'),
       onbQTool: LX('¿Qué quieres hacer primero?', 'What do you want to do first?'),
       onbTools: NAV_ORDER.map(function (id) { return NAV.filter(function (n) { return n[0] === id; })[0]; }).filter(Boolean).map(function (n) { var on = (st.onbTool || 'gen') === n[0]; return { icon: NAV_ICON[n[0]] || '•', label: NAV_TAB[n[0]] ? NAV_TAB[n[0]][es ? 0 : 1] : n[es ? 1 : 2], desc: n[es ? 4 : 5], style: 'all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:16px;border:1.5px solid ' + (on ? '#E8D872' : '#24392E') + ';background:' + (on ? '#21281A' : '#0A1510'), pick: function () { self.setState({ onbTool: n[0] }); } }; }),
-      onbAgainLab: LX('Ver la bienvenida otra vez', 'Show the welcome again'), onbAgain: function () { try { window.localStorage.removeItem('chordseed.onb.v1'); } catch (x) {} self.setState({ onb: false, settingsOpen: false }); },
+      onbAgainLab: LX('Ver la bienvenida otra vez', 'Show the welcome again'), onbAgain: function () { try { window.localStorage.removeItem('cs_gd'); } catch (e) {} self.setState({ gd: {} }); try { window.localStorage.removeItem('chordseed.onb.v1'); } catch (x) {} self.setState({ onb: false, settingsOpen: false }); },
       onbSkipLab: LX('Saltar', 'Skip'), onbGoLab: LX('Empezar →', 'Start →'),
       onbSkip: function () { storeFlag('chordseed.onb.v1'); self.setState({ onb: true }); },
       onbGo: function () { storeFlag('chordseed.onb.v1'); self.gMark('inst'); self.gMark('genre'); self.setState({ onb: true, profileSet: true, onbAns: true, view: st.onbTool || 'gen' }); },
