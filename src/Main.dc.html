@@ -68,6 +68,7 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .mainwrap.guided > section:not(#stp-0), .mainwrap.guided > .tip, .mainwrap.guided #stp-0, .mainwrap.guided #stp-1, .mainwrap.guided #stp-2, .mainwrap.guided #stp-3, .mainwrap.guided #stp-4, .mainwrap.guided #stp-5{filter:grayscale(.9) brightness(.55);opacity:.45;transition:filter .6s ease,opacity .6s ease}
 .mainwrap.guided > section:not(#stp-0):hover, .mainwrap.guided > .tip:hover, .mainwrap.guided [id^="stp-"]:hover{filter:grayscale(.35) brightness(.85);opacity:.85}
 .mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-4, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
+.gd-tips{flex:none;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #6E6327;background:rgba(232,216,114,.10);color:#F3E79A;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}.gd-tips:hover{border-color:#E8D872}
 .gd-mode{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #2F4A3B;background:transparent;color:#B5C7B8;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .gd-mode:hover{border-color:#E8D872;color:#F1F4EA}
 .gd-sw{position:relative;width:26px;height:15px;border-radius:99px;background:#2A3D33;transition:background .2s}.gd-sw i{position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#9FB3A4;transition:transform .2s,background .2s}
@@ -1966,6 +1967,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><div class="gd-dots"><sc-for list="{{gdSteps}}" as="g" hint-placeholder-count="5"><button class="gd-dot {{g.cls}}" onClick="{{g.go}}" title="{{g.label}}" aria-label="{{g.label}}">{{g.n}}</button></sc-for></div></sc-if>
     <div class="gd-txt"><b>{{gdHead}}</b><span>{{gdText}}</span></div>
     <button class="gd-go" onClick="{{gdGo}}">{{gdGoLab}}</button>
+    <sc-if value="{{gdTipsBtn}}" hint-placeholder-val="{{ false }}"><button class="gd-tips" onClick="{{gdTipsOn}}" title="{{gdTipsTip}}">💡 {{gdTipsLab}}</button></sc-if>
     <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><button class="gd-mode {{gdModeCls}}" onClick="{{gdMode}}" aria-pressed="{{gdModePressed}}" title="{{gdModeTip}}"><span class="gd-sw" aria-hidden="true"><i></i></span>{{gdModeLab}}</button></sc-if>
   </nav></sc-if>
 
@@ -3875,7 +3877,7 @@ class Component extends DCLogic {
 
   constructor(props) {
     super(props);
-    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
+    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gcOff: (function () { try { return localStorage.getItem('cs_gcoff') === '1'; } catch (e) { return false; } })(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
   }
   _bus() {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -4153,7 +4155,7 @@ class Component extends DCLogic {
     var self = this, gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
     var tg = gc && document.querySelector(gc.sel);
-    if (!gc || !tg || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; if (!gc) this._gcPend = null; return; }
+    if (!gc || !tg || this.state.gcOff || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; if (!gc) this._gcPend = null; return; }
     var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
     if (box._k !== gc.key) {
       box._k = gc.key; box.innerHTML = ''; this._gcPend = null; box._chosen = false; box._sig0 = this.gSig(gc.k); box._sigL = box._sig0;
@@ -4164,7 +4166,7 @@ class Component extends DCLogic {
       if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
       var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; if (!gc.keepLab) kb.style.display = 'none'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
       box.appendChild(row);
-      var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box._hid = box._k; box.style.display = 'none'; ring.style.display = 'none'; }); box.appendChild(xb);
+      var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box.style.display = 'none'; ring.style.display = 'none'; try { localStorage.setItem('cs_gcoff', '1'); } catch (e) {} self.setState({ gcOff: true }); }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
       box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in');
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
@@ -4382,8 +4384,9 @@ class Component extends DCLogic {
     (function () { var sn = (RE_STYLES[genre] || RE_STYLES.pop), allA = /^[A-]+$/.test(gRhy.p);
       FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing,
         p: { '4/4': gRhy.p.replace(/[^-]/g, 'x'), '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
-    var gd = st.gd || {}, gOn = !!st.guided;
-    var stepDone = gOn ? [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 1, !!gd.sugs, !!gd.songs] : [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
+    var gd = st.gd || {}, gOn = !!st.guided && !st.gcOff;
+    var gDoneA = [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 1, !!gd.sugs, !!gd.songs], sDoneA = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
+    var stepDone = gOn ? gDoneA : (st.guided ? gDoneA.map(function (v, i) { return v || sDoneA[i]; }) : sDoneA);
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
     var guidedOn = !!st.guided && view === 'gen' && stepNow < 5 && !st.lm;
     var badge = function (i) { var done = stepDone[i], now = stepNow === i; return 'flex:none;width:32px;height:32px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;' + (done ? 'background:#0F3A2C;color:#6FD39C;border:1.5px solid #6FD39C' : (now ? 'background:#E8D872;color:#0E140A;border:1.5px solid #E8D872' : 'background:#16271F;color:#9FB3A4;border:1.5px solid #2F4A3B')); };
@@ -5195,6 +5198,7 @@ class Component extends DCLogic {
       backGenLab: LX('Volver a tu progresión', 'Back to your progression'), backGen: function () { self.setState({ view: 'gen' }); },
       modCallTxt: (function () { var out1 = chs.filter(function (c) { return !findIn(pool, k.t, c); }); return out1.length ? LX('«' + out1.map(nm).join(', ') + '» está fuera de tu tonalidad (' + keyName + ') y puede sonar raro junto a los demás. ¿Quieres usarlo igual? El Modulador te da acordes puente para que el cambio suene natural.', '“' + out1.map(nm).join(', ') + '” is outside your key (' + keyName + ') and may sound odd next to the others. Want to keep it? The key changer gives you bridge chords so the change sounds natural.') : LX('¿Quieres poner un acorde tuyo pero junto al que ya tienes suena mal? Usa el Modulador: te da acordes puente para pasar de uno a otro sin que suene forzado.', 'Want to add a chord of yours but it sounds wrong next to the ones you have? Use the key changer: it gives you bridge chords so it doesn’t sound forced.'); })(),
       __gc: (function () {
+        if (st.gcOff) { self._gc = null; return 0; }
         if (st.guided && !st.lm && view !== 'gen' && gd.tour && !gd.tourDone) {
           var TL = NAV_ORDER.filter(function (x) { return x !== 'gen'; }), ti = TL.indexOf(view);
           if (ti >= 0) {
@@ -5240,8 +5244,10 @@ class Component extends DCLogic {
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
       gTipShow: !!st.gTip && !!st.guided && view === 'gen', gTipHead: LX('¿Prefieres explorar a tu manera?', 'Rather explore on your own?'), gTipText: LX('Apaga «Modo guiado» aquí abajo y usa la app libremente. Puedes volver a encenderlo cuando quieras.', 'Turn off “Guided mode” right here and use the app freely. You can turn it back on anytime.'), gTipCloseLab: LX('Cerrar', 'Close'),
       gTipClose: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} self.setState({ gTip: false }); },
+      gdTipsBtn: !!st.guided && !!st.gcOff && !st.lm, gdTipsLab: LX('Explicaciones', 'Tips'), gdTipsTip: LX('Vuelve a mostrar las explicaciones paso a paso', 'Show the step-by-step explanations again'),
+      gdTipsOn: function () { try { localStorage.removeItem('cs_gcoff'); } catch (e) {} if (self._gcEl) self._gcEl._k = null; self.setState({ gcOff: false }); },
       gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
-      gdMode: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} if (st.gTip) self.setState({ gTip: false }); var v = !st.guided; try { localStorage.setItem('cs_guided', v ? '1' : '0'); } catch (e) {} self.setState({ guided: v }); if (v && stepNow < 5) self.gdJump(stepNow); },
+      gdMode: function () { try { localStorage.setItem('cs_gtip', '1'); localStorage.removeItem('cs_gcoff'); } catch (e) {} if (st.gcOff) self.setState({ gcOff: false }); if (st.gTip) self.setState({ gTip: false }); var v = !st.guided; try { localStorage.setItem('cs_guided', v ? '1' : '0'); } catch (e) {} self.setState({ guided: v }); if (v && stepNow < 5) self.gdJump(stepNow); },
       gdShow: !st.lm && !(!!st.modTip && view === 'gen' && chs.length > 0 && !st.pickerOpen) && !st.acctOpen && view !== 'learn', gdIsGen: view === 'gen', gdAria: LX('Guía: tu siguiente paso', 'Guide: your next step'),
       gdSteps: GD_STEPS.map(function (g, i) { return { n: stepDone[i] ? '✓' : String(i + 1), cls: stepDone[i] ? 'done' : (stepNow === i ? 'now' : ''), label: (i + 1) + '. ' + LX(g[0], g[1]), go: function () { if (st.guided && i < stepNow) { self.gUnmark(GC_SUBS.filter(function (x) { return x[0] === i; })[0][1]); return; } self.gdJump(i); } }; }),
       gdHead: view !== 'gen' ? LX('Estás en: ', 'You are in: ') + ((NAV.filter(function (n) { return n[0] === view; })[0] || [0, '', ''])[LX(1, 2)]) : (stepNow < 5 ? LX('Paso ', 'Step ') + (stepNow + 1) + LX(' de 5 · ', ' of 5 · ') + LX(GD_STEPS[stepNow][0], GD_STEPS[stepNow][1]) : LX('¡Tu canción ya tiene forma!', 'Your song is taking shape!')),
