@@ -73,17 +73,30 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gd-sw{position:relative;width:26px;height:15px;border-radius:99px;background:#2A3D33;transition:background .2s}.gd-sw i{position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#9FB3A4;transition:transform .2s,background .2s}
 .gd-mode.on .gd-sw{background:#6E6327}.gd-mode.on .gd-sw i{transform:translateX(11px);background:#F3E79A}
 @media (max-width:640px){.gd-mode{padding:0 8px;font-size:11px}.gd-mode .gd-lab-long{display:none}}
-.gcoach{position:absolute;z-index:45;width:min(330px,calc(100vw - 24px));box-sizing:border-box;padding:14px 16px;border-radius:16px;background:linear-gradient(180deg,#1B3125 0%,#12231A 100%);color:#D8E4D6;border:1px solid rgba(232,216,114,.55);box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 26px rgba(232,216,114,.12);font:500 14px/1.5 Figtree,sans-serif}
-.gcoach.gc-in{animation:gcIn .35s ease-out}@keyframes gcIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.gcoach .gc-k{display:flex;align-items:center;gap:6px;font:700 11px Figtree,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#E8D872;margin-bottom:4px}
-.gcoach .gc-k::before{content:'';width:6px;height:6px;border-radius:50%;background:#F7EDA8;box-shadow:0 0 8px 2px rgba(232,216,114,.7)}
-.gcoach b{display:block;font:600 20px/1.2 'Cormorant Garamond',Georgia,serif;color:#F6EBB0;margin-bottom:5px}.gcoach p{margin:0;color:#C9D6C6}
-.gcoach .gc-keep{margin-top:12px;min-height:36px;padding:0 16px;border-radius:11px;border:0;background:linear-gradient(180deg,#F3E79A,#E8D872 55%,#CDB45A);color:#0E140A;font:700 13px Figtree,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(232,216,114,.22)}
-.gcoach .gc-x{position:absolute;top:6px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#9FB3A4;font:400 20px/1 Figtree,sans-serif;cursor:pointer}.gcoach .gc-x:hover{color:#F6EBB0;background:rgba(255,255,255,.06)}
-.gcoach b{padding-right:22px}
-.gcoach .gc-ar{position:absolute;top:-8px;width:14px;height:14px;background:#1B3125;border-left:1px solid rgba(232,216,114,.55);border-top:1px solid rgba(232,216,114,.55);transform:rotate(45deg);border-radius:2px 0 0 0}
-.gcoach.gc-up .gc-ar{top:auto;bottom:-8px;background:#12231A;border:0;border-right:1px solid rgba(232,216,114,.55);border-bottom:1px solid rgba(232,216,114,.55);border-radius:0 0 2px 0}
+.gcoach{position:absolute;z-index:45;width:min(380px,calc(100vw - 24px));box-sizing:border-box;padding:16px 18px 14px;border-radius:18px;background:radial-gradient(260px 120px at 0% 0%,rgba(232,216,114,.28),transparent 70%),linear-gradient(180deg,#FBF7E4 0%,#F2E9C4 100%);color:#2B3528;border:1px solid #E2CF78;box-shadow:0 22px 50px rgba(0,0,0,.5),0 0 0 4px rgba(232,216,114,.10),0 0 34px rgba(232,216,114,.22);font:500 14px/1.55 Figtree,sans-serif}
+.gcoach.gc-in{animation:gcIn .35s cubic-bezier(.2,.8,.2,1)}@keyframes gcIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.gcoach .gc-k{display:flex;align-items:center;gap:7px;font:700 11px Figtree,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#8A6F14;margin-bottom:4px}
+.gcoach .gc-k::before{content:'';width:7px;height:7px;border-radius:50%;background:#E8C547;box-shadow:0 0 0 3px rgba(232,197,71,.25)}
+.gcoach b{display:block;padding-right:22px;font:600 22px/1.15 'Cormorant Garamond',Georgia,serif;color:#16200F;margin-bottom:6px}
+.gcoach p{margin:0;color:#3D4838}
+.gcoach .gc-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.gcoach .gc-keep{margin-left:auto;min-height:36px;padding:0 16px;border-radius:11px;border:0;background:#16271F;color:#F3E79A;font:700 13px Figtree,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(22,39,31,.25)}
+.gcoach .gc-alt{min-height:36px;padding:0 12px;border-radius:11px;border:1px solid #B79C3A;background:#FFF9DC;color:#3B3110;font:700 13px Figtree,sans-serif;cursor:pointer}.gcoach .gc-row{flex-wrap:wrap}.gcoach .gc-row > button{flex:0 1 auto}@media (max-width:420px){.gcoach .gc-row > .gc-alt,.gcoach .gc-row > .gc-keep{flex:1 1 auto}}
+.gcoach .gc-keep:disabled{opacity:.35;cursor:default}
+.gcoach .gc-back{min-height:36px;padding:0 10px;border-radius:10px;border:1px solid rgba(43,53,40,.22);background:transparent;color:#4A5545;font:600 13px Figtree,sans-serif;cursor:pointer}.gcoach .gc-back:hover{background:rgba(43,53,40,.06)}
+.gcoach .gc-wait{display:none;margin-top:10px}.gcoach.gc-pending .gc-wait{display:block}
+.gcoach .gc-wait .gc-bar{display:block;height:4px;border-radius:99px;background:linear-gradient(90deg,#C9A63A,#E8D872);transform-origin:left;transform:scaleX(0)}
+.gcoach .gc-wait small{display:block;margin-top:5px;font:600 11.5px Figtree,sans-serif;color:#7A6418}
+@keyframes gcBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.gcoach .gc-x{position:absolute;top:8px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#7D866F;font:400 20px/1 Figtree,sans-serif;cursor:pointer}.gcoach .gc-x:hover{color:#16200F;background:rgba(43,53,40,.07)}
+.gcoach .gc-ar{position:absolute;top:-8px;width:14px;height:14px;background:#FBF7E4;border-left:1px solid #E2CF78;border-top:1px solid #E2CF78;transform:rotate(45deg);border-radius:3px 0 0 0}
+.gcoach.gc-up .gc-ar{top:auto;bottom:-8px;background:#F2E9C4;border:0;border-right:1px solid #E2CF78;border-bottom:1px solid #E2CF78;border-radius:0 0 3px 0}
 .gc-ring{position:absolute;z-index:44;border-radius:18px;pointer-events:none;box-shadow:0 0 0 2px #E8D872,0 0 30px rgba(232,216,114,.35);animation:stepGlow 2.4s ease-in-out infinite}
+.gd-tip{position:absolute;right:8px;bottom:calc(100% + 12px);display:flex;align-items:flex-start;gap:10px;max-width:340px;padding:12px 36px 12px 14px;border-radius:14px;background:linear-gradient(180deg,#FBF7E4,#F2E9C4);border:1px solid #E2CF78;color:#2B3528;font:500 13px/1.45 Figtree,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,.45);animation:gcIn .4s cubic-bezier(.2,.8,.2,1)}
+.gd-tip b{color:#16200F}.gd-tip-ic{color:#B8963A;font-size:14px;line-height:1.4}
+.gd-tip::after{content:'';position:absolute;right:46px;bottom:-7px;width:12px;height:12px;background:#F2E9C4;border-right:1px solid #E2CF78;border-bottom:1px solid #E2CF78;transform:rotate(45deg)}
+.gd-tip-x{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:#7D866F;font:400 18px/1 Figtree,sans-serif;cursor:pointer}
+@media (max-width:640px){.gd-tip{left:8px;right:8px;max-width:none}.gd-tip::after{right:56px}}
 .step-now{box-shadow:0 0 0 1.5px #E8D872,0 0 28px rgba(232,216,114,.18)!important;animation:stepGlow 2.4s ease-in-out infinite}
 @keyframes stepGlow{0%,100%{box-shadow:0 0 0 1.5px rgba(232,216,114,.9),0 0 18px rgba(232,216,114,.12)}50%{box-shadow:0 0 0 1.5px rgba(232,216,114,.5),0 0 34px rgba(232,216,114,.30)}}
 .lift{transition:transform .15s ease,border-color .15s ease}.lift:hover{transform:translateY(-2px);border-color:#E8D872}
@@ -1948,6 +1961,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     </footer>
   </main>
   <sc-if value="{{gdShow}}" hint-placeholder-val="{{ true }}"><nav class="guide" aria-label="{{gdAria}}">
+    <sc-if value="{{gTipShow}}" hint-placeholder-val="{{ false }}"><div class="gd-tip" role="status"><span class="gd-tip-ic" aria-hidden="true">✦</span><span><b>{{gTipHead}}</b> {{gTipText}}</span><button class="gd-tip-x" onClick="{{gTipClose}}" aria-label="{{gTipCloseLab}}">×</button></div></sc-if>
     <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><div class="gd-dots"><sc-for list="{{gdSteps}}" as="g" hint-placeholder-count="5"><button class="gd-dot {{g.cls}}" onClick="{{g.go}}" title="{{g.label}}" aria-label="{{g.label}}">{{g.n}}</button></sc-for></div></sc-if>
     <div class="gd-txt"><b>{{gdHead}}</b><span>{{gdText}}</span></div>
     <button class="gd-go" onClick="{{gdGo}}">{{gdGoLab}}</button>
@@ -2740,9 +2754,10 @@ var GC_SUBS = [
   [1, 'cx', '[data-g="cx"]', '¿Acordes simples o con más color?', 'Simple chords or more color?', '«Triads» son los acordes básicos de 3 notas, ideales para empezar. Con + les sumas notas (como 7 o 9) que suenan más ricas y jazzeras. Ajusta con − y + y toca «Listo».', '“Triads” are basic 3-note chords, perfect to start. Press + to add notes (like 7 or 9) that sound richer and jazzier. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'sur', '[data-g="sur"]', '¿Quieres sorpresas?', 'Want surprises?', '«None» solo usa acordes de la familia de tu canción. «Some» de vez en cuando mete uno de afuera que da un giro inesperado. Ajusta con − y + y toca «Listo».', '“None” only uses chords from your song’s family. “Some” now and then adds one from outside for an unexpected twist. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'count', '[data-g="count"]', '¿Cuántos acordes te sugerimos?', 'How many chords should we suggest?', 'Con 1 eliges el siguiente acorde paso a paso. Con más, te proponemos frases completas de varios acordes de una vez. Usa + las veces que quieras y luego toca «Listo».', 'With 1 you pick the next chord step by step. With more, we suggest whole phrases of several chords at once. Press + as many times as you like, then tap “Done”.', 'Así está bien', 'This is fine'],
-  [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below.', '', ''],
-  [3, 'sugs', '#stp-3', 'Escucha y elige el siguiente', 'Listen and pick the next one', 'Estos acordes encajan después de los tuyos. Toca ▶ para oír cómo suena con tu progresión y + para agregarlo.', 'These chords fit after yours. Tap ▶ to hear how it sounds with your progression and + to add it.', 'Saltar este paso', 'Skip this step'],
-  [4, 'songs', '#stp-5', 'Canciones que usan tus acordes', 'Songs that use your chords', 'Escucha canciones reales con tu misma progresión. Toca ▶ para oírlas con su ritmo, o usa una como parte nueva de tu canción.', 'Hear real songs with your same progression. Tap ▶ to hear them with their rhythm, or use one as a new part of your song.', 'Saltar este paso', 'Skip this step']
+  [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo. Con 2 o más acordes, toca «Listo».', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below. Once you have 2 or more, tap “Done”.', '', ''],
+  [3, 'fork', '#stp-3 .sec-h', '¡Ya tienes tu progresión!', 'Your progression is ready!', '¿Sigo explicándote esta página (cómo elegir el siguiente acorde y las canciones reales que usan tus acordes) o prefieres conocer la siguiente herramienta, también con su explicación?', 'Shall I keep explaining this page (how to pick the next chord and the real songs that use your chords), or would you rather meet the next tool, also explained?', '', ''],
+  [3, 'sugs', '#stp-3 .sec-h', 'Escucha y elige el siguiente', 'Listen and pick the next one', 'Estos acordes encajan después de los tuyos. Toca ▶ para oír cómo suena con tu progresión y + para agregarlo.', 'These chords fit after yours. Tap ▶ to hear how it sounds with your progression and + to add it.', 'Saltar este paso', 'Skip this step'],
+  [4, 'songs', '#stp-5 .sec-h', 'Canciones que usan tus acordes', 'Songs that use your chords', 'Escucha canciones reales con tu misma progresión. Toca ▶ para oírlas con su ritmo, o usa una como parte nueva de tu canción.', 'Hear real songs with your same progression. Tap ▶ to hear them with their rhythm, or use one as a new part of your song.', 'Saltar este paso', 'Skip this step']
 ];
 var GD_STEPS = [
   ['Tu sonido', 'Your sound', 'Elige tu instrumento y tu estilo.', 'Choose your instrument and style.', 'stp-0', 'start'],
@@ -3740,6 +3755,7 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 class Component extends DCLogic {
   componentDidMount() {
     try {
+      var selfT = this, tipNew = false; try { tipNew = localStorage.getItem('cs_gtip') !== '1'; } catch (e) {} if (tipNew) { setTimeout(function () { if (selfT.state.guided) selfT.setState({ gTip: true }); setTimeout(function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} selfT.setState({ gTip: false }); }, 9000); }, 4000); }
       var gcb = document.createElement('div'); gcb.className = 'gcoach'; gcb.setAttribute('role', 'note'); gcb.style.display = 'none'; document.body.appendChild(gcb); this._gcEl = gcb;
       var gcr = document.createElement('div'); gcr.className = 'gc-ring'; gcr.style.display = 'none'; document.body.appendChild(gcr); this._gcRing = gcr;
       var selfG = this, gt = function () { try { selfG.gcTick(); } catch (e) {} };
@@ -3857,7 +3873,7 @@ class Component extends DCLogic {
 
   constructor(props) {
     super(props);
-    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
+    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
   }
   _bus() {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -4113,23 +4129,40 @@ class Component extends DCLogic {
     } catch (e) { try { console.warn('[chordseed] audio', e && e.message); } catch (e2) {} }
   }
 
-  gMark(k) { var g = Object.assign({}, this.state.gd || {}); if (g[k]) return; g[k] = true; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); }
+  gMark(k) { var g = Object.assign({}, this.state.gd || {}); if (g[k]) return; g[k] = true; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); }
+  gMarkMany(ks, extra) { var g = Object.assign({}, this.state.gd || {}); ks.forEach(function (k) { g[k] = true; }); delete g.tourDone; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState(Object.assign({ gd: g }, extra || {})); }
+  gUnmark(k) { var g = Object.assign({}, this.state.gd || {}), i = -1; GC_SUBS.forEach(function (x, j) { if (x[1] === k) i = j; }); GC_SUBS.forEach(function (x, j) { if (j >= i) delete g[x[1]]; }); this._gcPend = null; if (this._gcEl) this._gcEl._hid = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); var self = this; setTimeout(function () { var tg = self._gc && document.querySelector(self._gc.sel); if (tg) try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 80); }
+  gSig(k) { var st = this.state, n = (st.chords || []).length; return k === 'inst' ? st.inst : k === 'genre' ? st.reStyle : k === 'mood' ? st.mood : k === 'cx' ? st.cx : k === 'sur' ? st.sur : k === 'count' ? st.count : k === 'add' ? n : k === 'sugs' ? n + '|' + !!st.addedSug : k === 'songs' ? String(!!st.strummed) + (st.playing ? st.playing.id : '') : ''; }
   gcTick() {
-    var gc = this._gc, box = this._gcEl, ring = this._gcRing;
+    var self = this, gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
     var tg = gc && document.querySelector(gc.sel);
-    if (!gc || !tg || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; return; }
+    if (!gc || !tg || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; if (!gc) this._gcPend = null; return; }
+    var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
     if (box._k !== gc.key) {
-      box._k = gc.key; box.innerHTML = '';
-      var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
+      box._k = gc.key; box.innerHTML = ''; this._gcPend = null; box._sig0 = this.gSig(gc.k); box._sigL = box._sig0;
       box.appendChild(mk('div', 'gc-k', gc.kick)); box.appendChild(mk('b', '', gc.title)); box.appendChild(mk('p', '', gc.text));
-      if (gc.keep) { var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; kb.addEventListener('click', function () { var g = self_gc(); if (g && g.keep) g.keep(); }); box.appendChild(kb); }
+      var pw = mk('div', 'gc-wait'); if (!gc.waitLab) pw.style.display = 'none'; pw.appendChild(mk('span', 'gc-bar')); pw.appendChild(mk('small', '', gc.waitLab)); box.appendChild(pw);
+      var row = mk('div', 'gc-row');
+      if (gc.back) { var bb = mk('button', 'gc-back', gc.backLab); bb.type = 'button'; bb.addEventListener('click', function () { var g = self._gc; if (g && g.back) g.back(); }); row.appendChild(bb); }
+      if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
+      var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
+      box.appendChild(row);
       var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box._hid = box._k; box.style.display = 'none'; ring.style.display = 'none'; }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
       box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in');
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
     }
-    var self = this; function self_gc() { return self._gc; }
+    // auto-advance: a change starts a short countdown; another change restarts it
+    var sig = this.gSig(gc.k), DL = { inst: 1700, genre: 1700, mood: 1900, cx: 2300, sur: 2300, count: 2300, add: 3200, sugs: 2200, songs: 2600 };
+    if (sig !== box._sigL) {
+      box._sigL = sig;
+      if (sig !== box._sig0 && gc.keepOk()) { this._gcPend = { k: gc.k, at: Date.now() + (DL[gc.k] || 2000) }; var bar = box.querySelector('.gc-bar'); if (bar) { bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = 'gcBar ' + (DL[gc.k] || 2000) + 'ms linear forwards'; } }
+    }
+    var pend = this._gcPend && this._gcPend.k === gc.k;
+    box.classList.toggle('gc-pending', !!pend);
+    var keepBtn = box.querySelector('.gc-keep'); if (keepBtn) keepBtn.disabled = !gc.keepOk();
+    if (pend && Date.now() >= this._gcPend.at) { this._gcPend = null; gc.keep(); return; }
     var r = tg.getBoundingClientRect(), sx = window.scrollX, sy = window.scrollY, W = document.documentElement.clientWidth;
     ring.style.display = 'block'; ring.style.left = (r.left + sx - 6) + 'px'; ring.style.top = (r.top + sy - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = Math.min(r.height + 12, 520) + 'px';
     box.style.display = 'block';
@@ -4332,7 +4365,7 @@ class Component extends DCLogic {
     var genre = st.reStyle || 'pop';
     var gRhyList = GENRE_RHY[genre] || GENRE_RHY.pop, gRhy = gRhyList[(st.rhyIdx || 0) % gRhyList.length];
     var gd = st.gd || {}, gOn = !!st.guided;
-    var stepDone = [gOn ? !!(gd.inst && gd.genre) || !!st.onbAns : !!st.profileSet, (gOn ? !!(gd.mood && gd.cx && gd.sur && gd.count) : st.mood !== 'any'), chs.length >= 2, !!st.addedSug || !!gd.sugs, !!st.strummed || !!gd.songs];
+    var stepDone = gOn ? [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && chs.length >= 2, !!gd.sugs, !!gd.songs] : [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepNow = stepDone.indexOf(false); if (stepNow < 0) stepNow = 5;
     var guidedOn = !!st.guided && view === 'gen' && stepNow < 5 && !st.lm;
     var badge = function (i) { var done = stepDone[i], now = stepNow === i; return 'flex:none;width:32px;height:32px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;' + (done ? 'background:#0F3A2C;color:#6FD39C;border:1.5px solid #6FD39C' : (now ? 'background:#E8D872;color:#0E140A;border:1.5px solid #E8D872' : 'background:#16271F;color:#9FB3A4;border:1.5px solid #2F4A3B')); };
@@ -5141,19 +5174,43 @@ class Component extends DCLogic {
       backGenLab: LX('Volver a tu progresión', 'Back to your progression'), backGen: function () { self.setState({ view: 'gen' }); },
       modCallTxt: (function () { var out1 = chs.filter(function (c) { return !findIn(pool, k.t, c); }); return out1.length ? LX('«' + out1.map(nm).join(', ') + '» está fuera de tu tonalidad (' + keyName + ') y puede sonar raro junto a los demás. ¿Quieres usarlo igual? El Modulador te da acordes puente para que el cambio suene natural.', '“' + out1.map(nm).join(', ') + '” is outside your key (' + keyName + ') and may sound odd next to the others. Want to keep it? The key changer gives you bridge chords so the change sounds natural.') : LX('¿Quieres poner un acorde tuyo pero junto al que ya tienes suena mal? Usa el Modulador: te da acordes puente para pasar de uno a otro sin que suene forzado.', 'Want to add a chord of yours but it sounds wrong next to the ones you have? Use the key changer: it gives you bridge chords so it doesn’t sound forced.'); })(),
       __gc: (function () {
+        if (st.guided && !st.lm && view !== 'gen' && gd.tour && !gd.tourDone) {
+          var TL = NAV_ORDER.filter(function (x) { return x !== 'gen'; }), ti = TL.indexOf(view);
+          if (ti >= 0) {
+            var nv = NAV.filter(function (n) { return n[0] === view; })[0], nextV = TL[ti + 1];
+            self._gc = { k: 'tool', key: 'tool:' + view + ':' + LX('es', 'en'), up: false, sel: '.tooltab[aria-selected="true"]',
+              kick: LX('Recorrido · herramienta ', 'Tour · tool ') + (ti + 1) + LX(' de ', ' of ') + TL.length, title: LX(nv[1], nv[2]), text: LX(nv[4], nv[5]) + ' ' + LX('Ejemplo: ', 'Example: ') + LX(nv[6], nv[7]),
+              keepLab: nextV ? LX('Siguiente herramienta →', 'Next tool →') : LX('Terminar recorrido ✓', 'Finish the tour ✓'), keepOk: function () { return true; },
+              keep: function () { if (nextV) self.setState({ view: nextV }); else { self.gMark('tourDone'); self.setState({ view: 'gen' }); } try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+              backLab: LX('← Atrás', '← Back'), back: function () { self.setState({ view: ti > 0 ? TL[ti - 1] : 'gen' }); },
+              altLab: nextV ? LX('Terminar recorrido', 'End tour') : '', alt: nextV ? function () { self.gMark('tourDone'); } : null, waitLab: '' };
+            return 1;
+          }
+        }
         if (!guidedOn) { self._gc = null; return 0; }
         var subs = GC_SUBS.filter(function (g) { return g[0] === stepNow; });
         var cur = null, idx = 0;
-        for (var q = 0; q < subs.length; q++) { var g = subs[q], k = g[1], ok = k === 'mood' ? gd.mood : (k === 'add' ? chs.length >= 2 : (k === 'sugs' ? (st.addedSug || gd.sugs) : (k === 'songs' ? (st.strummed || gd.songs) : gd[k]))); if (!ok) { cur = g; idx = q; break; } }
+        for (var q = 0; q < subs.length; q++) { if (!gd[subs[q][1]]) { cur = subs[q]; idx = q; break; } }
         if (!cur) { self._gc = null; return 0; }
-        self._gc = { key: cur[1] + ':' + stepNow + ':' + LX('es', 'en'), up: cur[1] === 'add' || cur[1] === 'count', sel: cur[2], kick: LX('Paso ', 'Step ') + (stepNow + 1) + (subs.length > 1 ? ' · ' + (idx + 1) + LX(' de ', ' of ') + subs.length : ''), title: LX(cur[3], cur[4]), text: LX(cur[5], cur[6]), keepLab: cur[1] === 'sugs' || cur[1] === 'songs' ? LX(cur[7], cur[8]) : (cur[1] === 'add' ? '' : (idx === subs.length - 1 ? LX('Listo, siguiente paso →', 'Done, next step →') : LX('Listo, siguiente →', 'Done, next →'))), keep: cur[1] === 'add' ? null : function () { self.gMark(cur[1]); } };
+        var k = cur[1], last = idx === subs.length - 1, gi = GC_SUBS.indexOf(cur);
+        self._gc = { k: k, key: k + ':' + stepNow + ':' + LX('es', 'en'), up: k === 'add' || k === 'count', sel: cur[2],
+          kick: LX('Paso ', 'Step ') + (stepNow + 1) + (subs.length > 1 ? ' · ' + (idx + 1) + LX(' de ', ' of ') + subs.length : ''),
+          title: LX(cur[3], cur[4]), text: LX(cur[5], cur[6]),
+          keepLab: k === 'sugs' || k === 'songs' ? LX(cur[7], cur[8]) : (last ? LX('Listo, siguiente paso →', 'Done, next step →') : LX('Listo →', 'Done →')),
+          keepOk: function () { return k !== 'add' || (self.state.chords || []).length >= 2; },
+          backLab: gi > 0 ? LX('← Atrás', '← Back') : '', back: gi > 0 ? function () { self.gUnmark(GC_SUBS[gi - 1][1]); } : null,
+          waitLab: LX('Siguiente en un momento… (puedes seguir cambiando)', 'Moving on in a moment… (you can keep changing it)'),
+          keep: function () { self.gMark(k); } };
+        if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['fork', 'sugs', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         return 1;
       })(),
       guideCls: guidedOn ? 'guided gn-' + stepNow : '',
+      gTipShow: !!st.gTip && !!st.guided && view === 'gen', gTipHead: LX('¿Prefieres explorar a tu manera?', 'Rather explore on your own?'), gTipText: LX('Apaga «Modo guiado» aquí abajo y usa la app libremente. Puedes volver a encenderlo cuando quieras.', 'Turn off “Guided mode” right here and use the app freely. You can turn it back on anytime.'), gTipCloseLab: LX('Cerrar', 'Close'),
+      gTipClose: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} self.setState({ gTip: false }); },
       gdModeCls: st.guided ? 'on' : '', gdModePressed: st.guided ? 'true' : 'false', gdModeLab: LX('Modo guiado', 'Guided mode'), gdModeTip: st.guided ? LX('Desactívalo para ver todo con color y moverte libremente', 'Turn it off to see everything in color and move freely') : LX('Actívalo para que te lleve paso a paso', 'Turn it on to be taken step by step'),
-      gdMode: function () { var v = !st.guided; try { localStorage.setItem('cs_guided', v ? '1' : '0'); } catch (e) {} self.setState({ guided: v }); if (v && stepNow < 5) self.gdJump(stepNow); },
+      gdMode: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} if (st.gTip) self.setState({ gTip: false }); var v = !st.guided; try { localStorage.setItem('cs_guided', v ? '1' : '0'); } catch (e) {} self.setState({ guided: v }); if (v && stepNow < 5) self.gdJump(stepNow); },
       gdShow: !st.lm && !(!!st.modTip && view === 'gen' && chs.length > 0 && !st.pickerOpen) && !st.acctOpen && view !== 'learn', gdIsGen: view === 'gen', gdAria: LX('Guía: tu siguiente paso', 'Guide: your next step'),
-      gdSteps: GD_STEPS.map(function (g, i) { return { n: stepDone[i] ? '✓' : String(i + 1), cls: stepDone[i] ? 'done' : (stepNow === i ? 'now' : ''), label: (i + 1) + '. ' + LX(g[0], g[1]), go: function () { self.gdJump(i); } }; }),
+      gdSteps: GD_STEPS.map(function (g, i) { return { n: stepDone[i] ? '✓' : String(i + 1), cls: stepDone[i] ? 'done' : (stepNow === i ? 'now' : ''), label: (i + 1) + '. ' + LX(g[0], g[1]), go: function () { if (st.guided && i < stepNow) { self.gUnmark(GC_SUBS.filter(function (x) { return x[0] === i; })[0][1]); return; } self.gdJump(i); } }; }),
       gdHead: view !== 'gen' ? LX('Estás en: ', 'You are in: ') + ((NAV.filter(function (n) { return n[0] === view; })[0] || [0, '', ''])[LX(1, 2)]) : (stepNow < 5 ? LX('Paso ', 'Step ') + (stepNow + 1) + LX(' de 5 · ', ' of 5 · ') + LX(GD_STEPS[stepNow][0], GD_STEPS[stepNow][1]) : LX('¡Tu canción ya tiene forma!', 'Your song is taking shape!')),
       gdText: view !== 'gen' ? LX('Tus acordes siguen guardados mientras exploras.', 'Your chords stay saved while you explore.') : (stepNow < 5 ? LX(GD_STEPS[stepNow][2], GD_STEPS[stepNow][3]) : LX('Arma las partes, escucha la canción completa o guárdala.', 'Build its parts, play the whole song or save it.')),
       gdGoLab: view !== 'gen' ? LX('← Volver a mi canción', '← Back to my song') : (stepNow < 5 ? LX('Muéstrame →', 'Show me →') : LX('Armar mi canción →', 'Build my song →')),
