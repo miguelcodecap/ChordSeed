@@ -95,8 +95,16 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gcoach.gc-up .gc-ar{top:auto;bottom:-8px;background:#F2E9C4;border:0;border-right:1px solid #E2CF78;border-bottom:1px solid #E2CF78;border-radius:0 0 3px 0}
 .gc-ring{position:absolute;z-index:44;border-radius:18px;pointer-events:none;box-shadow:0 0 0 2px #E8D872,0 0 30px rgba(232,216,114,.35),0 0 0 300vmax rgba(2,6,4,.74);transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
 @media (max-width:640px){body.gc-on .guide{display:none!important}}
+@media (max-width:640px){.onb .seg>button,.onb .chips>button,.seg>button{white-space:nowrap;flex:none}}
+@media (max-width:640px){.mainwrap{padding-bottom:20px!important}.foot-grass{height:48px!important}body{padding-bottom:72px}}
+@media (max-width:640px){.guide{flex-wrap:nowrap!important;padding:7px 8px!important;gap:8px!important;border-radius:16px!important}.gd-txt{flex:1 1 auto!important;min-width:0}.gd-txt span{display:none!important}.gd-txt b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.gd-go{flex:none!important;min-height:38px!important;padding:0 12px!important;font-size:13px!important}.gd-mode{min-height:38px}}
+@media (max-width:640px){.colbtn>span:last-child{display:none}.colbtn{min-width:40px;min-height:40px;justify-content:center}.sec-h{padding-right:52px!important}}
+.use-btn{border-color:#7A6B2E!important;color:#F3E79A!important}.use-btn:hover{background:rgba(232,216,114,.1)!important}.st-more{display:none}
+@media (max-width:640px){.st-more{display:inline-flex}.songs-st:not(.st-open)>.song:nth-child(n+4){display:none}.solo-btn{display:none!important}}
+@media (max-width:640px){.seg-inst{flex-wrap:nowrap!important;overflow-x:auto;align-self:stretch!important;border-radius:14px!important;scrollbar-width:none}.seg-inst::-webkit-scrollbar{display:none}.seg-inst>button{flex:none;white-space:nowrap}}
+@media (max-width:640px){.lr{padding:16px 12px!important;gap:14px!important;border-radius:20px!important}.lr-side{flex:1 1 100%!important;min-width:0!important;flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important;padding:6px!important}.lr-side::-webkit-scrollbar{display:none}.lr-side>button{flex:none!important;width:auto!important;min-height:40px!important;padding:4px 8px!important;white-space:nowrap}.lr-side>button:not([aria-current=step])>span:last-child{display:none}.lr-art{padding:4px 2px!important;background:transparent!important;border:none!important;gap:14px!important}.lr-try,.lr-quiz{padding:14px 12px!important}.lr-notes{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}.lr-notes>button{min-width:0!important;width:100%}.lr-opts{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}.lr-opts>button{min-width:0!important;padding:0 6px!important}.lr-quiz .sage-q{align-items:flex-start}.lr-quiz .sage-mini{width:44px!important;margin:0!important;flex:none}.lr-try .btn,.lr-try .ghost{flex:1 1 auto}}
 @media (max-width:640px){.dial{flex-direction:column!important;align-items:stretch!important;gap:8px!important;padding:12px 12px 12px 14px!important}.dial-top{flex-direction:row!important;align-items:baseline!important;justify-content:space-between!important;flex:none!important}.dial-ctl{flex:none!important;width:100%}.dial-rec{align-self:flex-start!important;margin-top:0!important;border-radius:99px!important}}
-@media (hover:none) and (pointer:coarse){.hs>.hs-a,.hs-many>.hs-a{display:none!important}}
+@media (hover:none) and (pointer:coarse), (max-width:640px){.hs>.hs-a,.hs-many>.hs-a{display:none!important}}
 @media (hover:hover) and (max-width:899px){.hs-many:not([data-fit="1"])>.chips,.hs-many:not([data-fit="1"])>.moodrow{padding-left:38px!important;padding-right:38px!important;scroll-padding-inline:38px}}
 .gd-tip{position:absolute;right:8px;bottom:calc(100% + 12px);display:flex;align-items:flex-start;gap:10px;max-width:340px;padding:12px 36px 12px 14px;border-radius:14px;background:linear-gradient(180deg,#FBF7E4,#F2E9C4);border:1px solid #E2CF78;color:#2B3528;font:500 13px/1.45 Figtree,sans-serif;box-shadow:0 14px 34px rgba(0,0,0,.45);animation:gcIn .4s cubic-bezier(.2,.8,.2,1)}
 .gd-tip b{color:#16200F}.gd-tip-ic{color:#B8963A;font-size:14px;line-height:1.4}
@@ -137,7 +145,7 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .dial-b{position:relative;width:44px;height:44px;flex:none;border-radius:14px;border:1.5px solid #2F4A3B;background:#16271F;color:#E4EDE2;font:700 20px/1 'Figtree',sans-serif;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:border-color .15s,transform .1s}
 .dial-b:hover{border-color:#E8D872}.dial-b:active{transform:scale(.94)}
 .dial-b:disabled{opacity:.35;cursor:default;border-color:#24392E}
-.dial-pro{position:absolute;top:-7px;right:-7px;font:700 8px 'Figtree',sans-serif;letter-spacing:.05em;padding:2px 4px;border-radius:6px;background:#2C3520;color:#E8D872;border:1px solid #5E6B34}
+.dial-pro{position:absolute;top:-7px;right:-7px;font:700 10px 'Figtree',sans-serif;letter-spacing:.05em;padding:2px 4px;border-radius:6px;background:#2C3520;color:#E8D872;border:1px solid #5E6B34}
 .dial-mid{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px}
 .dial-val{font:700 15px 'Figtree',sans-serif;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meter{display:flex;align-items:flex-end;gap:3px;height:16px}
@@ -406,7 +414,7 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .lrn-card::-webkit-scrollbar-track{margin:26px 0}
 
 .xbtn{gap:6px;min-height:44px}
-.xpro{font:700 9px 'Figtree',sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872}
+.xpro{font:700 10px 'Figtree',sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872}
 
 /* account */
 .acctbtn{gap:8px}
@@ -542,7 +550,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
   <main class="mainwrap {{guideCls}}" style="max-width:1180px;width:100%;box-sizing:border-box;margin:0 auto;padding:12px 24px 120px;display:flex;flex-direction:column;gap:20px">
     <section id="stp-0" aria-label="{{t.startTitle}}" class="start lrn-host {{st1Class}} {{colCls_start}}" style="display:flex;flex-direction:column;gap:12px;padding:16px 18px;border-radius:22px;background:linear-gradient(180deg,#11211A,#0C1712);border:1px solid #3B5A47">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_start}}" aria-label="{{lrnTag_start}}"><span class="lrn-tag">📖 {{lrnTag_start}}</span></button></sc-if>
-      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_start}}" aria-expanded="{{colExp_start}}"><span>{{colIco_start}}</span><span>{{colLab_start}}</span></button>
+      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_start}}" aria-label="{{colLab_start}}" aria-expanded="{{colExp_start}}"><span>{{colIco_start}}</span><span>{{colLab_start}}</span></button>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="mono" style="{{st1Badge}}">{{st1Num}}</span>
           <div style="display:flex;flex-direction:column;gap:1px">
@@ -564,7 +572,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     </section>
     <sc-if value="{{notLearn}}" hint-placeholder-val="{{ true }}">
     <section aria-label="{{t.savedTitle}}" class="{{colCls_saved}}" style="display:flex;flex-direction:column;gap:8px">
-      <div class="sec-h" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_saved}}" aria-expanded="{{colExp_saved}}"><span>{{colIco_saved}}</span><span>{{colLab_saved}}</span></button>
+      <div class="sec-h" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_saved}}" aria-label="{{colLab_saved}}" aria-expanded="{{colExp_saved}}"><span>{{colIco_saved}}</span><span>{{colLab_saved}}</span></button>
         <span class="lab" style="color:#F0E39A">★ {{t.savedTitle}}</span>
         <span class="mono" style="font-size:11px;color:#9FB3A4">{{savedCount}}</span>
       </div>
@@ -597,7 +605,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
 
     <div id="stp-1" style="display:flex;flex-direction:column;gap:12px">
     <section aria-label="{{t.filtersTitle}}" class="snd {{st3Class}} {{colCls_snd}}">
-      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><button class="colbtn" onClick="{{col_snd}}" aria-expanded="{{colExp_snd}}"><span>{{colIco_snd}}</span><span>{{colLab_snd}}</span></button>
+      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px"><button class="colbtn" onClick="{{col_snd}}" aria-label="{{colLab_snd}}" aria-expanded="{{colExp_snd}}"><span>{{colIco_snd}}</span><span>{{colLab_snd}}</span></button>
         <span class="mono" style="{{st3Badge}}">{{st3Num}}</span><span style="font:400 18px 'Cormorant Garamond',Georgia,serif">{{t.step3Title}}</span>
         <sc-if value="{{st3Now}}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#F0E39A">→ {{t.next3}}</span></sc-if>
       </div>
@@ -646,7 +654,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{rv2}}" hint-placeholder-val="{{ true }}"><div id="stp-2" style="display:flex;flex-direction:column;gap:12px">
     <section class="panel lrn-host {{st2Class}} {{colCls_prog}}" aria-label="{{t.progTitle}}">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_prog}}" aria-label="{{lrnTag_prog}}"><span class="lrn-tag">📖 {{lrnTag_prog}}</span></button></sc-if>
-      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_prog}}" aria-expanded="{{colExp_prog}}"><span>{{colIco_prog}}</span><span>{{colLab_prog}}</span></button>
+      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px"><button class="colbtn" onClick="{{col_prog}}" aria-label="{{colLab_prog}}" aria-expanded="{{colExp_prog}}"><span>{{colIco_prog}}</span><span>{{colLab_prog}}</span></button>
         <div style="display:flex;align-items:center;gap:10px"><span class="mono" style="{{st2Badge}}">{{st2Num}}</span><h2 class="h2">{{t.progTitle}}</h2></div>
         <sc-if value="{{hasChords}}" hint-placeholder-val="{{ true }}">
           <div class="acts" style="display:flex;flex-wrap:wrap;gap:6px">
@@ -700,7 +708,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div style="flex:2 1 360px;min-width:0;display:flex;flex-direction:column;gap:8px">
               <span class="lab">{{t.pickNote}}</span>
               <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px">
-                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:10px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
+                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:11px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
               </div>
             </div>
             <div style="flex:1.4 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px">
@@ -767,16 +775,17 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <span class="lab" style="color:#F0E39A">{{stTitle}}</span>
             <span style="font-size:13px;line-height:1.5;color:#9FB3A4">{{stSub}}</span>
           </div>
-          <div class="songs">
+          <div class="songs songs-st {{stOpenCls}}">
             <sc-for list="{{starters}}" as="sx" hint-placeholder-count="4">
               <div class="song lift" style="gap:6px">
                 <span style="{{sx.tagStyle}}">{{sx.tag}}</span>
                 <span class="mono" style="font-size:17px;font-weight:700;line-height:1.35">{{sx.names}}</span>
                 <span class="mono" style="font-size:12px;color:#92AB98">{{sx.roman}}</span>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px"><button class="ghost" onClick="{{sx.play}}" style="min-height:40px">{{sx.playText}}</button><button class="btn" onClick="{{sx.use}}" style="min-height:40px;font-size:13px;box-shadow:none">{{sx.useLab}}</button></div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px"><button class="ghost" onClick="{{sx.play}}" style="min-height:40px">{{sx.playText}}</button><button class="ghost use-btn" onClick="{{sx.use}}" style="min-height:40px;font-size:13px">{{sx.useLab}}</button></div>
               </div>
             </sc-for>
           </div>
+          <sc-if value="{{stHasMore}}" hint-placeholder-val="{{ false }}"><button class="ghost st-more" onClick="{{stToggle}}" aria-expanded="{{stExp}}" style="align-self:flex-start">{{stMoreLab}}</button></sc-if>
           <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span style="font-size:13px;color:#9FB3A4">{{fcLab}}</span><sc-for list="{{firstChords}}" as="fc" hint-placeholder-count="4"><button class="pill mono" onClick="{{fc.pick}}" style="min-height:40px;font-size:14px">{{fc.label}}</button></sc-for></div>
         </div>
       </sc-if>
@@ -788,7 +797,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
       <section class="panel lrn-host {{st4Class}} {{colCls_sugs}}" style="flex:1.4 1 460px" aria-label="{{t.sugTitle}}">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_sugs}}" aria-label="{{lrnTag_sugs}}"><span class="lrn-tag">📖 {{lrnTag_sugs}}</span></button></sc-if>
-        <div class="sec-h" style="display:flex;align-items:center;gap:10px"><button class="colbtn" onClick="{{col_sugs}}" aria-expanded="{{colExp_sugs}}"><span>{{colIco_sugs}}</span><span>{{colLab_sugs}}</span></button><span class="mono" style="{{st4Badge}}">{{st4Num}}</span><h2 class="h2">{{t.sugTitle}}</h2></div>
+        <div class="sec-h" style="display:flex;align-items:center;gap:10px"><button class="colbtn" onClick="{{col_sugs}}" aria-label="{{colLab_sugs}}" aria-expanded="{{colExp_sugs}}"><span>{{colIco_sugs}}</span><span>{{colLab_sugs}}</span></button><span class="mono" style="{{st4Badge}}">{{st4Num}}</span><h2 class="h2">{{t.sugTitle}}</h2></div>
         <div class="cnt-hint"><span>{{cntHintTxt}}</span><button class="cnt-hint-b" onClick="{{cntHintGo}}">{{cntHintLab}}</button></div>
         <sc-if value="{{st4Now}}" hint-placeholder-val="{{ false }}"><div class="tip"><span style="color:#E8D872;font-weight:700;flex:none">→</span><span>{{t.next4}}</span></div></sc-if>
         <sc-if value="{{sugNextShow}}" hint-placeholder-val="{{ false }}"><div class="sug-next" role="status"><span class="sug-next-t"><b>✓ {{sugNextHead}}</b> {{sugNextText}}</span><button class="sug-next-b" onClick="{{sugNextGo}}">{{sugNextLab}}</button></div></sc-if>
@@ -831,7 +840,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{rv4}}" hint-placeholder-val="{{ true }}"><div id="stp-4">
     <section class="panel lrn-host {{colCls_struct}}" aria-label="{{fTitle}}" style="gap:14px">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_struct}}" aria-label="{{lrnTag_struct}}"><span class="lrn-tag">📖 {{lrnTag_struct}}</span></button></sc-if>
-      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px"><button class="colbtn" onClick="{{col_struct}}" aria-expanded="{{colExp_struct}}"><span>{{colIco_struct}}</span><span>{{colLab_struct}}</span></button>
+      <div class="sec-h" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px"><button class="colbtn" onClick="{{col_struct}}" aria-label="{{colLab_struct}}" aria-expanded="{{colExp_struct}}"><span>{{colIco_struct}}</span><span>{{colLab_struct}}</span></button>
         <div style="display:flex;flex-direction:column;gap:3px;flex:1 1 300px;min-width:0">
           <h2 class="h2">{{fTitle}}</h2>
           <p style="margin:0;font-size:13px;line-height:1.5;color:#9FB3A4">{{fSub}}</p>
@@ -911,7 +920,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{rv5}}" hint-placeholder-val="{{ true }}"><div id="stp-5">
     <section class="panel lrn-host {{st5Class}} {{colCls_songs}}" aria-label="{{t.songTitle}}" style="gap:14px">
       <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-hit" onClick="{{lrn_songs}}" aria-label="{{lrnTag_songs}}"><span class="lrn-tag">📖 {{lrnTag_songs}}</span></button></sc-if>
-      <div class="sec-h" style="display:flex;flex-direction:column;gap:4px"><button class="colbtn" onClick="{{col_songs}}" aria-expanded="{{colExp_songs}}"><span>{{colIco_songs}}</span><span>{{colLab_songs}}</span></button>
+      <div class="sec-h" style="display:flex;flex-direction:column;gap:4px"><button class="colbtn" onClick="{{col_songs}}" aria-label="{{colLab_songs}}" aria-expanded="{{colExp_songs}}"><span>{{colIco_songs}}</span><span>{{colLab_songs}}</span></button>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="mono" style="{{st5Badge}}">{{st5Num}}</span>
           <h2 class="h2">{{t.songTitle}}</h2>
@@ -958,7 +967,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                     </div>
                     <div style="display:flex;flex-direction:column;gap:4px">
                       <span style="font-size:12px;color:#C5D3C6">{{so.tlLab}}</span>
-                      <div style="display:flex;gap:3px;width:100%"><sc-for list="{{so.tl}}" as="tb" hint-placeholder-count="4"><div style="{{tb.style}}"><span class="mono" style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{tb.name}}</span><span style="font-size:9.5px;opacity:.8;white-space:nowrap">{{tb.dur}}</span></div></sc-for></div>
+                      <div style="display:flex;gap:3px;width:100%"><sc-for list="{{so.tl}}" as="tb" hint-placeholder-count="4"><div style="{{tb.style}}"><span class="mono" style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">{{tb.name}}</span><span style="font-size:10.5px;opacity:.8;white-space:nowrap">{{tb.dur}}</span></div></sc-for></div>
                     </div>
                     <span style="font-size:12px;color:#C5D3C6">{{so.dgLab}}</span>
                     <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start"><sc-for list="{{so.diags}}" as="dd" hint-placeholder-count="3"><dc-import name="Diagram" diag="{{dd.diag}}" hint-size="220px,240px"></dc-import></sc-for></div>
@@ -966,9 +975,9 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                 </sc-if>
                 <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">
                   <button class="ghost" onClick="{{so.play}}" aria-label="{{so.playLabel}}" style="min-height:40px">{{so.playText}}</button>
-                  <sc-if value="{{so.hasSolo}}" hint-placeholder-val="{{ true }}"><button class="ghost" onClick="{{so.playSolo}}" style="min-height:40px;font-size:13px">{{so.soloText}}</button></sc-if>
+                  <sc-if value="{{so.hasSolo}}" hint-placeholder-val="{{ true }}"><button class="ghost solo-btn" onClick="{{so.playSolo}}" style="min-height:40px;font-size:13px">{{so.soloText}}</button></sc-if>
                   <button class="ghost" onClick="{{so.howToggle}}" aria-expanded="{{so.howExp}}" style="min-height:40px;font-size:13px">{{so.howBtn}}</button>
-                  <button class="btn" onClick="{{so.use}}" style="min-height:40px;font-size:13px;box-shadow:none">{{so.useLabel}}</button>
+                  <button class="ghost use-btn" onClick="{{so.use}}" style="min-height:40px;font-size:13px">{{so.useLabel}}</button>
                   <sc-if value="{{so.hasOrig}}" hint-placeholder-val="{{ false }}"><button class="ghost" onClick="{{so.useOrig}}" style="min-height:40px;font-size:13px">{{t.songOrig}}</button></sc-if>
                 </div>
               </article>
@@ -1030,7 +1039,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                 <span style="font-size:14px;color:#C5D3C6">{{dcMood}}</span>
                 <span class="lab" style="margin-top:6px">{{t.dFormula}}</span>
                 <div style="display:flex;flex-wrap:wrap;gap:6px">
-                  <sc-for list="{{dcNotes}}" as="n" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px;padding:8px 10px;border-radius:12px;background:#16271F;border:1.5px solid #2F4A3B"><span class="mono" style="font-size:17px;font-weight:700">{{n.name}}</span><span class="mono" style="font-size:11px;color:#F0E39A">{{n.deg}}</span><span style="font-size:10px;color:#9FB3A4">{{n.ivl}}</span></div></sc-for>
+                  <sc-for list="{{dcNotes}}" as="n" hint-placeholder-count="4"><div style="display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px;padding:8px 10px;border-radius:12px;background:#16271F;border:1.5px solid #2F4A3B"><span class="mono" style="font-size:17px;font-weight:700">{{n.name}}</span><span class="mono" style="font-size:11px;color:#F0E39A">{{n.deg}}</span><span style="font-size:11px;color:#9FB3A4">{{n.ivl}}</span></div></sc-for>
                 </div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto">
                   <button class="btn" onClick="{{dcStrum}}"><svg width="11" height="11" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg>{{t.dStrum}}</button>
@@ -1249,7 +1258,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                         <button class="ghost" onClick="{{mToGen}}">{{t.mToGen}}</button>
                         <button class="ghost" onClick="{{mSave}}">☆ {{t.save}}</button>
                       </div>
-                      <div class="seg" role="group" aria-label="{{t.instTitle}}" style="flex-wrap:wrap;align-self:flex-start"><sc-for list="{{insts}}" as="ins" hint-placeholder-count="6"><button style="{{ins.style}}" aria-pressed="{{ins.pressed}}" onClick="{{ins.pick}}">{{ins.label}}</button></sc-for></div>
+                      <div class="seg seg-inst" role="group" aria-label="{{t.instTitle}}" style="flex-wrap:wrap;align-self:flex-start"><sc-for list="{{insts}}" as="ins" hint-placeholder-count="6"><button style="{{ins.style}}" aria-pressed="{{ins.pressed}}" onClick="{{ins.pick}}">{{ins.label}}</button></sc-for></div>
                     </div>
                   </div>
                 </section></sc-if>
@@ -1287,7 +1296,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                         <button class="ghost" onClick="{{mToGen}}">{{t.mToGen}}</button>
                         <button class="ghost" onClick="{{mSave}}">☆ {{t.save}}</button>
                       </div>
-                      <div class="seg" role="group" aria-label="{{t.instTitle}}" style="flex-wrap:wrap;align-self:flex-start"><sc-for list="{{insts}}" as="ins" hint-placeholder-count="6"><button style="{{ins.style}}" aria-pressed="{{ins.pressed}}" onClick="{{ins.pick}}">{{ins.label}}</button></sc-for></div>
+                      <div class="seg seg-inst" role="group" aria-label="{{t.instTitle}}" style="flex-wrap:wrap;align-self:flex-start"><sc-for list="{{insts}}" as="ins" hint-placeholder-count="6"><button style="{{ins.style}}" aria-pressed="{{ins.pressed}}" onClick="{{ins.pick}}">{{ins.label}}</button></sc-for></div>
                     </div>
                   </div>
                 </section></sc-if>
@@ -1457,11 +1466,13 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                 <button class="ghost" onClick="{{sFromAna}}">{{t.sclFromAna}}</button>
               </div>
             </div>
+            <sc-if value="{{sHasChords}}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;padding:12px;border-radius:16px;background:#0A1510;border:1px solid #24392E">
               <sc-for list="{{sTargets}}" as="tg" hint-placeholder-count="5">
                 <sc-if value="{{tg.pre}}" hint-placeholder-val="{{ false }}"><span style="flex-basis:100%;font-size:13px;color:#C5D3C6;padding:2px 2px 0">{{tg.preTxt}}</span></sc-if><button onClick="{{tg.pick}}" aria-pressed="{{tg.pressed}}" style="{{tg.style}}"><span style="{{tg.nameStyle}}">{{tg.name}}</span><span style="{{tg.subStyle}}">{{tg.sub}}</span></button><sc-if value="{{tg.arrow}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="align-self:center;color:#5E7F69;font-size:16px">→</span></sc-if>
               </sc-for>
             </div>
+            </sc-if>
             <sc-if value="{{sNoChords}}" hint-placeholder-val="{{ false }}"><p style="margin:0;color:#9FB3A4;font-size:14px">{{t.sclNoProg}}</p></sc-if>
             <sc-if value="{{sHasChords}}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;flex-direction:column;gap:8px">
@@ -1531,7 +1542,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
 
           <div style="display:flex;flex-wrap:wrap;gap:6px">
             <sc-for list="{{sNotes}}" as="n" hint-placeholder-count="7">
-              <div style="{{n.style}}"><span class="mono" style="font-size:15px;font-weight:700">{{n.name}}</span><span class="mono" style="font-size:10px;opacity:.8">{{n.deg}}</span></div>
+              <div style="{{n.style}}"><span class="mono" style="font-size:15px;font-weight:700">{{n.name}}</span><span class="mono" style="font-size:11px;opacity:.8">{{n.deg}}</span></div>
             </sc-for>
           </div>
 
@@ -1625,7 +1636,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div style="flex:2 1 360px;min-width:0;display:flex;flex-direction:column;gap:8px">
               <span class="lab">{{t.pickNote}}</span>
               <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px">
-                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:10px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
+                <sc-for list="{{roots}}" as="r" hint-placeholder-count="12"><div class="hovz" style="position:relative;min-width:0" onPointerEnter="{{r.enter}}" onPointerLeave="{{r.leave}}"><button class="key" style="width:100%;{{r.style}}" aria-pressed="{{r.pressed}}" onClick="{{r.pick}}"><span>{{r.label}}</span><span style="font-size:11px;font-weight:500;color:#9FB3A4">{{r.alt}}</span></button><sc-if value="{{r.hov}}" hint-placeholder-val="{{ false }}"><div class="cloud"><div class="cloud-in"><dc-import name="Diagram" diag="{{r.cloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if></div></sc-for>
               </div>
             </div>
             <div style="flex:1.4 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px">
@@ -1750,7 +1761,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
                     </div>
                   </div>
                   <div style="display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid #24392E">
-                    <div style="display:flex;align-items:center;gap:8px"><span class="lab">{{t.anaSubs}}</span><sc-if value="{{aLocked}}" hint-placeholder-val="{{ false }}"><span style="font:700 9px Figtree,sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872">PRO</span></sc-if></div>
+                    <div style="display:flex;align-items:center;gap:8px"><span class="lab">{{t.anaSubs}}</span><sc-if value="{{aLocked}}" hint-placeholder-val="{{ false }}"><span style="font:700 10px Figtree,sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:#2C3520;color:#E8D872">PRO</span></sc-if></div>
                     <div style="display:flex;flex-wrap:wrap;gap:8px">
                       <sc-for list="{{dSubs}}" as="sb" hint-placeholder-count="3">
                         <button class="pill" onClick="{{sb.pick}}" aria-label="{{sb.aria}}" style="display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;border-radius:14px;min-height:52px;padding:4px 14px"><span class="mono" style="font-size:15px;font-weight:700">{{sb.name}}</span><span style="font-size:11px;color:#9FB3A4">{{sb.why}}</span></button>
@@ -1859,13 +1870,13 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
         </div>
 
         <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
-          <nav aria-label="{{t.lTitle}}" style="flex:0 1 250px;min-width:220px;display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:18px;background:rgba(15,29,22,.72);border:1px solid #24392E">
+          <nav class="lr-side" aria-label="{{t.lTitle}}" style="flex:0 1 250px;min-width:220px;display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:18px;background:rgba(15,29,22,.72);border:1px solid #24392E">
             <sc-for list="{{lSide}}" as="ls" hint-placeholder-count="7">
               <button onClick="{{ls.pick}}" aria-current="{{ls.current}}" style="{{ls.style}}"><span style="{{ls.badge}}">{{ls.mark}}</span><span>{{ls.label}}</span></button>
             </sc-for>
           </nav>
 
-          <article style="flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px;padding:24px;border-radius:20px;background:rgba(15,29,22,.72);border:1px solid #24392E">
+          <article class="lr-art" style="flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px;padding:24px;border-radius:20px;background:rgba(15,29,22,.72);border:1px solid #24392E">
             <span class="lab" style="color:#E8D872">{{lNumLabel}}</span>
             <h2 style="margin:0;font:400 30px/1.15 'Cormorant Garamond',Georgia,serif;color:#EAF2E6">{{lCur.t}}</h2>
             <div class="sage-row">
@@ -1877,12 +1888,12 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
               <sc-for list="{{lParas}}" as="lp" hint-placeholder-count="3"><p style="margin:0;font-size:16px;line-height:1.7;color:#D3E0D4;max-width:68ch">{{lp.text}}</p></sc-for>
             </div>
 
-            <section aria-label="{{t.lTry}}" style="display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:16px;background:rgba(6,13,10,.65);border:1px solid #24392E;color:#E4EDE2">
+            <section class="lr-try" aria-label="{{t.lTry}}" style="display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:16px;background:rgba(6,13,10,.65);border:1px solid #24392E;color:#E4EDE2">
               <span class="lab" style="color:#F0E39A">▶ {{t.lTry}}</span>
               <span style="font-size:14px;line-height:1.5;color:#C5D3C6">{{lCur.w}}</span>
 
               <sc-if value="{{lW0}}" hint-placeholder-val="{{ true }}">
-                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <div class="lr-notes" style="display:flex;flex-wrap:wrap;gap:6px">
                   <sc-for list="{{lNotes}}" as="ln" hint-placeholder-count="12"><button onClick="{{ln.play}}" style="{{ln.style}}">{{ln.label}}</button></sc-for>
                 </div>
                 <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" onClick="{{lPlayOct}}">{{t.lOctave}}</button><button class="ghost" onClick="{{lPlayChrom}}">{{t.lChrom}}</button></div>
@@ -1951,10 +1962,10 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
               </sc-if>
             </section>
 
-            <section aria-label="{{t.lQuiz}}" style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:rgba(15,29,22,.72);border:1px solid #24392E">
+            <section class="lr-quiz" aria-label="{{t.lQuiz}}" style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:rgba(15,29,22,.72);border:1px solid #24392E">
               <span class="lab" style="color:#E8D872">✎ {{t.lQuiz}}</span>
               <div class="sage-q"><img class="sage sage-mini" src="{{sageQuiz}}" alt="" width="64" height="150"><span style="font-size:17px;font-weight:600;color:#EAF2E6">{{lCur.q}}</span></div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <div class="lr-opts" style="display:flex;flex-wrap:wrap;gap:8px">
                 <sc-for list="{{lOpts}}" as="lo" hint-placeholder-count="3"><button onClick="{{lo.pick}}" aria-pressed="{{lo.pressed}}" style="{{lo.style}}">{{lo.label}}</button></sc-for>
               </div>
               <sc-if value="{{lHasFb}}" hint-placeholder-val="{{ false }}">
@@ -1999,7 +2010,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{gdIsGen}}" hint-placeholder-val="{{ true }}"><button class="gd-mode {{gdModeCls}}" onClick="{{gdMode}}" aria-pressed="{{gdModePressed}}" title="{{gdModeTip}}"><span class="gd-sw" aria-hidden="true"><i></i></span>{{gdModeLab}}</button></sc-if>
   </nav></sc-if>
 
-  <svg viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:110px;margin-top:auto">
+  <svg class="foot-grass" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:110px;margin-top:auto">
     <defs><linearGradient id="fogB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6D2D4" stop-opacity="0"></stop><stop offset=".6" stop-color="#C6D2D4" stop-opacity=".10"></stop><stop offset="1" stop-color="#C6D2D4" stop-opacity="0"></stop></linearGradient></defs>
     <path d="M0 120 L-20 104 L-6 69 L8 104 L2 104 L13 57 L25 104 L17 104 L29 58 L40 104 L30 104 L45 72 L60 104 L48 104 L63 48 L77 104 L65 104 L78 54 L91 104 L88 104 L104 61 L121 104 L117 104 L129 47 L140 104 L132 104 L144 70 L157 104 L148 104 L167 68 L185 104 L176 104 L193 62 L209 104 L201 104 L212 72 L224 104 L215 104 L232 60 L249 104 L238 104 L254 59 L270 104 L259 104 L277 52 L295 104 L282 104 L298 57 L314 104 L310 104 L327 65 L345 104 L341 104 L353 61 L365 104 L361 104 L373 58 L386 104 L375 104 L392 50 L409 104 L400 104 L419 64 L438 104 L430 104 L447 55 L463 104 L453 104 L472 44 L491 104 L480 104 L497 72 L514 104 L507 104 L524 42 L541 104 L535 104 L549 62 L562 104 L557 104 L568 59 L579 104 L570 104 L582 72 L594 104 L590 104 L602 66 L614 104 L607 104 L625 71 L644 104 L633 104 L649 46 L665 104 L660 104 L679 65 L697 104 L686 104 L700 46 L715 104 L711 104 L724 68 L736 104 L727 104 L740 58 L753 104 L747 104 L760 74 L773 104 L765 104 L780 56 L794 104 L791 104 L808 58 L825 104 L817 104 L834 72 L851 104 L847 104 L865 46 L883 104 L876 104 L891 61 L905 104 L893 104 L910 72 L927 104 L913 104 L925 69 L938 104 L930 104 L941 74 L953 104 L944 104 L956 62 L967 104 L957 104 L976 54 L995 104 L980 104 L993 63 L1006 104 L998 104 L1010 47 L1022 104 L1019 104 L1035 59 L1050 104 L1037 104 L1049 63 L1061 104 L1052 104 L1071 69 L1089 104 L1073 104 L1093 57 L1112 104 L1096 104 L1112 73 L1128 104 L1120 104 L1140 46 L1159 104 L1151 104 L1165 62 L1178 104 L1168 104 L1185 57 L1203 104 L1197 104 L1211 67 L1225 104 L1200 120 Z" fill="#142427"></path>
     <rect x="0" y="40" width="1200" height="80" fill="url(#fogB)"></rect>
@@ -2441,6 +2452,7 @@ function playSynth(ctx, out, m, st, len, vel) {
 }
 
 function playNote(ctx, out, inst, m, st, len) {
+  if (!BANKS[inst] && SAMPLE_URLS[inst]) loadBank(ctx, inst);
   var f, o, o2, g, end;
   if (BANKS[inst] && playSample(ctx, out, inst, m, st, len, 0.85, true)) return;
   if (inst === 'synth') { playSynth(ctx, out, m, st, len, 0.85); return; }
@@ -3857,7 +3869,7 @@ function loadLearn() { try { var raw = window.localStorage.getItem('chordseed.le
 var SAVE_KEY = 'chordapp.saved.v1';
 function loadSaved() { try { var raw = window.localStorage.getItem(SAVE_KEY); var v = raw ? JSON.parse(raw) : []; return Array.isArray(v) ? v : []; } catch (e) { return []; } }
 function storeSaved(list) { try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(list)); } catch (e) {} if (CS_SYNC) CS_SYNC(); }
-function proBadge(on) { return 'font:700 9px Figtree,sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:' + (on ? '#0E140A' : '#2C3520') + ';color:' + (on ? '#F0E39A' : '#E8D872'); }
+function proBadge(on) { return 'font:700 10px Figtree,sans-serif;letter-spacing:.06em;padding:2px 5px;border-radius:6px;background:' + (on ? '#0E140A' : '#2C3520') + ';color:' + (on ? '#F0E39A' : '#E8D872'); }
 function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q + ':' + c.sx; }).join('|'); }
 
 class Component extends DCLogic {
@@ -3927,7 +3939,8 @@ class Component extends DCLogic {
       this._mounted = true;
       BANK_LISTENERS.push(this._bankL);
       loadBank(this.ctx, this.state.inst || 'guitar');
-      ['piano', 'guitar', 'eguitar', 'flute', 'strings'].forEach(function (k, i) { setTimeout(function () { loadBank(self.ctx, k); }, 800 + i * 600); });
+      var lite = false; try { lite = window.matchMedia('(max-width:640px), (hover:none)').matches || !!(navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''))); } catch (e) {}
+      if (!lite) ['piano', 'guitar', 'eguitar', 'flute', 'strings'].forEach(function (k, i) { setTimeout(function () { loadBank(self.ctx, k); }, 800 + i * 600); });
     } catch (e) {}
   }
   acctInit() {
@@ -4520,7 +4533,7 @@ class Component extends DCLogic {
       var gS = guitarShapes(dC), gInst = st.inst === 'eguitar' ? 'eguitar' : 'guitar';
       var allS = gS.list.map(function (fr, i) { return { fr: fr, i: i, info: shapeInfo(fr, es) }; }).filter(function (x) { return !st.dEasy || x.info.lvl < 2; });
       if (!st.isPro && allS.length > 3) { dHidden = allS.length - 3; allS = allS.slice(0, 3); }
-      dShapeList = allS.map(function (x) { var dg2 = makeDiag(dC, gInst, es, dSp(st.dRoot) + dT.sx, dSp); dg2.frets = x.fr; var bc = ['#0F3A2C;color:#7FE0CF', '#1A2A4A;color:#9CC0FF', '#2C3520;color:#F0E39A'].at(x.info.lvl);
+      dShapeList = allS.map(function (x, xi) { var dg2 = makeDiag(dC, gInst, es, dSp(st.dRoot) + dT.sx, dSp); dg2.frets = x.fr; if (xi > 0) dg2.caption = ''; var bc = ['#0F3A2C;color:#7FE0CF', '#1A2A4A;color:#9CC0FF', '#2C3520;color:#F0E39A'].at(x.info.lvl);
         return { diag: dg2, level: x.info.label, pos: x.fr.indexOf(0) >= 0 ? (LX('Con cuerdas al aire', 'With open strings')) : (LX('Desde el traste ', 'From fret ')) + x.info.fret, badge: 'font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:' + bc, aria: (LX('Escuchar posición ', 'Play position ')) + (x.i + 1),
           play: function () { var np = Object.assign({}, self.state.pos); np[ckey(dC)] = x.i; self.setState({ pos: np }); self.playSeq([dC], gInst); } }; });
     } else {
@@ -4766,12 +4779,12 @@ class Component extends DCLogic {
       nav: NAV_ORDER.map(function (id) { return NAV.filter(function (n) { return n[0] === id; })[0]; }).filter(Boolean).map(function (n) { var i = NAV.indexOf(n);
         var on = n[0] === view, hv = (st.navHov === undefined ? 0 : st.navHov) === i, label = NAV_TAB[n[0]] ? NAV_TAB[n[0]][es ? 0 : 1] : n[es ? 1 : 2];
         return { label: label, soon: n[3], current: on ? 'page' : 'false', sel: on ? 'true' : 'false',
-          tipIn: function (e) { if (e && e.pointerType === 'touch') return; var x = 0, w = 0; try { var r = e.currentTarget.getBoundingClientRect(), pr = e.currentTarget.closest('.tools').getBoundingClientRect(); x = r.left - pr.left + r.width / 2; w = pr.width; } catch (z) {} self.setState({ ttTool: n[0], ttX: x, ttW: w }); },
+          tipIn: function (e) { if (e && e.pointerType === 'touch') return; if (e && e.type === 'focus') { try { if (!e.currentTarget.matches(':focus-visible')) return; } catch (z) {} } if (window.matchMedia && window.matchMedia('(max-width:640px), (hover:none)').matches) return; var x = 0, w = 0; try { var r = e.currentTarget.getBoundingClientRect(), pr = e.currentTarget.closest('.tools').getBoundingClientRect(); x = r.left - pr.left + r.width / 2; w = pr.width; } catch (z) {} self.setState({ ttTool: n[0], ttX: x, ttW: w }); },
           tipOut: function () { if (self.state.ttTool === n[0]) self.setState({ ttTool: null }); }, icon: NAV_ICON[n[0]] || '•', desc: n[es ? 4 : 5], tabStyle: on ? 'border-color:#E8D872;background:#21281A;color:#F0E39A' : '',
           style: 'width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 12px;border-radius:12px;border:none;cursor:pointer;text-align:left;font:' + (on ? '700' : '600') + ' 14px Figtree,sans-serif;background:' + (hv ? '#14241C' : 'transparent') + ';color:' + (on ? '#F0E39A' : '#E4EDE2'),
           dot: 'width:8px;height:8px;border-radius:99px;display:inline-block;background:' + (on ? '#E8D872' : (n[3] ? '#2F4A3B' : '#7F9C87')),
           enter: function () { if (self.state.navHov !== i) self.setState({ navHov: i }); },
-          pick: function () { var upd = { navOpen: false, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
+          pick: function () { var upd = { navOpen: false, ttTool: null, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
       }),
       navOpen: !!st.navOpen,
       navExpanded: st.navOpen ? 'true' : 'false',
@@ -4838,7 +4851,7 @@ class Component extends DCLogic {
         pick: function () { var nf = idF.slice(); nf[si] = nf[si] < 0 ? 0 : -1; self.setState({ idFrets: nf }); } }; }),
       idCells: (function () { var out = []; for (var row = 0; row < 6; row++) { var si = 5 - row; for (var f = 0; f <= 12; f++) { (function (si, f, row) { var on = idF[si] === f, pc = (TUNING.at(si) + f) % 12;
         out.push({ name: on ? dSp(pc) : '', pressed: on ? 'true' : 'false', aria: (LX('Cuerda ', 'String ')) + (6 - si) + (LX(', traste ', ', fret ')) + f,
-          style: 'position:absolute;left:' + (fbX(f) - 13) + 'px;top:' + (fbY(row) - 13) + 'px;width:26px;height:26px;box-sizing:border-box;border-radius:99px;cursor:pointer;padding:0;font:700 9px "JetBrains Mono",monospace;' + (on ? 'background:#E8D872;color:#0E140A;border:2px solid #E8D872' : 'background:transparent;color:transparent;border:2px solid transparent'),
+          style: 'position:absolute;left:' + (fbX(f) - 13) + 'px;top:' + (fbY(row) - 13) + 'px;width:26px;height:26px;box-sizing:border-box;border-radius:99px;cursor:pointer;padding:0;font:700 11px "JetBrains Mono",monospace;' + (on ? 'background:#E8D872;color:#0E140A;border:2px solid #E8D872' : 'background:transparent;color:transparent;border:2px solid transparent'),
           pick: function () { var nf = idF.slice(); nf[si] = nf[si] === f ? -1 : f; self.setState({ idFrets: nf }); self.playSeq([], st.inst); try { if (self.ctx && nf[si] >= 0) playNote(self.ctx, self.master || self.ctx.destination, st.inst === 'eguitar' ? 'eguitar' : 'guitar', TUNING.at(si) + nf[si], self.ctx.currentTime + 0.02, 0.8); } catch (e) {} } }); })(si, f, row); } } return out; })(),
       idPlay: function () { if (idSrcN === 'p') { self.playTones(idKeysSel.slice().sort(function (a, b) { return a - b; }), 0.06, true); return; } try { if (!self.ctx) return; var t0 = self.ctx.currentTime + 0.05, j = 0; idF.forEach(function (f, si) { if (f >= 0) { playNote(self.ctx, self.master || self.ctx.destination, st.inst === 'eguitar' ? 'eguitar' : 'guitar', TUNING.at(si) + f, t0 + j * 0.03, 1.6); j++; } }); } catch (e) {} },
       idClear: function () { self.setState(idSrcN === 'p' ? { idKeys: [] } : { idFrets: [-1,-1,-1,-1,-1,-1] }); },
@@ -4925,7 +4938,7 @@ class Component extends DCLogic {
             style: 'position:absolute;left:' + (x * 42) + 'px;top:0;width:40px;height:150px;border-radius:0 0 8px 8px;border:1px solid #9FB3B6;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;box-sizing:border-box;font:700 13px "JetBrains Mono",monospace;background:' + (on ? '#E8D872' : '#F6FAFA') + ';color:#0D1913' }); })(m, wi); wi++; }
         for (var b = 48; b <= 71; b++) { if ([0,2,4,5,7,9,11].indexOf(b % 12) >= 0) continue; (function (mm) { var on = st.lNote === mm;
           out.push({ label: lNm(mm % 12), aria: lNm(mm % 12) + ' / ' + lNm(mm % 12, true), play: function () { self.setState({ lNote: mm }); self.playTones([mm], 0); },
-            style: 'position:absolute;z-index:2;left:' + ((wx[mm - 1] + 1) * 42 - 14) + 'px;top:0;width:28px;height:92px;border-radius:0 0 6px 6px;border:none;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;box-sizing:border-box;font:700 9px "JetBrains Mono",monospace;background:' + (on ? '#E8D872' : '#060D0A') + ';color:' + (on ? '#0E140A' : '#C5D3C6') }); })(b); }
+            style: 'position:absolute;z-index:2;left:' + ((wx[mm - 1] + 1) * 42 - 14) + 'px;top:0;width:28px;height:92px;border-radius:0 0 6px 6px;border:none;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;box-sizing:border-box;font:700 10px "JetBrains Mono",monospace;background:' + (on ? '#E8D872' : '#060D0A') + ';color:' + (on ? '#0E140A' : '#C5D3C6') }); })(b); }
         return out; })(),
       lIvls: [1,2,3,4,5,6,7,8,9,10,11,12].map(function (n) { var on = lIvl === n;
         return { label: String(n), pressed: on ? 'true' : 'false', pick: function () { self.setState({ lIvl: n }); self.playTones([lBase, lBase + n], 0.45, true); }, style: lChip(on) }; }),
@@ -5023,7 +5036,7 @@ class Component extends DCLogic {
       mCof: (function () { var out = []; COF.forEach(function (pc, i) { var o = cofXY(i, false), n = cofXY(i, true), fl = [5,10,3,8,1,6].indexOf(pc) >= 0;
         var isO = relMaj(mO) === pc, isD = relMaj(mD) === pc;
         out.push({ label: spell(pc, fl, st.lat), style: 'position:absolute;pointer-events:none;user-select:none;left:' + (o.x - 20 - 16) + 'px;top:' + (o.y - 20 - 9) + 'px;width:32px;text-align:center;font:700 11px/18px "JetBrains Mono",monospace;color:' + (isO ? '#F0E39A' : (isD ? '#6FD39C' : '#8AA4AA')) });
-        out.push({ label: spell((pc + 9) % 12, fl, st.lat) + 'm', style: 'position:absolute;pointer-events:none;user-select:none;left:' + (n.x - 20 - 16) + 'px;top:' + (n.y - 20 - 8) + 'px;width:32px;text-align:center;font:600 9px/16px "JetBrains Mono",monospace;color:#6F8F96' }); }); return out; })(),
+        out.push({ label: spell((pc + 9) % 12, fl, st.lat) + 'm', style: 'position:absolute;pointer-events:none;user-select:none;left:' + (n.x - 20 - 16) + 'px;top:' + (n.y - 20 - 8) + 'px;width:32px;text-align:center;font:600 11px/16px "JetBrains Mono",monospace;color:#6F8F96' }); }); return out; })(),
       mDots: mSel ? mSel.chords.map(function (c, i, arr) { var q = cofPos(c), xy = cofXY(q.i, q.inner), first = i === 0, last = i === arr.length - 1, col = first ? '#E8D872' : (last ? '#6FD39C' : '#C9A2FF');
         return { style: 'position:absolute;pointer-events:none;left:' + (xy.x - 20 - 9) + 'px;top:' + (xy.y - 20 - 9) + 'px;width:18px;height:18px;border-radius:99px;background:' + col + ';box-shadow:0 0 0 3px #050B08,0 0 16px ' + col + ';animation-delay:' + (0.3 + i * 0.35).toFixed(2) + 's' }; }) : [],
       mPath: mSel ? mSel.chords.map(function (c) { var q = cofPos(c), xy = cofXY(q.i, q.inner); return xy.x.toFixed(1) + ',' + xy.y.toFixed(1); }).join(' ') : '',
@@ -5140,12 +5153,12 @@ class Component extends DCLogic {
         return L; })(),
       fbNums: [3,5,7,9,12].map(function (f) { return { text: String(f), style: 'position:absolute;left:' + (34 + (f - 0.5) * 50 - 10) + 'px;top:174px;width:20px;text-align:center;font:600 11px "JetBrains Mono",monospace;color:#9C8F78' }; }),
       fbDots: (function () { var D = []; for (var s2 = 0; s2 < 6; s2++) for (var f = 0; f <= 12; f++) { var pc = (FB_TUNE[s2] + f) % 12, c = sCls.cls[pc]; if (!c) continue;
-        D.push({ name: ssp(pc), style: 'position:absolute;left:' + (fbX(f) - 12) + 'px;top:' + (fbY(s2) - 12) + 'px;width:24px;height:24px;box-sizing:border-box;border-radius:99px;display:flex;align-items:center;justify-content:center;font:700 9px "JetBrains Mono",monospace;' + NOTE_STY[c] }); } return D; })(),
+        D.push({ name: ssp(pc), style: 'position:absolute;left:' + (fbX(f) - 12) + 'px;top:' + (fbY(s2) - 12) + 'px;width:24px;height:24px;box-sizing:border-box;border-radius:99px;display:flex;align-items:center;justify-content:center;font:700 10.5px "JetBrains Mono",monospace;' + NOTE_STY[c] }); } return D; })(),
       pkKeys: (function () { var K = [], WH = [0,2,4,5,7,9,11], wi = 0, wpos = {};
         for (var m = 0; m < 24; m++) { if (WH.indexOf(m % 12) < 0) continue; wpos[m] = wi; var c = sCls.cls[m % 12];
-          K.push({ name: c ? ssp(m % 12) : '', style: 'position:absolute;left:' + (wi * 26) + 'px;top:0;width:25px;height:130px;box-sizing:border-box;border-radius:0 0 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font:700 9px "JetBrains Mono",monospace;' + (c ? NOTE_STY[c].replace('border:2px', 'border:2px') : 'background:#E5EAEB;color:#060D0A;border:1px solid #9FADB0') }); wi++; }
+          K.push({ name: c ? ssp(m % 12) : '', style: 'position:absolute;left:' + (wi * 26) + 'px;top:0;width:25px;height:130px;box-sizing:border-box;border-radius:0 0 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font:700 10px "JetBrains Mono",monospace;' + (c ? NOTE_STY[c].replace('border:2px', 'border:2px') : 'background:#E5EAEB;color:#060D0A;border:1px solid #9FADB0') }); wi++; }
         for (var b2 = 0; b2 < 24; b2++) { if (WH.indexOf(b2 % 12) >= 0) continue; var cb = sCls.cls[b2 % 12];
-          K.push({ name: cb ? ssp(b2 % 12) : '', style: 'position:absolute;z-index:2;left:' + ((wpos[b2 - 1] + 1) * 26 - 8) + 'px;top:0;width:16px;height:80px;box-sizing:border-box;border-radius:0 0 4px 4px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font:700 8px "JetBrains Mono",monospace;' + (cb ? NOTE_STY[cb] : 'background:#060D0A;color:#E5EAEB;border:1px solid #060D0A') }); }
+          K.push({ name: cb ? ssp(b2 % 12) : '', style: 'position:absolute;z-index:2;left:' + ((wpos[b2 - 1] + 1) * 26 - 8) + 'px;top:0;width:16px;height:80px;box-sizing:border-box;border-radius:0 0 4px 4px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font:700 10px "JetBrains Mono",monospace;' + (cb ? NOTE_STY[cb] : 'background:#060D0A;color:#E5EAEB;border:1px solid #060D0A') }); }
         return K; })(),
       sLegend: [['root', T.sclLegRoot]].concat(sChord ? [['tone', T.sclLegTone]] : []).concat([['scale', T.sclLegScale]]).concat(sChord && hasAvoid ? [['avoid', T.sclLegAvoid]] : []).map(function (x) { return { label: x[1], sw: 'display:inline-block;width:14px;height:14px;box-sizing:border-box;border-radius:99px;' + NOTE_STY[x[0]] }; }),
       sTips: [
@@ -5295,6 +5308,9 @@ class Component extends DCLogic {
       stTitle: songStarted ? (LX('Ideas para empezar la parte ', 'Ideas to start part ')) + editP : (LX('Ideas para empezar', 'Ideas to get started')),
       stSub: songStarted ? (es ? 'Van en el tono de tu canción (' + keyNameOf(homeK) + ') y son distintas de las partes que ya tienes.' : 'In your song’s key (' + keyNameOf(homeK) + ') and different from the parts you already have.')
         : (es ? 'Según el género (' + RE_STYLES[genre][lang].at(0) + ')' + (moodRow && st.mood !== 'any' ? ' y la emoción (' + moodRow[1] + ')' : '') + ' que elegiste. Escúchalas y usa la que más se parezca a tu idea.' : 'Based on the genre (' + RE_STYLES[genre][lang].at(0) + ')' + (moodRow && st.mood !== 'any' ? ' and mood (' + moodRow[2] + ')' : '') + ' you chose. Listen and use the one closest to your idea.'),
+      stHasMore: starters.length > 3, stExp: st.stOpen ? 'true' : 'false', stOpenCls: st.stOpen ? 'st-open' : '',
+      stMoreLab: st.stOpen ? LX('Ver menos ideas', 'Show fewer ideas') : LX('Ver ', 'Show ') + (starters.length - 3) + LX(' ideas más', ' more ideas'),
+      stToggle: function () { self.setState({ stOpen: !self.state.stOpen }); },
       starters: starters.map(function (x, i) {
         var pid = 'st' + i + ':' + seqKey(x.list);
         return {
@@ -5325,13 +5341,13 @@ class Component extends DCLogic {
       nsSub: [LX('Usa una idea para empezar o pon los acordes de tu idea.', 'Use a starting idea or enter the chords of your idea.'), LX('La app te sugiere qué acordes pueden venir después.', 'The app suggests which chords can come next.'), LX('Añade partes (verso, coro…) y decide en qué orden suenan.', 'Add parts (verse, chorus…) and choose their order.'), LX('Ejemplos reales de tu género y cómo se tocan.', 'Real examples from your genre and how to play them.')].at(Math.min(3, (st.reveal || 1) - 1)),
       goNext: function () { var n = Math.min(5, (st.reveal || 1) + 1); self.setState({ reveal: n }); setTimeout(function () { try { var el = document.getElementById('stp-' + n); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) {} }, 90); },
       canShowAll: (st.reveal || 1) < 5, showAllLab: LX('Ver todos los pasos', 'Show all steps'), showAll: function () { self.setState({ reveal: 5 }); },
-      colCls_start: isCol('start', view !== 'gen' || !!st.onbAns) ? 'is-col' : '', colExp_start: isCol('start', view !== 'gen' || !!st.onbAns) ? 'false' : 'true', colIco_start: isCol('start', view !== 'gen' || !!st.onbAns) ? '▾' : '▴', colLab_start: isCol('start', view !== 'gen' || !!st.onbAns) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_start: function () { var c2 = Object.assign({}, self.state.col || {}); c2['start'] = !isCol('start', view !== 'gen' || !!st.onbAns); self.setState({ col: c2 }); },
+      colCls_start: isCol('start', view !== 'gen' || !!st.onbAns || !!st.profileSet) ? 'is-col' : '', colExp_start: isCol('start', view !== 'gen' || !!st.onbAns || !!st.profileSet) ? 'false' : 'true', colIco_start: isCol('start', view !== 'gen' || !!st.onbAns || !!st.profileSet) ? '▾' : '▴', colLab_start: isCol('start', view !== 'gen' || !!st.onbAns || !!st.profileSet) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_start: function () { var c2 = Object.assign({}, self.state.col || {}); c2['start'] = !isCol('start', view !== 'gen' || !!st.onbAns || !!st.profileSet); self.setState({ col: c2 }); },
       colCls_snd: isCol('snd', false) ? 'is-col' : '', colExp_snd: isCol('snd', false) ? 'false' : 'true', colIco_snd: isCol('snd', false) ? '▾' : '▴', colLab_snd: isCol('snd', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_snd: function () { var c2 = Object.assign({}, self.state.col || {}); c2['snd'] = !isCol('snd', false); self.setState({ col: c2 }); },
       colCls_prog: isCol('prog', false) ? 'is-col' : '', colExp_prog: isCol('prog', false) ? 'false' : 'true', colIco_prog: isCol('prog', false) ? '▾' : '▴', colLab_prog: isCol('prog', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_prog: function () { var c2 = Object.assign({}, self.state.col || {}); c2['prog'] = !isCol('prog', false); self.setState({ col: c2 }); },
       colCls_sugs: isCol('sugs', false) ? 'is-col' : '', colExp_sugs: isCol('sugs', false) ? 'false' : 'true', colIco_sugs: isCol('sugs', false) ? '▾' : '▴', colLab_sugs: isCol('sugs', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_sugs: function () { var c2 = Object.assign({}, self.state.col || {}); c2['sugs'] = !isCol('sugs', false); self.setState({ col: c2 }); },
       colCls_struct: isCol('struct', false) ? 'is-col' : '', colExp_struct: isCol('struct', false) ? 'false' : 'true', colIco_struct: isCol('struct', false) ? '▾' : '▴', colLab_struct: isCol('struct', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_struct: function () { var c2 = Object.assign({}, self.state.col || {}); c2['struct'] = !isCol('struct', false); self.setState({ col: c2 }); },
       colCls_songs: isCol('songs', false) ? 'is-col' : '', colExp_songs: isCol('songs', false) ? 'false' : 'true', colIco_songs: isCol('songs', false) ? '▾' : '▴', colLab_songs: isCol('songs', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_songs: function () { var c2 = Object.assign({}, self.state.col || {}); c2['songs'] = !isCol('songs', false); self.setState({ col: c2 }); },
-      colCls_saved: isCol('saved', false) ? 'is-col' : '', colExp_saved: isCol('saved', false) ? 'false' : 'true', colIco_saved: isCol('saved', false) ? '▾' : '▴', colLab_saved: isCol('saved', false) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_saved: function () { var c2 = Object.assign({}, self.state.col || {}); c2['saved'] = !isCol('saved', false); self.setState({ col: c2 }); },
+      colCls_saved: isCol('saved', !(st.saved || []).length) ? 'is-col' : '', colExp_saved: isCol('saved', !(st.saved || []).length) ? 'false' : 'true', colIco_saved: isCol('saved', !(st.saved || []).length) ? '▾' : '▴', colLab_saved: isCol('saved', !(st.saved || []).length) ? LX('Mostrar bloque', 'Show block') : LX('Minimizar bloque', 'Minimize block'), col_saved: function () { var c2 = Object.assign({}, self.state.col || {}); c2['saved'] = !isCol('saved', !(st.saved || []).length); self.setState({ col: c2 }); },
       idSrcLab: LX('¿Dónde marcas las notas?', 'Where do you mark the notes?'),
       idSrcs: [['g', LX('🎸 Mástil (guitarra)', '🎸 Neck (guitar)')], ['p', LX('🎹 Teclado (piano)', '🎹 Keyboard (piano)')]].map(function (x) { var on = idSrcN === x[0]; return { label: x[1], pressed: on ? 'true' : 'false', style: seg(on), pick: function () { self.setState({ idSrc: x[0] }); } }; }),
       idIsPiano: idSrcN === 'p', idIsGtr: idSrcN !== 'p',
