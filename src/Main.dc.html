@@ -67,7 +67,7 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 @media (max-width:640px){.prog-sub{margin-left:0}}
 .mainwrap.guided > section:not(#stp-0), .mainwrap.guided > .tip, .mainwrap.guided #stp-0, .mainwrap.guided #stp-1, .mainwrap.guided #stp-2, .mainwrap.guided #stp-3, .mainwrap.guided #stp-4, .mainwrap.guided #stp-5{filter:grayscale(.9) brightness(.55);opacity:.45;transition:filter .6s ease,opacity .6s ease}
 .mainwrap.guided > section:not(#stp-0):hover, .mainwrap.guided > .tip:hover, .mainwrap.guided [id^="stp-"]:hover{filter:grayscale(.35) brightness(.85);opacity:.85}
-.mainwrap.gp-peek1 #stp-3, .mainwrap.gp-peek2 #stp-4, .mainwrap.gp-peek3 #stp-5, .mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-4, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
+.mainwrap.g-open #stp-3, .mainwrap.g-open #stp-4, .mainwrap.g-open #stp-5, .mainwrap.gp-peek1 #stp-3, .mainwrap.gp-peek2 #stp-4, .mainwrap.gp-peek3 #stp-5, .mainwrap.gn-0 #stp-0, .mainwrap.gn-1 #stp-1, .mainwrap.gn-2 #stp-2, .mainwrap.gn-3 #stp-3, .mainwrap.gn-4 #stp-4, .mainwrap.gn-4 #stp-5{filter:none!important;opacity:1!important}
 .gd-tips{flex:none;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #6E6327;background:rgba(232,216,114,.10);color:#F3E79A;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}.gd-tips:hover{border-color:#E8D872}
 .gd-mode{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 10px;border-radius:10px;border:1px solid #2F4A3B;background:transparent;color:#B5C7B8;font:600 12px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .gd-mode:hover{border-color:#E8D872;color:#F1F4EA}
@@ -5410,11 +5410,11 @@ class Component extends DCLogic {
         if (k === 'rhythm') { self._gc.altLab = st.rOpen ? LX('▶ Escuchar así', '▶ Listen like this') : LX('Ver ajustes', 'Show settings'); self._gc.alt = function () { if (!self.state.rOpen) { self.setState({ rOpen: true }); setTimeout(function () { var hd = document.querySelector('[data-g="rhythm"] .fold'); if (hd) { var bh2 = 150; var y = hd.getBoundingClientRect().top + window.scrollY - (bh2 + 40); try { window.scrollTo({ top: y, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, y); } } }, 80); } else { var v2 = self.renderVals(); if (v2.playMine) v2.playMine(); } }; self._gc.key = 'rhythm:' + (st.rOpen ? 1 : 0) + LX('es', 'en'); if (st.rOpen) { self._gc.compact = true; self._gc.forceUp = true; self._gc.text = LX('Ajusta el tempo, el compás y el rasgueo aquí abajo. Prueba con «▶ Escuchar así» y toca «Listo» cuando te guste.', 'Adjust tempo, time and strum below. Try “▶ Listen like this” and tap “Done” when you like it.'); } }
         if (k === 'add' && chs.length) {
           self._gc.key = 'add1:' + LX('es', 'en');
-          self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
-          self._gc.text = LX('Ya tienes: ', 'So far: ') + chs.map(nm).join(' – ') + LX('. Si sabes cuál sigue, agrégalo. Si no, sigamos: antes de escucharla ajustamos el ritmo, y abajo te mostraré acordes sugeridos que encajan con tu estilo.', '. If you know what comes next, add it. If not, let’s move on: we’ll set the rhythm before you listen, and below I’ll show you suggested chords that fit your style.');
-          self._gc.altLab = LX('Sí, agregar otro', 'Yes, add another');
+          self._gc.title = LX('¡Bien! Ya se abrió lo de abajo', 'Nice! Everything below is open now');
+          self._gc.text = LX('Ya tienes: ', 'So far: ') + chs.map(nm).join(' – ') + LX('. Sigue poniendo más acordes por tu cuenta con «Add chord», o mira abajo: en «What can come next» hay acordes que encajan con los tuyos (toca + para añadirlos), más abajo puedes armar tu canción por partes, y al final verás canciones reales con acordes parecidos.', '. Keep adding chords on your own with “Add chord”, or look below: “What can come next” has chords that fit yours (tap + to add them), further down you can build your song in parts, and at the end you’ll see real songs with similar chords.');
+          self._gc.altLab = LX('Agregar otro acorde', 'Add another chord');
           self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker') || document.querySelector('#stp-2 .addtile'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
-          self._gc.keepLab = LX('No, sigamos →', 'No, let’s continue →');
+          self._gc.keepLab = LX('Seguir la guía →', 'Continue the guide →');
           self._gc.keepOk = function () { return true; };
           if (st.pickerOpen) { self._gc.sel = '.cs-picker'; self._gc.full = true; self._gc.up = false; }
         } else if (k === 'add') { self._gc.keepLab = ''; self._gc.keepOk = function () { return false; }; }
@@ -5425,7 +5425,7 @@ class Component extends DCLogic {
         if (k === 'fork') { self._gc.keepLab = LX('Seguir aquí', 'Keep going here'); self._gc.altLab = LX('Siguiente herramienta →', 'Next tool →'); self._gc.alt = function () { self.gMarkMany(['song', 'fork', 'songs', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         return 1;
       })(),
-      guideCls: guidedOn ? 'guided gn-' + stepNow + (self._gc && /^peek/.test(self._gc.k) ? ' gp-' + self._gc.k : '') : '',
+      guideCls: guidedOn ? 'guided gn-' + stepNow + (self._gc && /^peek/.test(self._gc.k) ? ' gp-' + self._gc.k : '') + (stepNow === 2 && chs.length >= 1 ? ' g-open' : '') : '',
       gTipShow: !!st.gTip && !!st.guided && view === 'gen', gTipHead: LX('¿Prefieres explorar a tu manera?', 'Rather explore on your own?'), gTipText: LX('Apaga «Modo guiado» aquí abajo y usa la app libremente. Puedes volver a encenderlo cuando quieras.', 'Turn off “Guided mode” right here and use the app freely. You can turn it back on anytime.'), gTipCloseLab: LX('Cerrar', 'Close'),
       gTipClose: function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} self.setState({ gTip: false }); },
       sugNextShow: !!st.addedSug && view === 'gen' && chs.length > 0 && !(st.gd || {}).sugs && !st.lm && (!st.guided || !!st.gcOff),
