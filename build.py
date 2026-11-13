@@ -86,3 +86,7 @@ html = (html.replace('"assets/', '"../assets/').replace("'assets/", "'../assets/
 (ROOT / 'app').mkdir(exist_ok=True)
 (ROOT / 'app' / 'index.html').write_text(html, encoding='utf-8')
 print('app/index.html', len(html), 'bytes')
+
+# Server-side engine for the Claude connector and the assistant
+import runpy
+runpy.run_path(str(ROOT / "server" / "build_engine.py"))

@@ -94,6 +94,22 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .gcoach .gc-ar{position:absolute;top:-8px;width:14px;height:14px;background:#FBF7E4;border-left:1px solid #E2CF78;border-top:1px solid #E2CF78;transform:rotate(45deg);border-radius:3px 0 0 0}
 .gcoach.gc-up .gc-ar{top:auto;bottom:-8px;background:#F2E9C4;border:0;border-right:1px solid #E2CF78;border-bottom:1px solid #E2CF78;border-radius:0 0 3px 0}
 .gc-ring{position:absolute;z-index:44;border-radius:18px;pointer-events:none;box-shadow:0 0 0 2px #E8D872,0 0 30px rgba(232,216,114,.35),0 0 0 300vmax rgba(2,6,4,.74);transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+.lm-fab{position:fixed;right:18px;bottom:96px;z-index:46;display:inline-flex;align-items:center;gap:8px;min-height:52px;padding:5px 16px 5px 6px;border-radius:999px;border:1.5px solid #6E6327;background:rgba(14,26,20,.96);color:#F3E79A;font:700 14px Figtree,sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 22px rgba(232,216,114,.14)}
+.lm-fab img,.lm-av{width:40px;height:40px;border-radius:99px;object-fit:cover;object-position:50% 12%;background:#0A140F;border:1px solid #3B5A47}.lm-av{width:44px;height:44px}
+.lm-fab:hover{border-color:#E8D872}
+@media (min-width:1240px){.lm-fab{bottom:22px}}
+.lm-card{width:min(560px,100%);gap:12px}
+.lm-log{display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:min(52vh,460px);overflow:auto;padding:4px 2px}
+.lm-msg{display:flex;flex-direction:column;gap:8px;max-width:88%;padding:10px 14px;border-radius:16px;font-size:15px;line-height:1.5}
+.lm-a{align-self:flex-start;background:#13261D;border:1px solid #2F4A3B;color:#E4EDE2;border-bottom-left-radius:6px}
+.lm-u{align-self:flex-end;background:#3A3415;border:1px solid #6E6327;color:#FFF3C4;border-bottom-right-radius:6px}
+.lm-cardx{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:#0A1510;border:1px solid #3A5646}
+.lm-idea{min-height:38px;font-size:13px}
+.lm-dots span::after{content:'…';animation:lmDots 1.2s steps(3) infinite}
+@keyframes lmDots{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.lm-in{display:flex;gap:8px;align-items:stretch}.lm-in textarea{flex:1;min-width:0;resize:none;padding:10px 12px;border-radius:12px;border:1.5px solid #2F4A3B;background:#0A1510;color:#EAF2E6;font:500 15px Figtree,sans-serif;outline:none}.lm-in textarea:focus{border-color:#E8D872;box-shadow:0 0 0 3px rgba(232,216,114,.15)}
+.lm-gate{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:14px;background:#0F1D16;border:1px solid #2F4A3B}
+@media (max-width:640px){.lm-fab{right:12px;bottom:78px;padding:4px;min-height:48px}.lm-fab .lm-fab-t{display:none}.lm-fab img{width:38px;height:38px}.lm-log{max-height:56vh}}
 @media (max-width:640px){body.gc-on .guide{display:none!important}}
 @media (max-width:640px){.onb .seg>button,.onb .chips>button,.seg>button{white-space:nowrap;flex:none}}
 @media (max-width:640px){.mainwrap{padding-bottom:20px!important}.foot-grass{height:48px!important}body{padding-bottom:72px}}
@@ -474,6 +490,24 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
   <sc-if value="{{lm}}" hint-placeholder-val="{{ false }}"><button class="lrn-exit" onClick="{{lrnExit}}">✕ {{lrnExitLab}}</button></sc-if>
   <sc-if value="{{toolLrnShow}}" hint-placeholder-val="{{ false }}"><button class="lrn-toolcard" onClick="{{toolLrnOpen}}">📖 {{toolLrnLab}}</button></sc-if>
   <sc-if value="{{lrnIntro}}" hint-placeholder-val="{{ false }}"><div class="lrn-toast" role="status"><span class="ns-k">{{lrnIntroK}}</span><span style="font:400 21px 'Cormorant Garamond',Georgia,serif">{{lrnIntroT}}</span><span style="font-size:14px;line-height:1.5;color:#D3E0D4">{{lrnIntroP}}</span><button class="btn" onClick="{{lrnIntroOk}}" style="align-self:flex-start;min-height:42px;box-shadow:none">{{lrnIntroBtn}}</button></div></sc-if>
+  <sc-if value="{{lmBtnShow}}" hint-placeholder-val="{{ true }}"><button class="lm-fab" onClick="{{lmToggle}}" aria-label="{{lmFabLab}}" title="{{lmFabLab}}"><img src="{{lmFace}}" alt="" width="40" height="40"><span class="lm-fab-t">{{lmFabTxt}}</span></button></sc-if>
+  <sc-if value="{{lmOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{lmBackdrop}}"><div class="lrn-card lm-card" role="dialog" aria-label="{{lmTitle}}">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="display:flex;align-items:center;gap:10px"><img class="lm-av" src="{{lmFace}}" alt="" width="44" height="44"><div style="display:flex;flex-direction:column;gap:2px"><span class="ns-k">✦ Lumen · Pro</span><span style="font:400 24px/1.1 'Cormorant Garamond',Georgia,serif">{{lmTitle}}</span></div></div><button class="ghost" onClick="{{lmClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
+    <sc-if value="{{lmGate}}" hint-placeholder-val="{{ false }}"><div class="lm-gate"><p style="margin:0;font-size:15px;line-height:1.55;color:#D7E2D3">{{lmGateTxt}}</p><button class="btn" onClick="{{lmGateGo}}" style="align-self:flex-start">{{lmGateLab}}</button></div></sc-if>
+    <sc-if value="{{lmReady}}" hint-placeholder-val="{{ true }}">
+      <div class="lm-log" id="cs-lm-log" aria-live="polite">
+        <sc-if value="{{lmEmpty}}" hint-placeholder-val="{{ true }}"><div class="lm-msg lm-a"><span>{{lmHello}}</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{lmIdeas}}" as="li" hint-placeholder-count="4"><button class="ghost lm-idea" onClick="{{li.ask}}">{{li.label}}</button></sc-for></div></sc-if>
+        <sc-for list="{{lmMsgs}}" as="m" hint-placeholder-count="2"><div class="{{m.cls}}"><span style="white-space:pre-wrap">{{m.text}}</span>
+          <sc-for list="{{m.cards}}" as="cd" hint-placeholder-count="0"><div class="lm-cardx"><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span class="lab" style="color:#E8D872">{{cd.label}}</span><span class="mono" style="font-size:15px;font-weight:700;color:#F3EBD3">{{cd.chords}}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="ghost" onClick="{{cd.play}}" style="min-height:38px">▶ {{cd.playLab}}</button><button class="ghost use-btn" onClick="{{cd.use}}" style="min-height:38px">{{cd.useLab}}</button></div></div></sc-for>
+        </div></sc-for>
+        <sc-if value="{{lmBusy}}" hint-placeholder-val="{{ false }}"><div class="lm-msg lm-a lm-dots"><span>{{lmThinking}}</span></div></sc-if>
+        <sc-if value="{{lmHasErr}}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0;padding:10px 12px;border-radius:12px;background:#3A1A1C;color:#FFC9C9;font-size:14px">{{lmErr}}</p></sc-if>
+      </div>
+      <div class="lm-in"><textarea id="cs-lm-in" rows="2" placeholder="{{lmPh}}" aria-label="{{lmPh}}" onKeyDown="{{lmKey}}"></textarea><button class="btn" onClick="{{lmSend}}" aria-label="{{lmSendLab}}" style="min-height:48px;padding:0 16px">{{lmSendLab}}</button></div>
+      <span style="font-size:12px;color:#8FA697">{{lmFoot}}</span>
+    </sc-if>
+  </div></div></sc-if>
   <sc-if value="{{acctOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{acctBackdrop}}"><div class="lrn-card acct-card" role="dialog" aria-label="{{acctTitle}}">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="display:flex;flex-direction:column;gap:4px"><span class="ns-k">✦ Chordseed</span><span style="font:400 26px/1.15 'Cormorant Garamond',Georgia,serif">{{acctTitle}}</span></div><button class="ghost" onClick="{{acctClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
     <div class="acct-hero"><img class="sage acct-sage" src="{{acctSage}}" alt="Lumen" width="70" height="165"><div class="sage-bubble"><span class="sage-name">{{sageName}}</span><span class="sage-say" style="font-size:17px">{{acctSay}}</span></div></div>
@@ -2720,6 +2754,7 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
+var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant';
 var SAGE = { explain: '/_blob/c8eff3f68593086c4680ac00400cdeda', think: '/_blob/75038a63391fd7d3c5360256b2464469', celebrate: '/_blob/10ad2059a9a47cd9297647428a61afe0', encourage: '/_blob/39ce5f000bc2a416b84e9f03887bfd36', play: '/_blob/07f414ba6ee81a1f81096847c9c6af3a' };
 var LESSONS = [
   { id: 'notes',
@@ -3219,6 +3254,27 @@ function autoCorrelate(buf, sr) {
 }
 
 function mkSx(pc, sx) { var q = /^m(?!aj)/.test(sx) ? (sx === 'm7b5' ? 'dim' : 'm') : (sx.indexOf('dim') === 0 ? 'dim' : 'M'); var s2 = sx === 'M' ? '' : sx; return mkx(pc, q, s2); }
+var CS_SX_ALIAS = { '': '', 'M': '', 'maj': '', 'major': '', 'm': 'm', 'min': 'm', 'minor': 'm', '-': 'm', 'mi': 'm', 'dim': 'dim', '°': 'dim', 'o': 'dim', 'ø': 'm7b5', 'ø7': 'm7b5', 'm7b5': 'm7b5', 'm7(b5)': 'm7b5', 'min7b5': 'm7b5', 'dim7': 'dim7', '°7': 'dim7', 'o7': 'dim7', 'Δ': 'maj7', 'Δ7': 'maj7', 'M7': 'maj7', 'maj7': 'maj7', 'ma7': 'maj7', 'M9': 'maj9', 'maj9': 'maj9', 'M13': 'maj13', 'maj13': 'maj13', 'm7': 'm7', 'min7': 'm7', '-7': 'm7', 'mi7': 'm7', 'm9': 'm9', 'min9': 'm9', 'm11': 'm11', 'm6': 'm6', 'min6': 'm6', 'madd9': 'madd9', 'm(add9)': 'madd9', '7': '7', 'dom7': '7', '9': '9', '13': '13', '6': '6', 'add9': 'add9', '(add9)': 'add9', 'add2': 'add9', 'sus4': 'sus4', 'sus': 'sus4', 'sus2': 'sus2', '7sus4': '7sus4', '7sus': '7sus4', '5': '5' };
+function parseChordName(raw) {
+  var s = String(raw == null ? '' : raw).trim().replace(/♯/g, '#').replace(/♭/g, 'b');
+  if (!s) return null;
+  s = s.split('/')[0];
+  var sxOf = function (rest) { rest = rest.replace(/\s+/g, ''); if (Object.prototype.hasOwnProperty.call(CS_SX_ALIAS, rest)) return CS_SX_ALIAS[rest]; var lo = rest.toLowerCase(); if (rest !== 'M7' && rest !== 'M9' && rest !== 'M13' && Object.prototype.hasOwnProperty.call(CS_SX_ALIAS, lo)) return CS_SX_ALIAS[lo]; return null; };
+  var L = { do: 0, re: 2, mi: 4, fa: 5, sol: 7, la: 9, si: 11 }, A = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  var m = s.match(/^(do|re|mi|fa|sol|la|si)(#|b)?(.*)$/i);
+  if (m) { var sx1 = sxOf(m[3]); if (sx1 !== null) { var p1 = L[m[1].toLowerCase()] + (m[2] === '#' ? 1 : (m[2] === 'b' ? -1 : 0)); return mkSx(((p1 % 12) + 12) % 12, sx1); } }
+  m = s.match(/^([A-Ga-g])(#|b)?(.*)$/); if (!m) return null;
+  var sx2 = sxOf(m[3]); if (sx2 === null) return null;
+  var p2 = A[m[1].toUpperCase()] + (m[2] === '#' ? 1 : (m[2] === 'b' ? -1 : 0));
+  return mkSx(((p2 % 12) + 12) % 12, sx2);
+}
+function parseChordList(input) {
+  var arr = Array.isArray(input) ? input : String(input || '').split(/[\s,|–—]+|\s-\s/);
+  var out = [], bad = [];
+  arr.forEach(function (x) { x = String(x).trim(); if (!x) return; var c = parseChordName(x); if (c) out.push(c); else bad.push(x); });
+  return { chords: out, bad: bad };
+}
+function chordName(c, key) { var fl = key ? flatsFor(key.t, key.mode) : [1, 3, 6, 8, 10].indexOf(c.pc) >= 0 && [6].indexOf(c.pc) < 0; return spell(c.pc, fl, false) + (c.sx || ''); }
 var GENRE_SUR = { pop:1, rock:1, hard:1, metal:1, folk:0, neo:1, lofi:1, citypop:1, jazz:2, gospel:1, funk:1, blues:1, bossa:1, bolero:1, urbano:0, cine:2, clasico:0 };
 var GENRE_CX = { pop:0, rock:0, folk:0, neo:4, lofi:3, citypop:4, jazz:3, gospel:4, funk:4, blues:3, bossa:3, bolero:2, urbano:3, hard:0, metal:0, cine:1, clasico:0 };
 var GENRE_RHY = {
@@ -3492,7 +3548,7 @@ var MOOD_T = {
   dark:  [['min',[[0,'m'],[10,'M'],[8,'M'],[7,'M']]], ['min',[[0,'m'],[8,'M'],[5,'m'],[0,'m']]], ['min',[[0,'m'],[3,'M'],[8,'M'],[7,'M']]]]
 };
 var ROM = ['I','bII','II','bIII','III','IV','#IV','V','bVI','VI','bVII','VII'];
-function romanOf(off, c) { var r = ROM[((off % 12) + 12) % 12]; var mi = c.q === 'm' || c.q === 'dim'; if (mi) r = r.replace(/[IV]+/, function (x) { return x.toLowerCase(); }); if (c.q === 'dim' && !c.ext) r += '°'; var e = c.ext || ''; if (c.sx === '5') e = '5'; if (mi && e.indexOf('m') === 0) e = e.slice(1); if (e === '7b5') { r = r + 'ø7'; e = ''; } return r + e; }
+function romanOff(off, c) { var r = ROM[((off % 12) + 12) % 12]; var mi = c.q === 'm' || c.q === 'dim'; if (mi) r = r.replace(/[IV]+/, function (x) { return x.toLowerCase(); }); if (c.q === 'dim' && !c.ext) r += '°'; var e = c.ext || ''; if (c.sx === '5') e = '5'; if (mi && e.indexOf('m') === 0) e = e.slice(1); if (e === '7b5') { r = r + 'ø7'; e = ''; } return r + e; }
 var EG_TONE = { rock:'dist', hard:'dist', metal:'metal', blues:'crunch', pop:'crunch', cine:'crunch', folk:'clean', funk:'clean', jazz:'jazz', neo:'clean', lofi:'jazz', citypop:'clean', gospel:'clean', bossa:'jazz', bolero:'clean', urbano:'clean', clasico:'clean' };
 var EG_LABEL = { clean:['Limpio','Clean'], jazz:['Limpio jazz (cálido)','Warm jazz clean'], crunch:['Crunch (saturación suave)','Crunch (light overdrive)'], dist:['Distorsión','Distortion'], metal:['Alta ganancia','High gain'] };
 var EG_CUR = 'crunch', EG_NOW = 'crunch';
@@ -3874,6 +3930,7 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 
 class Component extends DCLogic {
   componentDidMount() {
+    try { var qp = new URLSearchParams(location.search), pp = qp.get('p'); if (pp) { var pl = parseChordList(pp.split(',')); if (pl.chords.length) { var up0 = { chords: pl.chords.slice(0, 16), view: 'gen', focus: null }; var md = qp.get('mood'); if (md && MOODS.some(function (x) { return x[0] === md; })) up0.mood = md; this.setState(up0); } } } catch (e) {}
     try {
       var selfT = this, tipNew = false; try { tipNew = localStorage.getItem('cs_gtip') !== '1'; } catch (e) {} if (tipNew) { setTimeout(function () { if (selfT.state.guided) selfT.setState({ gTip: true }); setTimeout(function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} selfT.setState({ gTip: false }); }, 9000); }, 4000); }
       var gcb = document.createElement('div'); gcb.className = 'gcoach'; gcb.setAttribute('role', 'note'); gcb.style.display = 'none'; document.body.appendChild(gcb); this._gcEl = gcb;
@@ -4190,6 +4247,33 @@ class Component extends DCLogic {
       this._timers.push(setTimeout(function () { if (self._mounted !== false && self._play && self._play.id === id) { self._play = null; self.setState({ playing: null }); } }, (end - ctx.currentTime) * 1000 + 500));
     } catch (e) { try { console.warn('[chordseed] audio', e && e.message); } catch (e2) {} }
   }
+  lmAsk(text) {
+    var self = this, st = this.state; text = String(text || '').trim();
+    if (!text || st.lmBusy) return;
+    var msgs = (st.lmMsgs || []).concat([{ role: 'user', content: text.slice(0, 2000) }]);
+    var scroll = function () { setTimeout(function () { try { var el = document.getElementById('cs-lm-log'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40); };
+    self.setState({ lmMsgs: msgs, lmBusy: true, lmErr: '' }); scroll();
+    var chs = st.chords || [], key = chs.length ? detect(chs) : null;
+    var ctx = { chords: chs.map(function (c) { return chordName(c, key); }).join(' '), language: CUR_LANG === 'es' ? 'es' : 'en', instrument: st.inst, genre: RE_STYLES[st.reStyle || 'pop'] ? RE_STYLES[st.reStyle || 'pop'].en[0] : '', mood: st.mood };
+    var fail = function (m) { self.setState({ lmBusy: false, lmErr: m }); scroll(); };
+    if (!self.sb) { fail(LX('No pude conectar con tu cuenta. Recarga la página.', 'Could not reach your account. Reload the page.')); return; }
+    self.sb.auth.getSession().then(function (r) {
+      var tok = r && r.data && r.data.session && r.data.session.access_token;
+      if (!tok) { fail(LX('Tu sesión expiró: vuelve a iniciar sesión.', 'Your session expired: please sign in again.')); return; }
+      return fetch(CS_LUMEN_API, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok }, body: JSON.stringify({ messages: msgs.map(function (m) { return { role: m.role, content: m.content }; }), context: ctx }) })
+        .then(function (res) { return res.json().catch(function () { return {}; }).then(function (j) { return { status: res.status, j: j }; }); })
+        .then(function (o) {
+          if (o.status === 200 && (o.j.text || (o.j.cards || []).length)) { self.setState({ lmBusy: false, lmUsed: o.j.used, lmLimit: o.j.limit, lmMsgs: msgs.concat([{ role: 'assistant', content: o.j.text || '', cards: o.j.cards || [] }]) }); scroll(); return; }
+          var e = o.j && o.j.error;
+          fail(e === 'limit' ? LX('Llegaste al límite de hoy (' + o.j.limit + ' preguntas). Vuelve mañana.', 'You reached today’s limit (' + o.j.limit + ' questions). Come back tomorrow.')
+            : e === 'pro' ? LX('Lumen es parte del plan Pro.', 'Lumen is part of Pro.')
+            : e === 'login' ? LX('Tu sesión expiró: vuelve a iniciar sesión.', 'Your session expired: please sign in again.')
+            : e === 'not_configured' ? LX('Lumen todavía se está preparando. Pronto estará disponible.', 'Lumen is still getting ready. Available soon.')
+            : LX('Lumen no pudo responder ahora. Inténtalo otra vez.', 'Lumen couldn’t answer right now. Try again.'));
+        });
+    }).catch(function () { fail(LX('Sin conexión. Revisa tu internet e inténtalo otra vez.', 'No connection. Check your internet and try again.')); });
+  }
+
   playSeq(list, instOverride) {
     try {
       var out = this._bus(); if (!out) return;
@@ -4471,7 +4555,7 @@ class Component extends DCLogic {
     var cofCh = null, cofP = null;
     if (st.aCofHov) { var ci2 = Number(st.aCofHov.slice(1)), inn = st.aCofHov.charAt(0) === 'i', bpc = COF.at(ci2); cofCh = inn ? { pc: (bpc + 9) % 12, q: 'm', ext: '', sx: 'm' } : { pc: bpc, q: 'M', ext: '', sx: '' }; cofP = an ? findIn(POOL[an.k.mode], an.k.t, cofCh) : null; }
     var aKeyName = an ? spell(an.k.t, aFlats, st.lat) + ' ' + (an.k.mode === 'maj' ? T.major : T.minor) : '';
-    var moodRow = an ? MOODS.filter(function (m) { return m[0] === an.mood; })[0] : null;
+    var aMoodRow = an ? MOODS.filter(function (m) { return m[0] === an.mood; })[0] : null;
     var sMode = st.sMode || 'prog';
     var sChs = st.sChords || chs;
     var sk = sChs.length ? detect(sChs) : { t: 0, mode: 'maj' };
@@ -4677,7 +4761,7 @@ class Component extends DCLogic {
       var out = [], seen = {};
       var push = function (list, roman, tag, col) { var key = seqKey(list); if (seen[key] || !list.length) return; seen[key] = 1; out.push({ list: list.map(function (c) { return Object.assign({}, c, { d: 1 }); }), roman: roman, tag: tag, col: col }); };
       var fromTpl = function (mode, tpl) { var ton = mode === 'maj' ? stTonMaj : stTonMin; return tpl.map(function (q) { return mkSx(ton + q[0], flavor(q[0], q[1])); }); };
-      var romOf = function (mode, list) { var ton = mode === 'maj' ? stTonMaj : stTonMin; return list.map(function (c) { return romanOf(c.pc - ton, c); }).join('–'); };
+      var romOf = function (mode, list) { var ton = mode === 'maj' ? stTonMaj : stTonMin; return list.map(function (c) { return romanOff(c.pc - ton, c); }).join('–'); };
       if (songStarted) {
         var TP = GEN_T[homeK.mode] || GEN_T.maj, taken = lettersAll.map(function (L) { return seqKey(partList(L)); });
         for (var t = 0; t < TP.length && out.length < 4; t++) {
@@ -5248,7 +5332,7 @@ class Component extends DCLogic {
       aPatternName: an && an.pattern ? an.pattern.P[lang].at(0) : T.anaNoPattern,
       aPatternRoman: an && an.pattern ? an.pattern.roman : (an ? an.items.map(function (x) { return x.roman; }).join(' – ') : ''),
       aPatternDesc: an && an.pattern ? an.pattern.P[lang].at(1) : T.anaNoPatternDesc,
-      aMood: moodRow ? moodRow[es ? 1 : 2] : '',
+      aMood: aMoodRow ? aMoodRow[es ? 1 : 2] : '',
       aMoodDesc: an ? (an.k.mode === 'maj' ? T.anaMoodMaj : T.anaMoodMin) + T.anaMoodDesc : '',
       aItems: an ? an.items.map(function (x) { return { name: anm(x.c), roman: x.roman, fnLabel: x.fn ? FN[x.fn][lang] : T.outside, fnStyle: x.fn ? fnChip(x.fn) : OUT_CHIP, note: x.note }; }) : [],
       aBars: an ? an.items.map(function (x) { var tv = x.fn ? TENS[x.fn] : 0.75; var col = x.fn ? FN[x.fn].fg : '#C5D3C6'; return { name: anm(x.c), pct: Math.round(tv * 100) + '%', style: 'display:block;width:40px;height:' + Math.round(tv * 130) + 'px;border-radius:10px 10px 4px 4px;background:' + col }; }) : [],
@@ -5581,6 +5665,24 @@ class Component extends DCLogic {
       fTitle: LX('Arma tu canción', 'Build your song'),
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
+      lmBtnShow: !st.lmOpen && !st.acctOpen && !st.settingsOpen && !st.lm && !st.pickerOpen,
+      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: LX('Pregúntale a Lumen', 'Ask Lumen'),
+      lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
+      lmClose: function () { self.setState({ lmOpen: false }); },
+      lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
+      lmGate: !(st.user && st.isPro), lmReady: !!(st.user && st.isPro),
+      lmGateTxt: !st.user ? LX('Lumen es tu asistente de composición: te ayuda a encontrar acordes, ideas para el coro, letras, ritmos y lo que necesites para tu canción. Es parte de Pro y durante la beta es gratis: solo inicia sesión.', 'Lumen is your songwriting assistant: he helps you find chords, chorus ideas, lyrics, rhythms and whatever your song needs. It’s part of Pro, and free during the beta: just sign in.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
+      lmGateLab: !st.user ? LX('Iniciar sesión', 'Sign in') : LX('Ver Pro', 'See Pro'),
+      lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'login', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },
+      lmEmpty: !(st.lmMsgs || []).length,
+      lmHello: LX('Hola, soy Lumen. Pregúntame lo que quieras sobre tu canción: qué acorde sigue, cómo darle más emoción, ideas de coro, ritmo o letra.', 'Hi, I’m Lumen. Ask me anything about your song: what chord comes next, how to add emotion, chorus ideas, rhythm or lyrics.'),
+      lmIdeas: [LX('¿Qué acorde sigue en mi progresión?', 'What chord comes next in my progression?'), LX('Hazla sonar más triste', 'Make it sound sadder'), LX('Dame una idea para el coro', 'Give me a chorus idea'), LX('Explícame por qué funciona', 'Explain why it works')].map(function (q) { return { label: q, ask: function () { self.lmAsk(q); } }; }),
+      lmMsgs: (st.lmMsgs || []).map(function (m) { return { cls: 'lm-msg ' + (m.role === 'user' ? 'lm-u' : 'lm-a'), text: m.content, cards: (m.cards || []).map(function (cd) { var pl = parseChordList(String(cd.chords).split(/[\s,]+/)).chords; return { label: cd.label || LX('Progresión', 'Progression'), chords: cd.chords, playLab: LX('Escuchar', 'Listen'), useLab: LX('Usar estos acordes', 'Use these chords'), play: function () { if (pl.length) self.playSeq(pl); }, use: function () { if (pl.length) self.setState({ chords: pl.slice(0, 16), focus: null, view: 'gen', lmOpen: false }); } }; }) }; }),
+      lmBusy: !!st.lmBusy, lmThinking: LX('Lumen está pensando', 'Lumen is thinking'), lmHasErr: !!st.lmErr, lmErr: st.lmErr || '',
+      lmPh: LX('Escribe tu pregunta…', 'Type your question…'), lmSendLab: LX('Enviar', 'Send'),
+      lmSend: function () { var t = document.getElementById('cs-lm-in'); if (!t) return; var v = t.value; t.value = ''; self.lmAsk(v); },
+      lmKey: function (e) { if (e && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var t = e.currentTarget, v = t.value; t.value = ''; self.lmAsk(v); } },
+      lmFoot: (st.lmUsed ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit + ' · ' : '') + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
       acctOpen: !!st.acctOpen,
       acctGoogleOn: !!st.acctGoogleOn,
       acctBtnCls: st.user ? 'is-in' : '',
