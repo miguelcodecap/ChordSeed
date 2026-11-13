@@ -7,7 +7,7 @@ import { TOOLS, runTool, chordsOf, appLink } from '../../server/api.js';
 const SB_URL = 'https://siafatxbgecgenhnciej.supabase.co';
 const SB_KEY = 'sb_publishable_wbMAklnoQrY6-P0vM1KVlw_l0llY6fK';
 const MODEL = 'claude-haiku-5-5';
-const DAILY_LIMIT = 40;
+const DAILY_LIMIT = 40, GUEST_LIMIT = 4;
 const MAX_TURNS = 12, MAX_CHARS = 2000, MAX_STEPS = 4;
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
 
@@ -54,16 +54,18 @@ export async function onRequest(context) {
   if (request.method !== 'POST') return reply({ error: 'method' }, 405);
   if (!env.ANTHROPIC_API_KEY) return reply({ error: 'not_configured', message: 'The assistant is not set up yet.' }, 503);
 
-  // 1) Who is asking, and are they Pro?
+  // 1) Who is asking? Signed-in Pro users get the daily limit; guests get a few free questions.
   const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  if (!token) return reply({ error: 'login' }, 401);
-  const u = await sb(env, '/auth/v1/user', token);
-  if (!u.ok) return reply({ error: 'login' }, 401);
-  const user = await u.json();
-  const s = await sb(env, '/rest/v1/subscriptions?select=plan,status,current_period_end&user_id=eq.' + encodeURIComponent(user.id), token);
-  const sub = s.ok ? (await s.json())[0] : null;
-  const pro = !!(sub && sub.plan === 'pro' && ['active', 'trialing', 'past_due'].indexOf(sub.status) >= 0 && (!sub.current_period_end || new Date(sub.current_period_end) > new Date()));
-  if (!pro) return reply({ error: 'pro' }, 402);
+  let guest = !token;
+  if (token) {
+    const u = await sb(env, '/auth/v1/user', token);
+    if (!u.ok) return reply({ error: 'login' }, 401);
+    const user = await u.json();
+    const s = await sb(env, '/rest/v1/subscriptions?select=plan,status,current_period_end&user_id=eq.' + encodeURIComponent(user.id), token);
+    const sub = s.ok ? (await s.json())[0] : null;
+    const pro = !!(sub && sub.plan === 'pro' && ['active', 'trialing', 'past_due'].indexOf(sub.status) >= 0 && (!sub.current_period_end || new Date(sub.current_period_end) > new Date()));
+    if (!pro) return reply({ error: 'pro' }, 402);
+  }
 
   // 2) Read the conversation.
   let body;
@@ -76,10 +78,21 @@ export async function onRequest(context) {
   if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return reply({ error: 'bad_request' }, 400);
 
   // 3) Daily limit (counts one per question).
-  const b = await sb(env, '/rest/v1/rpc/assistant_bump', token, { method: 'POST', body: '{}' });
-  const used = b.ok ? Number(await b.json()) : 0;
-  const limit = Number(env.ASSISTANT_DAILY_LIMIT || DAILY_LIMIT);
-  if (used > limit) return reply({ error: 'limit', limit }, 429);
+  let used, limit;
+  if (guest) {
+    const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
+    const dig = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((env.GUEST_SALT || 'chordseed-lumen') + '|' + ip));
+    const h = Array.from(new Uint8Array(dig)).map((x) => x.toString(16).padStart(2, '0')).join('');
+    const g = await fetch((env.SUPABASE_URL || SB_URL) + '/rest/v1/rpc/assistant_bump_guest', { method: 'POST', headers: { apikey: env.SUPABASE_KEY || SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ h }) });
+    used = g.ok ? Number(await g.json()) : Infinity;
+    limit = Number(env.ASSISTANT_GUEST_LIMIT || GUEST_LIMIT);
+    if (used > limit) return reply({ error: 'guest_limit', limit }, 429);
+  } else {
+    const b = await sb(env, '/rest/v1/rpc/assistant_bump', token, { method: 'POST', body: '{}' });
+    used = b.ok ? Number(await b.json()) : 0;
+    limit = Number(env.ASSISTANT_DAILY_LIMIT || DAILY_LIMIT);
+    if (used > limit) return reply({ error: 'limit', limit }, 429);
+  }
 
   // 4) Ask Claude, running Chordseed's own tools when it needs them.
   const system = systemPrompt(ctx), cards = [];
@@ -105,5 +118,5 @@ export async function onRequest(context) {
     return reply({ error: 'upstream', message: String(e.message || e).slice(0, 200) }, 502);
   }
   const text = (res.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('\n').trim();
-  return reply({ text, cards, used, limit });
+  return reply({ text, cards, used, limit, guest });
 }
