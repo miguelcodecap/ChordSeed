@@ -7,7 +7,7 @@ import { TOOLS, runTool, chordsOf, appLink } from '../../server/api.js';
 const SB_URL = 'https://siafatxbgecgenhnciej.supabase.co';
 const SB_KEY = 'sb_publishable_wbMAklnoQrY6-P0vM1KVlw_l0llY6fK';
 const MODEL = 'claude-haiku-5-5';
-const DAILY_LIMIT = 40, GUEST_LIMIT = 4;
+const PRO_DAILY = 40, GUEST_FREE = 4, ACCOUNT_FREE = 10, GUEST_IP_DAILY = 30;
 const MAX_TURNS = 12, MAX_CHARS = 2000, MAX_STEPS = 4;
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
 
@@ -56,15 +56,15 @@ export async function onRequest(context) {
 
   // 1) Who is asking? Signed-in Pro users get the daily limit; guests get a few free questions.
   const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
-  let guest = !token;
+  let guest = !token, paid = false;
   if (token) {
     const u = await sb(env, '/auth/v1/user', token);
     if (!u.ok) return reply({ error: 'login' }, 401);
     const user = await u.json();
     const s = await sb(env, '/rest/v1/subscriptions?select=plan,status,current_period_end&user_id=eq.' + encodeURIComponent(user.id), token);
     const sub = s.ok ? (await s.json())[0] : null;
-    const pro = !!(sub && sub.plan === 'pro' && ['active', 'trialing', 'past_due'].indexOf(sub.status) >= 0 && (!sub.current_period_end || new Date(sub.current_period_end) > new Date()));
-    if (!pro) return reply({ error: 'pro' }, 402);
+    // Only a paid plan unlocks the daily Pro limit; everyone else (beta trial included) gets the free questions.
+    paid = !!(sub && sub.plan === 'pro' && ['active', 'past_due'].indexOf(sub.status) >= 0 && (!sub.current_period_end || new Date(sub.current_period_end) > new Date()));
   }
 
   // 2) Read the conversation.
@@ -77,21 +77,23 @@ export async function onRequest(context) {
   while (msgs.length && msgs[0].role !== 'user') msgs.shift();
   if (!msgs.length || msgs[msgs.length - 1].role !== 'user') return reply({ error: 'bad_request' }, 400);
 
-  // 3) Daily limit (counts one per question).
-  let used, limit;
+  // 3) Limits: guests 4 in total, free accounts 10 in total, paid Pro 40 a day.
+  let used, limit, tier;
+  const hash = async (x) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode((env.GUEST_SALT || 'chordseed-lumen') + '|' + x)))).map((v) => v.toString(16).padStart(2, '0')).join('');
   if (guest) {
+    const dev = String(body.device || '').slice(0, 80);
+    if (dev.length < 16) return reply({ error: 'bad_request' }, 400);
     const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || 'unknown';
-    const dig = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((env.GUEST_SALT || 'chordseed-lumen') + '|' + ip));
-    const h = Array.from(new Uint8Array(dig)).map((x) => x.toString(16).padStart(2, '0')).join('');
-    const g = await fetch((env.SUPABASE_URL || SB_URL) + '/rest/v1/rpc/assistant_bump_guest', { method: 'POST', headers: { apikey: env.SUPABASE_KEY || SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ h }) });
-    used = g.ok ? Number(await g.json()) : Infinity;
-    limit = Number(env.ASSISTANT_GUEST_LIMIT || GUEST_LIMIT);
-    if (used > limit) return reply({ error: 'guest_limit', limit }, 429);
+    const g = await fetch((env.SUPABASE_URL || SB_URL) + '/rest/v1/rpc/assistant_bump_guest', { method: 'POST', headers: { apikey: env.SUPABASE_KEY || SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ dev: await hash('d|' + dev), ip: await hash('i|' + ip) }) });
+    const c = g.ok ? await g.json() : null;
+    tier = 'guest'; limit = Number(env.ASSISTANT_GUEST_FREE || GUEST_FREE); used = c ? Number(c.device) : Infinity;
+    if (!c || used > limit || Number(c.ip_today) > GUEST_IP_DAILY) return reply({ error: 'guest_limit', limit, tier }, 429);
   } else {
     const b = await sb(env, '/rest/v1/rpc/assistant_bump', token, { method: 'POST', body: '{}' });
-    used = b.ok ? Number(await b.json()) : 0;
-    limit = Number(env.ASSISTANT_DAILY_LIMIT || DAILY_LIMIT);
-    if (used > limit) return reply({ error: 'limit', limit }, 429);
+    const c = b.ok ? await b.json() : null;
+    if (!c) return reply({ error: 'upstream', message: 'counter' }, 502);
+    if (paid) { tier = 'pro'; limit = Number(env.ASSISTANT_DAILY_LIMIT || PRO_DAILY); used = Number(c.today); if (used > limit) return reply({ error: 'limit', limit, tier }, 429); }
+    else { tier = 'free'; limit = Number(env.ASSISTANT_ACCOUNT_FREE || ACCOUNT_FREE); used = Number(c.total); if (used > limit) return reply({ error: 'pro', limit, tier }, 402); }
   }
 
   // 4) Ask Claude, running Chordseed's own tools when it needs them.
@@ -118,5 +120,5 @@ export async function onRequest(context) {
     return reply({ error: 'upstream', message: String(e.message || e).slice(0, 200) }, 502);
   }
   const text = (res.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('\n').trim();
-  return reply({ text, cards, used, limit, guest });
+  return reply({ text, cards, used, limit, tier, guest });
 }
