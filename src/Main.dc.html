@@ -2754,7 +2754,8 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
-var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant';
+var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant', CS_LUMEN_FREE = 4;
+function loadLmGuest() { try { return Number(window.localStorage.getItem('cs_lm_guest')) || 0; } catch (e) { return 0; } }
 var SAGE = { explain: '/_blob/c8eff3f68593086c4680ac00400cdeda', think: '/_blob/75038a63391fd7d3c5360256b2464469', celebrate: '/_blob/10ad2059a9a47cd9297647428a61afe0', encourage: '/_blob/39ce5f000bc2a416b84e9f03887bfd36', play: '/_blob/07f414ba6ee81a1f81096847c9c6af3a' };
 var LESSONS = [
   { id: 'notes',
@@ -4051,7 +4052,7 @@ class Component extends DCLogic {
 
   constructor(props) {
     super(props);
-    this.state = { chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gcOff: (function () { try { return localStorage.getItem('cs_gcoff') === '1'; } catch (e) { return false; } })(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
+    this.state = { lmGuest: loadLmGuest(), chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gcOff: (function () { try { return localStorage.getItem('cs_gcoff') === '1'; } catch (e) { return false; } })(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
   }
   _bus() {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -4256,13 +4257,16 @@ class Component extends DCLogic {
     var chs = st.chords || [], key = chs.length ? detect(chs) : null;
     var ctx = { chords: chs.map(function (c) { return chordName(c, key); }).join(' '), language: CUR_LANG === 'es' ? 'es' : 'en', instrument: st.inst, genre: RE_STYLES[st.reStyle || 'pop'] ? RE_STYLES[st.reStyle || 'pop'].en[0] : '', mood: st.mood };
     var fail = function (m) { self.setState({ lmBusy: false, lmErr: m }); scroll(); };
-    if (!self.sb) { fail(LX('No pude conectar con tu cuenta. Recarga la página.', 'Could not reach your account. Reload the page.')); return; }
-    self.sb.auth.getSession().then(function (r) {
+    var sess = self.sb && st.user ? self.sb.auth.getSession() : Promise.resolve(null);
+    sess.then(function (r) {
       var tok = r && r.data && r.data.session && r.data.session.access_token;
-      if (!tok) { fail(LX('Tu sesión expiró: vuelve a iniciar sesión.', 'Your session expired: please sign in again.')); return; }
-      return fetch(CS_LUMEN_API, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok }, body: JSON.stringify({ messages: msgs.map(function (m) { return { role: m.role, content: m.content }; }), context: ctx }) })
+      if (st.user && !tok) { fail(LX('Tu sesión expiró: vuelve a iniciar sesión.', 'Your session expired: please sign in again.')); return; }
+      var hd = { 'Content-Type': 'application/json' }; if (tok) hd.Authorization = 'Bearer ' + tok;
+      return fetch(CS_LUMEN_API, { method: 'POST', headers: hd, body: JSON.stringify({ messages: msgs.map(function (m) { return { role: m.role, content: m.content }; }), context: ctx }) })
         .then(function (res) { return res.json().catch(function () { return {}; }).then(function (j) { return { status: res.status, j: j }; }); })
         .then(function (o) {
+          if (o.j && o.j.guest) { var gu = Math.max(Number(o.j.used) || 0, (Number(self.state.lmGuest) || 0) + 1); try { localStorage.setItem('cs_lm_guest', String(gu)); } catch (e) {} self.setState({ lmGuest: gu }); }
+          if (o.j && o.j.error === 'guest_limit') { try { localStorage.setItem('cs_lm_guest', String(o.j.limit || 4)); } catch (e) {} self.setState({ lmBusy: false, lmGuest: o.j.limit || 4, lmErr: '' }); return; }
           if (o.status === 200 && (o.j.text || (o.j.cards || []).length)) { self.setState({ lmBusy: false, lmUsed: o.j.used, lmLimit: o.j.limit, lmMsgs: msgs.concat([{ role: 'assistant', content: o.j.text || '', cards: o.j.cards || [] }]) }); scroll(); return; }
           var e = o.j && o.j.error;
           fail(e === 'limit' ? LX('Llegaste al límite de hoy (' + o.j.limit + ' preguntas). Vuelve mañana.', 'You reached today’s limit (' + o.j.limit + ' questions). Come back tomorrow.')
@@ -5670,10 +5674,10 @@ class Component extends DCLogic {
       lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
       lmClose: function () { self.setState({ lmOpen: false }); },
       lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
-      lmGate: !(st.user && st.isPro), lmReady: !!(st.user && st.isPro),
-      lmGateTxt: !st.user ? LX('Lumen es tu asistente de composición: te ayuda a encontrar acordes, ideas para el coro, letras, ritmos y lo que necesites para tu canción. Es parte de Pro y durante la beta es gratis: solo inicia sesión.', 'Lumen is your songwriting assistant: he helps you find chords, chorus ideas, lyrics, rhythms and whatever your song needs. It’s part of Pro, and free during the beta: just sign in.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
-      lmGateLab: !st.user ? LX('Iniciar sesión', 'Sign in') : LX('Ver Pro', 'See Pro'),
-      lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'login', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },
+      lmGate: st.user ? !st.isPro : (st.lmGuest || 0) >= CS_LUMEN_FREE, lmReady: st.user ? !!st.isPro : (st.lmGuest || 0) < CS_LUMEN_FREE,
+      lmGateTxt: !st.user ? LX('Ya usaste tus ' + CS_LUMEN_FREE + ' preguntas gratis. Crea tu cuenta para seguir hablando con Lumen: es gratis durante la beta y te da hasta 40 preguntas al día, además de guardar tus progresiones.', 'You’ve used your ' + CS_LUMEN_FREE + ' free questions. Create your account to keep talking with Lumen: it’s free during the beta and gives you up to 40 questions a day, plus your saved progressions.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
+      lmGateLab: !st.user ? LX('Crear cuenta gratis', 'Create free account') : LX('Ver Pro', 'See Pro'),
+      lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'signup', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },
       lmEmpty: !(st.lmMsgs || []).length,
       lmHello: LX('Hola, soy Lumen. Pregúntame lo que quieras sobre tu canción: qué acorde sigue, cómo darle más emoción, ideas de coro, ritmo o letra.', 'Hi, I’m Lumen. Ask me anything about your song: what chord comes next, how to add emotion, chorus ideas, rhythm or lyrics.'),
       lmIdeas: [LX('¿Qué acorde sigue en mi progresión?', 'What chord comes next in my progression?'), LX('Hazla sonar más triste', 'Make it sound sadder'), LX('Dame una idea para el coro', 'Give me a chorus idea'), LX('Explícame por qué funciona', 'Explain why it works')].map(function (q) { return { label: q, ask: function () { self.lmAsk(q); } }; }),
@@ -5682,7 +5686,7 @@ class Component extends DCLogic {
       lmPh: LX('Escribe tu pregunta…', 'Type your question…'), lmSendLab: LX('Enviar', 'Send'),
       lmSend: function () { var t = document.getElementById('cs-lm-in'); if (!t) return; var v = t.value; t.value = ''; self.lmAsk(v); },
       lmKey: function (e) { if (e && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var t = e.currentTarget, v = t.value; t.value = ''; self.lmAsk(v); } },
-      lmFoot: (st.lmUsed ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit + ' · ' : '') + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
+      lmFoot: (!st.user ? LX('Preguntas gratis: ', 'Free questions: ') + Math.max(0, CS_LUMEN_FREE - (st.lmGuest || 0)) + LX(' de ', ' of ') + CS_LUMEN_FREE + ' · ' : (st.lmUsed ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit + ' · ' : '')) + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
       acctOpen: !!st.acctOpen,
       acctGoogleOn: !!st.acctGoogleOn,
       acctBtnCls: st.user ? 'is-in' : '',
