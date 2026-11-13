@@ -708,7 +708,8 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
-var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant', CS_LUMEN_FREE = 4;
+var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant', CS_LUMEN_FREE = 4, CS_LUMEN_ACCT = 10;
+function lmDevice() { try { var d = window.localStorage.getItem('cs_dev'); if (!d) { var a = new Uint8Array(16); (window.crypto || {}).getRandomValues ? window.crypto.getRandomValues(a) : a.forEach(function (v, i) { a[i] = Math.floor(Math.random() * 256); }); d = Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); window.localStorage.setItem('cs_dev', d); } return d; } catch (e) { return 'nostorage-' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2); } }
 function loadLmGuest() { try { return Number(window.localStorage.getItem('cs_lm_guest')) || 0; } catch (e) { return 0; } }
 var SAGE = { explain: '/_blob/c8eff3f68593086c4680ac00400cdeda', think: '/_blob/75038a63391fd7d3c5360256b2464469', celebrate: '/_blob/10ad2059a9a47cd9297647428a61afe0', encourage: '/_blob/39ce5f000bc2a416b84e9f03887bfd36', play: '/_blob/07f414ba6ee81a1f81096847c9c6af3a' };
 var LESSONS = [
@@ -2206,6 +2207,8 @@ class Component extends DCLogic {
     var self = this, st = this.state; text = String(text || '').trim();
     if (!text || st.lmBusy) return;
     var msgs = (st.lmMsgs || []).concat([{ role: 'user', content: text.slice(0, 2000) }]);
+    var notice = function (kind) { self.setState({ lmBusy: false, lmErr: '', lmMsgs: msgs.concat([{ role: 'notice', kind: kind }]) }); setTimeout(function () { try { var el = document.getElementById('cs-lm-log'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40); };
+    if (!st.user && (st.lmGuest || 0) >= CS_LUMEN_FREE) { notice('login'); return; }
     var scroll = function () { setTimeout(function () { try { var el = document.getElementById('cs-lm-log'); if (el) el.scrollTop = el.scrollHeight; } catch (e) {} }, 40); };
     self.setState({ lmMsgs: msgs, lmBusy: true, lmErr: '' }); scroll();
     var chs = st.chords || [], key = chs.length ? detect(chs) : null;
@@ -2216,12 +2219,13 @@ class Component extends DCLogic {
       var tok = r && r.data && r.data.session && r.data.session.access_token;
       if (st.user && !tok) { fail(LX('Tu sesión expiró: vuelve a iniciar sesión.', 'Your session expired: please sign in again.')); return; }
       var hd = { 'Content-Type': 'application/json' }; if (tok) hd.Authorization = 'Bearer ' + tok;
-      return fetch(CS_LUMEN_API, { method: 'POST', headers: hd, body: JSON.stringify({ messages: msgs.map(function (m) { return { role: m.role, content: m.content }; }), context: ctx }) })
+      return fetch(CS_LUMEN_API, { method: 'POST', headers: hd, body: JSON.stringify({ messages: msgs.filter(function (m) { return m.role === 'user' || m.role === 'assistant'; }).map(function (m) { return { role: m.role, content: m.content }; }), context: ctx, device: lmDevice() }) })
         .then(function (res) { return res.json().catch(function () { return {}; }).then(function (j) { return { status: res.status, j: j }; }); })
         .then(function (o) {
           if (o.j && o.j.guest) { var gu = Math.max(Number(o.j.used) || 0, (Number(self.state.lmGuest) || 0) + 1); try { localStorage.setItem('cs_lm_guest', String(gu)); } catch (e) {} self.setState({ lmGuest: gu }); }
-          if (o.j && o.j.error === 'guest_limit') { try { localStorage.setItem('cs_lm_guest', String(o.j.limit || 4)); } catch (e) {} self.setState({ lmBusy: false, lmGuest: o.j.limit || 4, lmErr: '' }); return; }
-          if (o.status === 200 && (o.j.text || (o.j.cards || []).length)) { self.setState({ lmBusy: false, lmUsed: o.j.used, lmLimit: o.j.limit, lmMsgs: msgs.concat([{ role: 'assistant', content: o.j.text || '', cards: o.j.cards || [] }]) }); scroll(); return; }
+          if (o.j && o.j.error === 'guest_limit') { try { localStorage.setItem('cs_lm_guest', String(o.j.limit || CS_LUMEN_FREE)); } catch (e) {} self.setState({ lmGuest: o.j.limit || CS_LUMEN_FREE }); notice('login'); return; }
+          if (o.j && (o.j.error === 'pro' || o.j.error === 'limit')) { self.setState({ lmTier: o.j.tier || self.state.lmTier, lmUsed: o.j.limit, lmLimit: o.j.limit }); notice(o.j.error === 'limit' ? 'limit' : 'pro'); return; }
+          if (o.status === 200 && (o.j.text || (o.j.cards || []).length)) { self.setState({ lmBusy: false, lmUsed: o.j.used, lmLimit: o.j.limit, lmTier: o.j.tier, lmMsgs: msgs.concat([{ role: 'assistant', content: o.j.text || '', cards: o.j.cards || [] }]) }); scroll(); return; }
           var e = o.j && o.j.error;
           fail(e === 'limit' ? LX('Llegaste al límite de hoy (' + o.j.limit + ' preguntas). Vuelve mañana.', 'You reached today’s limit (' + o.j.limit + ' questions). Come back tomorrow.')
             : e === 'pro' ? LX('Lumen es parte del plan Pro.', 'Lumen is part of Pro.')
@@ -3628,19 +3632,27 @@ class Component extends DCLogic {
       lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
       lmClose: function () { self.setState({ lmOpen: false }); },
       lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
-      lmGate: st.user ? !st.isPro : (st.lmGuest || 0) >= CS_LUMEN_FREE, lmReady: st.user ? !!st.isPro : (st.lmGuest || 0) < CS_LUMEN_FREE,
+      lmGate: false, lmReady: true,
       lmGateTxt: !st.user ? LX('Ya usaste tus ' + CS_LUMEN_FREE + ' preguntas gratis. Crea tu cuenta para seguir hablando con Lumen: es gratis durante la beta y te da hasta 40 preguntas al día, además de guardar tus progresiones.', 'You’ve used your ' + CS_LUMEN_FREE + ' free questions. Create your account to keep talking with Lumen: it’s free during the beta and gives you up to 40 questions a day, plus your saved progressions.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
       lmGateLab: !st.user ? LX('Crear cuenta gratis', 'Create free account') : LX('Ver Pro', 'See Pro'),
       lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'signup', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },
       lmEmpty: !(st.lmMsgs || []).length,
-      lmHello: LX('Hola, soy Lumen. Pregúntame lo que quieras sobre tu canción: qué acorde sigue, cómo darle más emoción, ideas de coro, ritmo o letra.', 'Hi, I’m Lumen. Ask me anything about your song: what chord comes next, how to add emotion, chorus ideas, rhythm or lyrics.'),
+      lmHello: LX('Hola, soy Lumen. Pregúntame lo que quieras sobre tu canción: qué acorde sigue, cómo darle más emoción, ideas de coro, ritmo o letra.', 'Hi, I’m Lumen. Ask me anything about your song: what chord comes next, how to add emotion, chorus ideas, rhythm or lyrics.') + (!st.user ? LX(' Tienes ' + CS_LUMEN_FREE + ' preguntas gratis sin cuenta.', ' You have ' + CS_LUMEN_FREE + ' free questions without an account.') : ''),
       lmIdeas: [LX('¿Qué acorde sigue en mi progresión?', 'What chord comes next in my progression?'), LX('Hazla sonar más triste', 'Make it sound sadder'), LX('Dame una idea para el coro', 'Give me a chorus idea'), LX('Explícame por qué funciona', 'Explain why it works')].map(function (q) { return { label: q, ask: function () { self.lmAsk(q); } }; }),
-      lmMsgs: (st.lmMsgs || []).map(function (m) { return { cls: 'lm-msg ' + (m.role === 'user' ? 'lm-u' : 'lm-a'), text: m.content, cards: (m.cards || []).map(function (cd) { var pl = parseChordList(String(cd.chords).split(/[\s,]+/)).chords; return { label: cd.label || LX('Progresión', 'Progression'), chords: cd.chords, playLab: LX('Escuchar', 'Listen'), useLab: LX('Usar estos acordes', 'Use these chords'), play: function () { if (pl.length) self.playSeq(pl); }, use: function () { if (pl.length) self.setState({ chords: pl.slice(0, 16), focus: null, view: 'gen', lmOpen: false }); } }; }) }; }),
+      lmMsgs: (st.lmMsgs || []).map(function (m) {
+        if (m.role === 'notice') {
+          var nt = m.kind === 'login' ? LX('Me encantaría ayudarte con esto. Ya usaste tus ' + CS_LUMEN_FREE + ' preguntas gratis: inicia sesión o crea tu cuenta gratis y tendrás ' + CS_LUMEN_ACCT + ' preguntas más.', 'I’d love to help with this. You’ve used your ' + CS_LUMEN_FREE + ' free questions: sign in or create your free account and you’ll get ' + CS_LUMEN_ACCT + ' more.')
+            : m.kind === 'limit' ? LX('Llegaste al límite de preguntas de hoy. Vuelve mañana y seguimos.', 'You reached today’s question limit. Come back tomorrow and we’ll keep going.')
+            : LX('Ya usaste tus preguntas gratis. Con Pro puedes seguir hablando conmigo todos los días.', 'You’ve used your free questions. With Pro you can keep talking with me every day.');
+          var act = m.kind === 'login' ? [{ label: LX('Iniciar sesión o crear cuenta', 'Sign in or create account'), go: function () { self.setState({ lmOpen: false, acctOpen: true, acctMode: 'login', acctMsg: '' }); } }] : (m.kind === 'pro' ? [{ label: LX('Ver Pro', 'See Pro'), go: function () { self.setState({ lmOpen: false, settingsOpen: true }); } }] : []);
+          return { cls: 'lm-msg lm-a lm-note', text: nt, cards: [], acts: act, hasActs: act.length > 0 };
+        }
+        return { acts: [], hasActs: false, cls: 'lm-msg ' + (m.role === 'user' ? 'lm-u' : 'lm-a'), text: m.content, cards: (m.cards || []).map(function (cd) { var pl = parseChordList(String(cd.chords).split(/[\s,]+/)).chords; return { label: cd.label || LX('Progresión', 'Progression'), chords: cd.chords, playLab: LX('Escuchar', 'Listen'), useLab: LX('Usar estos acordes', 'Use these chords'), play: function () { if (pl.length) self.playSeq(pl); }, use: function () { if (pl.length) self.setState({ chords: pl.slice(0, 16), focus: null, view: 'gen', lmOpen: false }); } }; }) }; }),
       lmBusy: !!st.lmBusy, lmThinking: LX('Lumen está pensando', 'Lumen is thinking'), lmHasErr: !!st.lmErr, lmErr: st.lmErr || '',
       lmPh: LX('Escribe tu pregunta…', 'Type your question…'), lmSendLab: LX('Enviar', 'Send'),
       lmSend: function () { var t = document.getElementById('cs-lm-in'); if (!t) return; var v = t.value; t.value = ''; self.lmAsk(v); },
       lmKey: function (e) { if (e && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var t = e.currentTarget, v = t.value; t.value = ''; self.lmAsk(v); } },
-      lmFoot: (!st.user ? LX('Preguntas gratis: ', 'Free questions: ') + Math.max(0, CS_LUMEN_FREE - (st.lmGuest || 0)) + LX(' de ', ' of ') + CS_LUMEN_FREE + ' · ' : (st.lmUsed ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit + ' · ' : '')) + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
+      lmFoot: (!st.user ? LX('Preguntas gratis: ', 'Free questions: ') + Math.max(0, CS_LUMEN_FREE - (st.lmGuest || 0)) + LX(' de ', ' of ') + CS_LUMEN_FREE + ' · ' : (st.lmUsed ? (st.lmTier === 'pro' ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit : LX('Preguntas gratis de tu cuenta: ', 'Your account’s free questions: ') + Math.max(0, st.lmLimit - st.lmUsed) + LX(' de ', ' of ') + st.lmLimit) + ' · ' : '')) + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
       acctOpen: !!st.acctOpen,
       acctGoogleOn: st.acctGoogleOn !== false,
       acctBtnCls: st.user ? 'is-in' : '',
