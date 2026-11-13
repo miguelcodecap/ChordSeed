@@ -1962,7 +1962,7 @@ class Component extends DCLogic {
       try { self.sb = window.supabase.createClient(CS_SB.url, CS_SB.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }); }
       catch (e) { self.setState({ acctAvail: false }); return; }
       self.setState({ acctAvail: true });
-      fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) { self.setState({ acctGoogleOn: !!(cfg && cfg.external && cfg.external.google) }); }).catch(function () {});
+      fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) { if (cfg && cfg.external && cfg.external.google === false) console.warn('Chordseed: Google sign-in is off in Supabase (Authentication → Providers → Google).'); }).catch(function () {});
       self.sb.auth.getSession().then(function (r) { var s = r && r.data && r.data.session; if (s && s.user) self.acctLoad(s.user); }).catch(function () {});
       self.sb.auth.onAuthStateChange(function (ev, session) {
         if (ev === 'PASSWORD_RECOVERY') { self.setState({ acctOpen: true, acctMode: 'newpw', acctMsg: '' }); return; }
@@ -3642,7 +3642,7 @@ class Component extends DCLogic {
       lmKey: function (e) { if (e && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); var t = e.currentTarget, v = t.value; t.value = ''; self.lmAsk(v); } },
       lmFoot: (!st.user ? LX('Preguntas gratis: ', 'Free questions: ') + Math.max(0, CS_LUMEN_FREE - (st.lmGuest || 0)) + LX(' de ', ' of ') + CS_LUMEN_FREE + ' · ' : (st.lmUsed ? LX('Hoy: ', 'Today: ') + st.lmUsed + ' / ' + st.lmLimit + ' · ' : '')) + LX('Lumen puede equivocarse: confía también en tu oído.', 'Lumen can make mistakes: trust your ear too.'),
       acctOpen: !!st.acctOpen,
-      acctGoogleOn: !!st.acctGoogleOn,
+      acctGoogleOn: st.acctGoogleOn !== false,
       acctBtnCls: st.user ? 'is-in' : '',
       acctInitial: st.user ? (st.user.email || '?').charAt(0).toUpperCase() : '☾',
       acctBtnLab: st.user ? (st.isPro ? 'Pro' : LX('Cuenta', 'Account')) : LX('Entrar', 'Sign in'),
@@ -3683,10 +3683,11 @@ class Component extends DCLogic {
       acctGoogle: function () {
         if (!self.sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; }
         var off = function () { self.setState({ acctMsg: LX('El inicio con Google todavía no está activado. Por ahora entra con tu correo.', 'Google sign-in isn’t enabled yet. For now, use your email.'), acctErr: true }); };
+        var go = function () { self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0].split('?')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); }); };
         fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) {
-          if (!cfg || !cfg.external || !cfg.external.google) { off(); return; }
+          if (cfg && cfg.external && cfg.external.google === false) { off(); return; }
           self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0].split('?')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); });
-        }).catch(off);
+        }).catch(go);
       },
       acctSetPw: function () { var pw = (document.getElementById('cs-newpw') || {}).value || ''; if (!self.sb || pw.length < 6) { self.setState({ acctMsg: csAuthErr({ message: 'Password should be at least 6' }, es), acctErr: true }); return; } self.sb.auth.updateUser({ password: pw }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); else self.setState({ acctMode: 'login', acctMsg: LX('Contraseña actualizada.', 'Password updated.'), acctErr: false }); }); },
       acctSignOut: function () { if (self.sb) self.sb.auth.signOut(); CS_SYNC = null; self.setState({ user: null, isPro: false, cloudSongs: [], acctOpen: false }); },
