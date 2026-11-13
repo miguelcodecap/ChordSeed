@@ -3683,6 +3683,8 @@ class Component extends DCLogic {
       acctGoogle: function () {
         if (!self.sb) { self.setState({ acctMsg: LX('Las cuentas funcionan en la versión web de Chordseed.', 'Accounts work on the Chordseed web version.'), acctErr: true }); return; }
         var off = function () { self.setState({ acctMsg: LX('El inicio con Google todavía no está activado. Por ahora entra con tu correo.', 'Google sign-in isn’t enabled yet. For now, use your email.'), acctErr: true }); };
+        var hostOk = /(^|\.)chordseed\.pages\.dev$|^localhost$|^127\.0\.0\.1$/.test(location.hostname || '');
+        if (!hostOk) { self.setState({ acctMsg: LX('Aquí (vista previa del diseño) Google no puede abrir su ventana. Entra con Google desde la app real: chordseed.pages.dev/app', 'Google can’t open its window in this design preview. Sign in with Google on the real app: chordseed.pages.dev/app'), acctErr: true }); return; }
         var go = function () { self.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: (location.href || '').split('#')[0].split('?')[0] } }).then(function (r) { if (r && r.error) self.setState({ acctMsg: csAuthErr(r.error, es), acctErr: true }); }); };
         fetch(CS_SB.url + '/auth/v1/settings', { headers: { apikey: CS_SB.key } }).then(function (r) { return r.json(); }).then(function (cfg) {
           if (cfg && cfg.external && cfg.external.google === false) { off(); return; }
