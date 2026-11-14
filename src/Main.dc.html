@@ -108,6 +108,9 @@ html{scroll-padding-bottom:96px}@media (max-width:640px){html{scroll-padding-bot
 .lm-dots span::after{content:'…';animation:lmDots 1.2s steps(3) infinite}
 @keyframes lmDots{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
 .lm-in{display:flex;gap:8px;align-items:stretch}.lm-in textarea{flex:1;min-width:0;resize:none;padding:10px 12px;border-radius:12px;border:1.5px solid #2F4A3B;background:#0A1510;color:#EAF2E6;font:500 15px Figtree,sans-serif;outline:none}.lm-in textarea:focus{border-color:#E8D872;box-shadow:0 0 0 3px rgba(232,216,114,.15)}
+.lm-cl{display:flex;flex-direction:column;gap:12px}.lm-steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:14px;color:#E4EDE2;font-size:15px;line-height:1.5}.lm-steps li{padding-left:4px}.lm-steps li>span{display:block;margin-bottom:8px}.lm-steps li::marker{color:#E8D872;font-weight:700}
+.lm-url{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.lm-url code{flex:1 1 220px;min-width:0;padding:10px 12px;border-radius:10px;background:#0A1510;border:1px solid #3A5646;color:#F3E79A;font:600 14px 'JetBrains Mono',monospace;word-break:break-all}
+.lm-ask{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:12px;background:#0F1D16;border:1px solid #2F4A3B;font-size:14px;color:#D7E2D3}.lm-ask>span{flex:1 1 200px;min-width:0}
 .lm-note{border-color:#6E6327!important;background:#1C2414!important}
 .lm-gate{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:14px;background:#0F1D16;border:1px solid #2F4A3B}
 @media (max-width:640px){.lm-fab{right:12px;bottom:78px;padding:4px;min-height:48px}.lm-fab .lm-fab-t{display:none}.lm-fab img{width:38px;height:38px}.lm-log{max-height:56vh}}
@@ -495,7 +498,17 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
   <sc-if value="{{lmOpen}}" hint-placeholder-val="{{ false }}"><div class="lrn-modal" onClick="{{lmBackdrop}}"><div class="lrn-card lm-card" role="dialog" aria-label="{{lmTitle}}">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="display:flex;align-items:center;gap:10px"><img class="lm-av" src="{{lmFace}}" alt="" width="44" height="44"><div style="display:flex;flex-direction:column;gap:2px"><span class="ns-k">✦ Lumen</span><span style="font:400 24px/1.1 'Cormorant Garamond',Georgia,serif">{{lmTitle}}</span></div></div><button class="ghost" onClick="{{lmClose}}" aria-label="{{t.close}}" style="min-height:40px;min-width:40px;padding:0">✕</button></div>
     <sc-if value="{{lmGate}}" hint-placeholder-val="{{ false }}"><div class="lm-gate"><p style="margin:0;font-size:15px;line-height:1.55;color:#D7E2D3">{{lmGateTxt}}</p><button class="btn" onClick="{{lmGateGo}}" style="align-self:flex-start">{{lmGateLab}}</button></div></sc-if>
-    <sc-if value="{{lmReady}}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{lmClaude}}" hint-placeholder-val="{{ true }}"><div class="lm-cl">
+      <p style="margin:0;font-size:15px;line-height:1.55;color:#D7E2D3">{{lmClIntro}}</p>
+      <ol class="lm-steps">
+        <li><span>{{lmClS1}}</span><a class="ghost" href="https://claude.ai/settings/connectors" target="_blank" rel="noopener" style="align-self:flex-start;min-height:40px;display:inline-flex;align-items:center;text-decoration:none">{{lmClOpen}} ↗</a></li>
+        <li><span>{{lmClS2}}</span><div class="lm-url"><code>{{lmClUrl}}</code><button class="btn" onClick="{{lmClCopyUrl}}" style="min-height:40px;padding:0 14px">{{lmClCopyLab}}</button></div></li>
+        <li><span>{{lmClS3}}</span>
+          <div style="display:flex;flex-direction:column;gap:6px"><sc-for list="{{lmClAsks}}" as="q" hint-placeholder-count="3"><div class="lm-ask"><span>“{{q.text}}”</span><a class="ghost" href="{{q.href}}" target="_blank" rel="noopener" style="min-height:38px;display:inline-flex;align-items:center;text-decoration:none;flex:none">{{q.lab}} ↗</a></div></sc-for></div></li>
+      </ol>
+      <span style="font-size:12px;color:#8FA697">{{lmClFoot}}</span>
+    </div></sc-if>
+    <sc-if value="{{lmChatOn}}" hint-placeholder-val="{{ false }}">
       <div class="lm-log" id="cs-lm-log" aria-live="polite">
         <sc-if value="{{lmEmpty}}" hint-placeholder-val="{{ true }}"><div class="lm-msg lm-a"><span>{{lmHello}}</span></div>
           <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{lmIdeas}}" as="li" hint-placeholder-count="4"><button class="ghost lm-idea" onClick="{{li.ask}}">{{li.label}}</button></sc-for></div></sc-if>
@@ -2756,6 +2769,8 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
+// 'claude' = the Lumen panel explains how to use Chordseed inside Claude (free); 'chat' = Lumen answers in the app (needs ANTHROPIC_API_KEY on Cloudflare).
+var CS_LUMEN_MODE = 'claude', CS_MCP_URL = 'https://chordseed.pages.dev/mcp';
 var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant', CS_LUMEN_FREE = 4, CS_LUMEN_ACCT = 10;
 function lmDevice() { try { var d = window.localStorage.getItem('cs_dev'); if (!d) { var a = new Uint8Array(16); (window.crypto || {}).getRandomValues ? window.crypto.getRandomValues(a) : a.forEach(function (v, i) { a[i] = Math.floor(Math.random() * 256); }); d = Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); window.localStorage.setItem('cs_dev', d); } return d; } catch (e) { return 'nostorage-' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2); } }
 function loadLmGuest() { try { return Number(window.localStorage.getItem('cs_lm_guest')) || 0; } catch (e) { return 0; } }
@@ -5676,11 +5691,24 @@ class Component extends DCLogic {
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
       lmBtnShow: !st.lmOpen && !st.acctOpen && !st.settingsOpen && !st.lm && !st.pickerOpen,
-      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: LX('Pregúntale a Lumen', 'Ask Lumen'),
+      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'),
       lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
       lmClose: function () { self.setState({ lmOpen: false }); },
       lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
-      lmGate: false, lmReady: true,
+      lmGate: false, lmReady: true, lmClaude: CS_LUMEN_MODE === 'claude', lmChatOn: CS_LUMEN_MODE !== 'claude',
+      lmClIntro: LX('Conecta Chordseed a tu Claude (es gratis) y pídele lo que quieras: canciones, progresiones, arpegios, rearmonizaciones o explicaciones. Claude usa el motor de Chordseed y te devuelve un link para abrirlo aquí, escucharlo y guardarlo.', 'Connect Chordseed to your Claude (it’s free) and ask for anything: songs, progressions, arpeggios, reharmonizations or explanations. Claude uses Chordseed’s engine and gives you a link to open it here, hear it and save it.'),
+      lmClS1: LX('En Claude, abre Configuración → Conectores y pulsa «Agregar conector personalizado».', 'In Claude, open Settings → Connectors and choose “Add custom connector”.'),
+      lmClOpen: LX('Abrir conectores de Claude', 'Open Claude connectors'),
+      lmClS2: LX('Ponle de nombre Chordseed y pega esta URL:', 'Name it Chordseed and paste this URL:'),
+      lmClUrl: CS_MCP_URL, lmClCopyLab: st.lmCopied ? LX('¡Copiado!', 'Copied!') : LX('Copiar', 'Copy'),
+      lmClCopyUrl: function () { try { navigator.clipboard.writeText(CS_MCP_URL).then(function () { self.setState({ lmCopied: true }); setTimeout(function () { self.setState({ lmCopied: false }); }, 1800); }); } catch (e) {} },
+      lmClS3: LX('Pídele algo a Claude, por ejemplo:', 'Ask Claude something, for example:'),
+      lmClAsks: (function () { var chs0 = st.chords || [], k0 = chs0.length ? detect(chs0) : null, prog = chs0.map(function (c) { return chordName(c, k0); }).join(' ');
+        var qs = [prog ? LX('Usa Chordseed: ¿qué acorde sigue después de ' + prog + '?', 'Use Chordseed: what chord comes next after ' + prog + '?') : LX('Usa Chordseed para crear una canción oscura con arpegios en guitarra', 'Use Chordseed to write a dark song with guitar arpeggios'),
+          LX('Usa Chordseed para rearmonizar Am F C G en estilo jazz', 'Use Chordseed to reharmonize Am F C G in a jazz style'),
+          LX('Con Chordseed, ¿cómo modulo de Do mayor a Mi menor?', 'With Chordseed, how do I modulate from C major to E minor?')];
+        return qs.map(function (q) { return { text: q, lab: LX('Preguntar en Claude', 'Ask in Claude'), href: 'https://claude.ai/new?q=' + encodeURIComponent(q) }; }); })(),
+      lmClFoot: LX('Funciona con el plan gratis de Claude (permite 1 conector personalizado). Pronto Lumen también responderá aquí mismo.', 'Works on Claude’s free plan (it allows 1 custom connector). Soon Lumen will also answer right here.'),
       lmGateTxt: !st.user ? LX('Ya usaste tus ' + CS_LUMEN_FREE + ' preguntas gratis. Crea tu cuenta para seguir hablando con Lumen: es gratis durante la beta y te da hasta 40 preguntas al día, además de guardar tus progresiones.', 'You’ve used your ' + CS_LUMEN_FREE + ' free questions. Create your account to keep talking with Lumen: it’s free during the beta and gives you up to 40 questions a day, plus your saved progressions.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
       lmGateLab: !st.user ? LX('Crear cuenta gratis', 'Create free account') : LX('Ver Pro', 'See Pro'),
       lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'signup', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },

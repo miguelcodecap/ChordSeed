@@ -708,6 +708,8 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
+// 'claude' = the Lumen panel explains how to use Chordseed inside Claude (free); 'chat' = Lumen answers in the app (needs ANTHROPIC_API_KEY on Cloudflare).
+var CS_LUMEN_MODE = 'claude', CS_MCP_URL = 'https://chordseed.pages.dev/mcp';
 var CS_LUMEN_API = 'https://chordseed.pages.dev/api/assistant', CS_LUMEN_FREE = 4, CS_LUMEN_ACCT = 10;
 function lmDevice() { try { var d = window.localStorage.getItem('cs_dev'); if (!d) { var a = new Uint8Array(16); (window.crypto || {}).getRandomValues ? window.crypto.getRandomValues(a) : a.forEach(function (v, i) { a[i] = Math.floor(Math.random() * 256); }); d = Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); window.localStorage.setItem('cs_dev', d); } return d; } catch (e) { return 'nostorage-' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2); } }
 function loadLmGuest() { try { return Number(window.localStorage.getItem('cs_lm_guest')) || 0; } catch (e) { return 0; } }
@@ -3628,11 +3630,24 @@ class Component extends DCLogic {
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
       lmBtnShow: !st.lmOpen && !st.acctOpen && !st.settingsOpen && !st.lm && !st.pickerOpen,
-      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: LX('Pregúntale a Lumen', 'Ask Lumen'),
+      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'),
       lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
       lmClose: function () { self.setState({ lmOpen: false }); },
       lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
-      lmGate: false, lmReady: true,
+      lmGate: false, lmReady: true, lmClaude: CS_LUMEN_MODE === 'claude', lmChatOn: CS_LUMEN_MODE !== 'claude',
+      lmClIntro: LX('Conecta Chordseed a tu Claude (es gratis) y pídele lo que quieras: canciones, progresiones, arpegios, rearmonizaciones o explicaciones. Claude usa el motor de Chordseed y te devuelve un link para abrirlo aquí, escucharlo y guardarlo.', 'Connect Chordseed to your Claude (it’s free) and ask for anything: songs, progressions, arpeggios, reharmonizations or explanations. Claude uses Chordseed’s engine and gives you a link to open it here, hear it and save it.'),
+      lmClS1: LX('En Claude, abre Configuración → Conectores y pulsa «Agregar conector personalizado».', 'In Claude, open Settings → Connectors and choose “Add custom connector”.'),
+      lmClOpen: LX('Abrir conectores de Claude', 'Open Claude connectors'),
+      lmClS2: LX('Ponle de nombre Chordseed y pega esta URL:', 'Name it Chordseed and paste this URL:'),
+      lmClUrl: CS_MCP_URL, lmClCopyLab: st.lmCopied ? LX('¡Copiado!', 'Copied!') : LX('Copiar', 'Copy'),
+      lmClCopyUrl: function () { try { navigator.clipboard.writeText(CS_MCP_URL).then(function () { self.setState({ lmCopied: true }); setTimeout(function () { self.setState({ lmCopied: false }); }, 1800); }); } catch (e) {} },
+      lmClS3: LX('Pídele algo a Claude, por ejemplo:', 'Ask Claude something, for example:'),
+      lmClAsks: (function () { var chs0 = st.chords || [], k0 = chs0.length ? detect(chs0) : null, prog = chs0.map(function (c) { return chordName(c, k0); }).join(' ');
+        var qs = [prog ? LX('Usa Chordseed: ¿qué acorde sigue después de ' + prog + '?', 'Use Chordseed: what chord comes next after ' + prog + '?') : LX('Usa Chordseed para crear una canción oscura con arpegios en guitarra', 'Use Chordseed to write a dark song with guitar arpeggios'),
+          LX('Usa Chordseed para rearmonizar Am F C G en estilo jazz', 'Use Chordseed to reharmonize Am F C G in a jazz style'),
+          LX('Con Chordseed, ¿cómo modulo de Do mayor a Mi menor?', 'With Chordseed, how do I modulate from C major to E minor?')];
+        return qs.map(function (q) { return { text: q, lab: LX('Preguntar en Claude', 'Ask in Claude'), href: 'https://claude.ai/new?q=' + encodeURIComponent(q) }; }); })(),
+      lmClFoot: LX('Funciona con el plan gratis de Claude (permite 1 conector personalizado). Pronto Lumen también responderá aquí mismo.', 'Works on Claude’s free plan (it allows 1 custom connector). Soon Lumen will also answer right here.'),
       lmGateTxt: !st.user ? LX('Ya usaste tus ' + CS_LUMEN_FREE + ' preguntas gratis. Crea tu cuenta para seguir hablando con Lumen: es gratis durante la beta y te da hasta 40 preguntas al día, además de guardar tus progresiones.', 'You’ve used your ' + CS_LUMEN_FREE + ' free questions. Create your account to keep talking with Lumen: it’s free during the beta and gives you up to 40 questions a day, plus your saved progressions.') : LX('Lumen, tu asistente de composición, es parte del plan Pro.', 'Lumen, your songwriting assistant, is part of Pro.'),
       lmGateLab: !st.user ? LX('Crear cuenta gratis', 'Create free account') : LX('Ver Pro', 'See Pro'),
       lmGateGo: function () { if (!st.user) self.setState({ lmOpen: false, acctOpen: true, acctMode: 'signup', acctMsg: '' }); else self.setState({ lmOpen: false, settingsOpen: true }); },
