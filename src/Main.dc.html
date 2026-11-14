@@ -2852,7 +2852,6 @@ var GC_SUBS = [
   [1, 'sur', '[data-g="sur"]', '¿Quieres sorpresas?', 'Want surprises?', '«None» solo usa acordes de la familia de tu canción. «Some» de vez en cuando mete uno de afuera que da un giro inesperado. Ajusta con − y + y toca «Listo».', '“None” only uses chords from your song’s family. “Some” now and then adds one from outside for an unexpected twist. Adjust with − and +, then tap “Done”.', 'Así está bien', 'This is fine'],
   [1, 'count', '[data-g="count"]', '¿Cuántos acordes te sugerimos?', 'How many chords should we suggest?', 'Con 1 eliges el siguiente acorde paso a paso. Con más, te proponemos frases completas de varios acordes de una vez. Usa + las veces que quieras y luego toca «Listo».', 'With 1 you pick the next chord step by step. With more, we suggest whole phrases of several chords at once. Press + as many times as you like, then tap “Done”.', 'Así está bien', 'This is fine'],
   [2, 'add', '#stp-2 .addtile', 'Pon los acordes que ya tienes', 'Add the chords you already have', 'Toca «Add chord», elige la nota y el tipo, y agrégalo. Hazlo en el orden en que suenan. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord”, pick the note and the type, and add it. Go in the order they play. Don’t have any? Tap one of the ideas below.', '', ''],
-  [2, 'rhythm', '[data-g="rhythm"] .fold', 'Ritmo y velocidad', 'Rhythm and speed', 'Antes de escuchar tu progresión, mira cómo va a sonar: BPM es la velocidad (pulsos por minuto: 70 es lento, 120 es movido). El compás (4/4, 3/4…) dice cuántos tiempos tiene cada vuelta. «Cómo se toca» es el rasgueo: ya viene el de tu estilo, con sus flechas. Y puedes poner o quitar batería y bajo.', 'Before you listen to your progression, see how it will sound: BPM is the speed (beats per minute: 70 is slow, 120 is lively). The time signature (4/4, 3/4…) is how many beats each bar has. “How it’s played” is the strum: your style’s one is already set, with its arrows. You can also turn drums and bass on or off.', '', ''],
   [2, 'peek1', '#stp-3 .sec-h', 'Aquí abajo: más acordes para añadir', 'Below: more chords to add', 'Este bloque te sugiere qué acorde puede seguir después de los tuyos, según tu estilo y tu emoción. Toca ▶ para oírlo y + para añadirlo a tu progresión. Solo te lo muestro: lo importante sigue siendo tu progresión.', 'This block suggests which chord can come after yours, based on your style and mood. Tap ▶ to hear it and + to add it to your progression. Just showing you: your progression is still what matters.', '', ''],
   [2, 'peek2', '#stp-4 .sec-h', 'Más abajo: arma tu canción', 'Further down: build your song', 'Cuando tu progresión te guste, aquí la conviertes en partes (verso, coro, puente…) y escuchas la canción completa con banda.', 'When you like your progression, this is where you turn it into parts (verse, chorus, bridge…) and hear the whole song with a band.', '', ''],
   [2, 'peek3', '#stp-5 .sec-h', 'Y al final: canciones parecidas', 'And at the end: similar songs', 'Con cada progresión que vayas creando te mostramos canciones reales que usan acordes parecidos, primero las de tu estilo. Escúchalas para sacar ideas.', 'For every progression you create, we show real songs that use similar chords, your style first. Listen to them for ideas.', '', ''],
@@ -4448,7 +4447,7 @@ class Component extends DCLogic {
       if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
       var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; if (!gc.keepLab) kb.style.display = 'none'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
       box.appendChild(row);
-      var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); try { localStorage.setItem('cs_gcoff', '1'); } catch (e) {} self.setState({ gcOff: true }); }); box.appendChild(xb);
+      var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); box._hid = self._gc ? self._gc.key : null; self.forceUpdate(); }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
       box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in');
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
@@ -4670,7 +4669,7 @@ class Component extends DCLogic {
       FEELS.style = { es: 'Ritmo ' + (sn.es ? sn.es[0] : ''), en: (sn.en ? sn.en[0] : '') + ' rhythm', des: gRhy.es, den: gRhy.en, sp: allA ? null : gRhy.p, arpAll: allA, swing: !!gRhy.swing, comp: !!gRhy.comp, boogie: !!gRhy.boogie,
         p: { '4/4': gRhy.comp ? 'xxxxxxxx' : p8, '3/4': FEELS.pulse.p['3/4'], '6/8': FEELS.pulse.p['6/8'], '5/4': FEELS.pulse.p['5/4'] } }; })();
     var gd = st.gd || {}, gOn = !!st.guided && !st.gcOff;
-    var gDoneA = [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && !!gd.rhythm && !!gd.peek3 && chs.length >= 1, !!gd.sugs || !!gd.peek3, !!gd.songs || !!gd.peek3], sDoneA = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
+    var gDoneA = [!!(gd.inst && gd.genre), !!(gd.mood && gd.cx && gd.sur && gd.count), !!gd.add && !!gd.peek3 && chs.length >= 1, !!gd.sugs || !!gd.peek3, !!gd.songs || !!gd.peek3], sDoneA = [!!st.profileSet, st.mood !== 'any', chs.length >= 2, !!st.addedSug, !!st.strummed];
     var stepDone = gOn ? gDoneA : (st.guided ? gDoneA.map(function (v, i) { return v || sDoneA[i]; }) : sDoneA);
     var stepNow = stepDone.slice(0, 4).indexOf(false); if (stepNow < 0) stepNow = 5;
     stepDone = stepDone.slice(); stepDone[4] = stepNow === 5;
@@ -5372,7 +5371,7 @@ class Component extends DCLogic {
       hasChords: chs.length > 0,
       pickerOpen: pickerOpen,
       pickerExpanded: pickerOpen ? 'true' : 'false',
-      togglePicker: function () { var open = !pickerOpen; self.setState({ pickerOpen: open }); if (open) setTimeout(function () { var el = document.querySelector('.cs-picker'); if (el) { var r = el.getBoundingClientRect(); if (r.top < 0 || r.top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 60); },
+      togglePicker: function () { var open = chs.length === 0 ? true : !pickerOpen; self.setState({ pickerOpen: open }); if (open) setTimeout(function () { var el = document.querySelector('.cs-picker'); if (el) { var r = el.getBoundingClientRect(); if (r.top < 0 || r.top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 60); },
       addTileStyle: 'width:124px;height:124px;flex:none;box-sizing:border-box;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed ' + (pickerOpen ? '#E8D872' : '#2F4A3B') + ';background:' + (pickerOpen ? '#21281A' : 'transparent') + ';color:' + (pickerOpen ? '#F0E39A' : '#C5D3C6'),
       settingsOpen: st.settingsOpen,
       settingsExpanded: st.settingsOpen ? 'true' : 'false',
@@ -5518,16 +5517,27 @@ class Component extends DCLogic {
           keep: function () { self.gMark(k); } };
         if (k === 'cx' || k === 'sur') { var snG = (RE_STYLES[genre] || RE_STYLES.pop)[lang][0], rG = k === 'cx' ? (GENRE_CX[genre] || 0) : (GENRE_SUR[genre] != null ? GENRE_SUR[genre] : 1), nmG = (k === 'cx' ? CXS : SURS)[rG][es ? 0 : 1]; self._gc.text += ' ' + LX('Para tu estilo (', 'For your style (') + snG + LX(') lo que mejor suena es «', '), what sounds best is “') + nmG + LX('»: lo ves marcado con ★ debajo.', '”: it’s marked with ★ below.'); }
         if (k === 'rhythm') { self._gc.altLab = st.rOpen ? LX('▶ Escuchar así', '▶ Listen like this') : LX('Ver ajustes', 'Show settings'); self._gc.alt = function () { if (!self.state.rOpen) { self.setState({ rOpen: true }); setTimeout(function () { var hd = document.querySelector('[data-g="rhythm"] .fold'); if (hd) { var bh2 = 150; var y = hd.getBoundingClientRect().top + window.scrollY - (bh2 + 40); try { window.scrollTo({ top: y, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, y); } } }, 80); } else { var v2 = self.renderVals(); if (v2.playMine) v2.playMine(); } }; self._gc.key = 'rhythm:' + (st.rOpen ? 1 : 0) + LX('es', 'en'); if (st.rOpen) { self._gc.compact = true; self._gc.forceUp = true; self._gc.text = LX('Ajusta el tempo, el compás y el rasgueo aquí abajo. Prueba con «▶ Escuchar así» y toca «Listo» cuando te guste.', 'Adjust tempo, time and strum below. Try “▶ Listen like this” and tap “Done” when you like it.'); } }
-        if (k === 'add' && chs.length) {
-          self._gc.key = 'add1:' + LX('es', 'en');
-          self._gc.title = LX('¡Bien! Ya se abrió lo de abajo', 'Nice! Everything below is open now');
-          self._gc.text = LX('Ya tienes: ', 'So far: ') + chs.map(nm).join(' – ') + LX('. Sigue poniendo más acordes por tu cuenta con «Add chord», o mira abajo: en «What can come next» hay acordes que encajan con los tuyos (toca + para añadirlos), más abajo puedes armar tu canción por partes, y al final verás canciones reales con acordes parecidos.', '. Keep adding chords on your own with “Add chord”, or look below: “What can come next” has chords that fit yours (tap + to add them), further down you can build your song in parts, and at the end you’ll see real songs with similar chords.');
+        if (k === 'add' && st.pickerOpen) {
+          self._gc.key = 'addpick:' + chs.length + ':' + LX('es', 'en');
+          self._gc.sel = '.cs-picker'; self._gc.full = true; self._gc.up = false;
+          self._gc.title = chs.length ? LX('Elige el siguiente acorde', 'Pick the next chord') : LX('Elige tu acorde', 'Pick your chord');
+          self._gc.text = LX('Toca la nota y luego el tipo (mayor, menor, 7…). Puedes escucharlo con ▶ y, cuando sea el que buscas, tócalo con «+ Agregar».', 'Tap the note, then the type (major, minor, 7…). You can hear it with ▶ and, when it’s the one, add it with “+ Add”.');
+          self._gc.keepLab = ''; self._gc.keepOk = function () { return false; };
+          self._gc.altLab = chs.length ? LX('Mejor ver sugerencias', 'See suggestions instead') : ''; self._gc.alt = chs.length ? function () { self.setState({ pickerOpen: false }); self.gMark('add'); setTimeout(function () { self.gdJump(3); }, 60); } : null;
+        } else if (k === 'add' && chs.length) {
+          self._gc.key = 'addq:' + chs.length + ':' + LX('es', 'en');
+          self._gc.title = LX('¿Tienes otro acorde en mente?', 'Got another chord in mind?');
+          self._gc.text = LX('Ya tienes: ', 'So far: ') + chs.map(nm).join(' – ') + LX('. Si ya sabes cuál sigue, agrégalo. Si no, te proponemos acordes que encajan con los tuyos.', '. If you know what comes next, add it. If not, we’ll suggest chords that fit yours.');
           self._gc.altLab = LX('Agregar otro acorde', 'Add another chord');
-          self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker') || document.querySelector('#stp-2 .addtile'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
-          self._gc.keepLab = LX('Seguir la guía →', 'Continue the guide →');
+          self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
+          self._gc.keepLab = LX('Ver acordes sugeridos ↓', 'See suggested chords ↓');
           self._gc.keepOk = function () { return true; };
-          if (st.pickerOpen) { self._gc.sel = '.cs-picker'; self._gc.full = true; self._gc.up = false; }
-        } else if (k === 'add') { self._gc.keepLab = ''; self._gc.keepOk = function () { return false; }; }
+          self._gc.keep = function () { self.gMark('add'); setTimeout(function () { self.gdJump(3); }, 60); };
+        } else if (k === 'add') {
+          self._gc.keepLab = ''; self._gc.keepOk = function () { return false; };
+          self._gc.text = LX('Toca «Add chord» para elegir tu primer acorde. ¿No tienes ninguno? Toca una de las ideas de abajo.', 'Tap “Add chord” to pick your first chord. Don’t have one? Tap one of the ideas below.');
+          self._gc.altLab = LX('Elegir acorde', 'Pick a chord'); self._gc.alt = function () { self.setState({ pickerOpen: true }); setTimeout(function () { var pk = document.querySelector('.cs-picker'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 60); };
+        }
         if (k === 'peek1' || k === 'peek2') { self._gc.keepLab = LX('Siguiente →', 'Next →'); }
         if (k === 'peek3') { self._gc.keepLab = LX('Volver a mi progresión ✓', 'Back to my progression ✓'); self._gc.keep = function () { self.gMark('peek3'); setTimeout(function () { self.gdJump(2); }, 40); }; self._gc.altLab = LX('Conocer las herramientas →', 'Tour the tools →'); self._gc.alt = function () { self.gMarkMany(['peek3', 'tour'], { view: NAV_ORDER.filter(function (x) { return x !== 'gen'; })[0] }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} }; }
         if (k === 'sugs') { if (st.addedSug) self._gc.keepLab = LX('Listo, siguiente paso →', 'Done, next step →'); else { self._gc.keepLab = ''; self._gc.keepOk = function () { return !!self.state.addedSug; }; self._gc.altLab = LX('Seguir sin agregar →', 'Continue without adding →'); self._gc.alt = function () { self.gMark('sugs'); }; } }
@@ -5563,7 +5573,7 @@ class Component extends DCLogic {
       gdHead: view !== 'gen' ? LX('Estás en: ', 'You are in: ') + ((NAV.filter(function (n) { return n[0] === view; })[0] || [0, '', ''])[LX(1, 2)]) : (stepNow < 5 ? LX('Paso ', 'Step ') + (stepNow + 1) + LX(' de 5 · ', ' of 5 · ') + LX(GD_STEPS[stepNow][0], GD_STEPS[stepNow][1]) : LX('Paso 5 · Lo que puedes hacer ahora', 'Step 5 · What you can do now')),
       gdText: view !== 'gen' ? LX('Tus acordes siguen guardados mientras exploras.', 'Your chords stay saved while you explore.') : (stepNow < 5 ? LX(GD_STEPS[stepNow][2], GD_STEPS[stepNow][3]) : LX('Ya tienes tu progresión. Ahora todo está libre: sigue agregando acordes, arma partes de tu canción y escúchala con banda, o mira canciones reales con tus acordes.', 'You have your progression. Everything is open now: keep adding chords, build parts of your song and hear it with a band, or see real songs with your chords.')),
       gdGoLab: view !== 'gen' ? LX('← Volver a mi canción', '← Back to my song') : (stepNow < 5 ? LX('Muéstrame →', 'Show me →') : LX('Ver qué más hay ↓', 'See what else ↓')),
-      gdGo: function () { if (view !== 'gen') { self.setState({ view: 'gen' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; } self.gdJump(stepNow); },
+      gdGo: function () { if (self._gcEl) self._gcEl._hid = null; if (view !== 'gen') { self.setState({ view: 'gen' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; } self.gdJump(stepNow); },
       progSub: chs.length ? LX('Tus acordes en el orden en que suenan. Con − y + decides cuánto dura cada uno, y con los botones del título puedes escucharla, analizarla, guardarla, deshacer o borrar.', 'Your chords, in the order they play. Use − and + to set how long each one lasts, and the buttons by the title to listen, analyze, save, undo or clear.') : LX('Aquí van los acordes de tu canción, en orden. Toca «Añadir acorde» para poner los que ya tienes, o empieza con una de las ideas de abajo.', 'This is where your song’s chords go, in order. Tap “Add chord” to enter the ones you already have, or start from one of the ideas below.'),
       tipPlay: LX('Escucha tu progresión con tu instrumento y estilo', 'Hear your progression with your instrument and style'), tipAna: LX('Ve la tonalidad y el papel de cada acorde', 'See the key and each chord’s role'), tipSave: LX('Guárdala para abrirla cuando quieras', 'Keep it to open anytime'), tipUndo: LX('Deshace el último cambio', 'Undo the last change'), tipClear: LX('Borra todos los acordes y empieza de cero', 'Remove all chords and start over'),
       modTipShow: !!st.modTip && view === 'gen' && chs.length > 0 && !st.lm && !st.pickerOpen, modTipClose: function () { self.setState({ modTip: false }); },
@@ -6079,7 +6089,7 @@ class Component extends DCLogic {
       selDesc: selQ[lang] + ' · ' + (es ? selQ.des : selQ.den),
       focusSel: setFocus({ type: 'sel', i: 0 }),
       playSel: function () { self.playSeq([sel]); },
-      addSel: function () { self.setState({ chords: chs.concat([sel]), focus: null }); },
+      addSel: function () { var up = { chords: chs.concat([sel]), focus: null }; if (guidedOn && self._gc && self._gc.k === 'add') up.pickerOpen = false; self.setState(up); },
       hovClose: function () { self.setState({ gHov: null }); },
       selHov: st.gHov === 'sel', selHovX: st.gHov === 'sel' ? 'true' : 'false', selCloud: st.gHov === 'sel' ? dg(sel) : null,
       selShow: function () { self.setState({ gHov: self.state.gHov === 'sel' ? null : 'sel' }); },
