@@ -439,6 +439,9 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 
 /* account */
 .acctbtn{gap:8px}
+.pro-cta{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:14px;border:1px solid #E8D872;background:linear-gradient(180deg,#F3E79A,#D9BF55);color:#10180F;font:700 14px Figtree,sans-serif;cursor:pointer;box-shadow:0 0 18px rgba(232,216,114,.28);white-space:nowrap}.pro-cta:hover{filter:brightness(1.06)}.pro-cta span{font-size:13px}
+.pro-cta b{font-weight:700}.pro-cta .pc-s{display:none}
+@media (max-width:640px){.pro-cta{min-height:40px;padding:0 12px;font-size:13px}.pro-cta .pc-l{display:none}.pro-cta .pc-s{display:inline}}
 .acct-dot{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#0A1510;border:1px solid #3B5A47;font:700 12px 'Figtree',sans-serif;color:#C9D6C6}
 .acctbtn.is-in .acct-dot{background:linear-gradient(180deg,#F7EDA8,#B8963A);color:#0E140A;border-color:#E8D872;box-shadow:0 0 10px rgba(232,216,114,.45)}
 .acct-card{width:min(460px,100%)}
@@ -592,6 +595,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
 
     <div class="hdr-tools" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
       <button class="ghost lbtn {{learnCls}}" style="{{learnHdrStyle}}" aria-pressed="{{learnPressed}}" onClick="{{toggleLearn}}" title="{{t.learnHint}}"><span aria-hidden="true" style="font-weight:700">?</span> {{t.learnMode}}<span class="lsw" aria-hidden="true"><span class="lsw-k"></span></span><span class="lsw-t">{{learnState}}</span></button>
+      <sc-if value="{{hdrProShow}}" hint-placeholder-val="{{ true }}"><button class="pro-cta" onClick="{{goPro}}" title="{{hdrProTip}}"><span aria-hidden="true">✦</span> <b class="pc-l">{{hdrProLab}}</b><b class="pc-s">Pro</b></button></sc-if>
       <button class="ghost acctbtn {{acctBtnCls}}" onClick="{{acctToggle}}" title="{{acctBtnTitle}}"><span class="acct-dot" aria-hidden="true">{{acctInitial}}</span><span class="acct-lab">{{acctBtnLab}}</span></button>
       <button class="ghost" onClick="{{toggleSettings}}" aria-expanded="{{settingsExpanded}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>{{t.settings}}</button>
     </div>
@@ -5885,6 +5889,7 @@ class Component extends DCLogic {
       acctEmail: st.user ? st.user.email : '',
       acctPlanLab: LX('Plan', 'Plan'), acctPlan: st.isPro ? (st.sub && st.sub.status === 'trialing' && !st.sub.paddle_subscription_id ? LX('Pro ✦ · gratis en la beta', 'Pro ✦ · free during beta') : 'Pro ✦') : LX('Gratis', 'Free'), acctPlanStyle: st.isPro ? 'color:#F0E39A' : 'color:#C9D6C6',
       acctCanUpgrade: !!st.user && (!st.isPro || (csPayOn() && !(st.sub && st.sub.paddle_subscription_id))),
+      hdrProShow: !st.isPro || (csPayOn() && !!st.user && !(st.sub && st.sub.paddle_subscription_id)), hdrProLab: LX('Hazte Pro', 'Go Pro'), hdrProTip: csPayOn() ? LX('Ver los planes Pro', 'See Pro plans') : LX('Durante la beta, Pro es gratis con tu cuenta', 'During the beta, Pro is free with your account'),
       payOpen: !!st.payOpen,
       payTitle: LX('Elige tu plan Pro', 'Choose your Pro plan'),
       paySay: LX('Todo lo de Pro: frases de hasta 8 acordes, acordes extendidos, sorpresa atrevida, canciones en la nube y guardado sin límite.', 'Everything in Pro: phrases up to 8 chords, extended chords, bold surprise, songs in the cloud and unlimited saves.'),
