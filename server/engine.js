@@ -3804,6 +3804,7 @@ class Component extends DCLogic {
       acctEmail: st.user ? st.user.email : '',
       acctPlanLab: LX('Plan', 'Plan'), acctPlan: st.isPro ? (st.sub && st.sub.status === 'trialing' && !st.sub.paddle_subscription_id ? LX('Pro ✦ · gratis en la beta', 'Pro ✦ · free during beta') : 'Pro ✦') : LX('Gratis', 'Free'), acctPlanStyle: st.isPro ? 'color:#F0E39A' : 'color:#C9D6C6',
       acctCanUpgrade: !!st.user && (!st.isPro || (csPayOn() && !(st.sub && st.sub.paddle_subscription_id))),
+      hdrProShow: !st.isPro || (csPayOn() && !!st.user && !(st.sub && st.sub.paddle_subscription_id)), hdrProLab: LX('Hazte Pro', 'Go Pro'), hdrProTip: csPayOn() ? LX('Ver los planes Pro', 'See Pro plans') : LX('Durante la beta, Pro es gratis con tu cuenta', 'During the beta, Pro is free with your account'),
       payOpen: !!st.payOpen,
       payTitle: LX('Elige tu plan Pro', 'Choose your Pro plan'),
       paySay: LX('Todo lo de Pro: frases de hasta 8 acordes, acordes extendidos, sorpresa atrevida, canciones en la nube y guardado sin límite.', 'Everything in Pro: phrases up to 8 chords, extended chords, bold surprise, songs in the cloud and unlimited saves.'),
