@@ -6,7 +6,7 @@
 // Optional: PADDLE_FOUNDER_PRICE_IDS = comma-separated price ids treated as lifetime (defaults below).
 
 const SB_URL = 'https://siafatxbgecgenhnciej.supabase.co';
-const FOUNDER_DEFAULT = ['pri_01m7ea7n4pv2kyh2d9vvbskngj'];
+const FOUNDER_DEFAULT = ['pri_01m7ea7n4pv2kyh2d9vvbskngj', 'pri_01m7ed5d25gddcwn2wr3jr6nya']; // sandbox, live
 const MAX_SKEW_S = 300;
 
 const enc = new TextEncoder();

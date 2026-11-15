@@ -2796,10 +2796,13 @@ function csAuthErr(e, es) {
 /* ===== Pagos (Paddle) =====
    on:false = public beta (Pro free for signed-in users, no checkout). Add ?pay=1 to the URL to test the checkout anyway.
    For real payments: env 'production', the live client token (live_...) and the live price ids. */
-var CS_PAY = {
-  on: false, env: 'sandbox', token: 'test_5af1f7f82d99f2567fd54cd54f7',
-  prices: { month: 'pri_01m7ea1b6ndwpe4wnjg9vwfxag', year: 'pri_01m7ea7727xn83c18d2tqg39v3', founder: 'pri_01m7ea7n4pv2kyh2d9vvbskngj' }
+var CS_PAY_ENVS = {
+  sandbox: { token: 'test_5af1f7f82d99f2567fd54cd54f7', prices: { month: 'pri_01m7ea1b6ndwpe4wnjg9vwfxag', year: 'pri_01m7ea7727xn83c18d2tqg39v3', founder: 'pri_01m7ea7n4pv2kyh2d9vvbskngj' } },
+  production: { token: 'live_0ae7d260e4e46458f192f0ef20c', prices: { month: 'pri_01m7ed4pf69a11v926rywf3f3a', year: 'pri_01m7ed543601jta8npwx3xm14h', founder: 'pri_01m7ed5d25gddcwn2wr3jr6nya' } }
 };
+// GO LIVE: set on:true and env:'production' (and put the live webhook secret in Cloudflare).
+var CS_PAY = { on: false, env: 'sandbox' };
+CS_PAY.token = CS_PAY_ENVS[CS_PAY.env].token; CS_PAY.prices = CS_PAY_ENVS[CS_PAY.env].prices;
 var CS_PAY_TEST = false; try { CS_PAY_TEST = /[?&]pay=1\b/.test(window.location.search); } catch (e) {}
 function csPayOn() { return CS_PAY.on || CS_PAY_TEST; }
 var CS_PADDLE_CB = null;
