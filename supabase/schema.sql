@@ -56,6 +56,9 @@ grant usage on schema public to authenticated;
 grant select on public.subscriptions to authenticated;
 grant select, insert, update on public.user_data to authenticated;
 grant execute on function public.is_pro(uuid) to authenticated;
+-- The Paddle webhook (server, secret key) writes subscriptions.
+grant usage on schema public to service_role;
+grant select, insert, update on public.subscriptions to service_role;
 
 -- 6) Free-plan limits enforced on the server (cannot be bypassed from the browser).
 create or replace function public.enforce_plan_limits()
