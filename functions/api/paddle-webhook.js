@@ -10,6 +10,13 @@ const FOUNDER_DEFAULT = ['pri_01m7ea7n4pv2kyh2d9vvbskngj'];
 const MAX_SKEW_S = 300;
 
 const enc = new TextEncoder();
+
+// New Supabase secret keys (sb_secret_...) go only in the apikey header; legacy service_role JWTs also as Bearer.
+function sbHeaders(key, extra = {}) {
+  const h = { apikey: key, ...extra };
+  if (!String(key).startsWith('sb_')) h.Authorization = `Bearer ${key}`;
+  return h;
+}
 const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 
 function safeEq(a, b) {
@@ -72,7 +79,7 @@ export function rowFromEvent(evt, founderIds = FOUNDER_DEFAULT) {
 
 async function currentRow(env, userId) {
   const r = await fetch(`${SB_URL}/rest/v1/subscriptions?user_id=eq.${userId}&select=paddle_subscription_id,plan`, {
-    headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}` },
+    headers: sbHeaders(env.SUPABASE_SERVICE_ROLE_KEY),
   });
   if (!r.ok) return null;
   const rows = await r.json();
@@ -100,15 +107,16 @@ export async function onRequestPost({ request, env }) {
 
   const r = await fetch(`${SB_URL}/rest/v1/subscriptions?on_conflict=user_id`, {
     method: 'POST',
-    headers: {
-      apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+    headers: sbHeaders(env.SUPABASE_SERVICE_ROLE_KEY, {
       'Content-Type': 'application/json',
       Prefer: 'resolution=merge-duplicates,return=minimal',
-    },
+    }),
     body: JSON.stringify(row),
   });
-  if (!r.ok) return new Response('db error', { status: 500 }); // Paddle retries
+  if (!r.ok) {
+    const detail = (await r.text().catch(() => '')).slice(0, 300).replace(/sb_secret_[A-Za-z0-9_-]+/g, '[key]');
+    return new Response('db error ' + r.status + ' ' + detail, { status: 500 }); // Paddle retries
+  }
   return new Response('ok', { status: 200 });
 }
 
