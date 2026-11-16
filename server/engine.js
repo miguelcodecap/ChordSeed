@@ -731,7 +731,7 @@ var CS_PAY_ENVS = {
 // GO LIVE: set on:true and env:'production' (and put the live webhook secret in Cloudflare).
 var CS_PAY = { on: false, env: 'sandbox' };
 CS_PAY.token = CS_PAY_ENVS[CS_PAY.env].token; CS_PAY.prices = CS_PAY_ENVS[CS_PAY.env].prices;
-var CS_PAY_TEST = false; try { CS_PAY_TEST = /[?&]pay=1\b/.test(window.location.search); } catch (e) {}
+var CS_PAY_TEST = false; // Paddle removed (account not approved); re-enable when the new payment provider is connected
 function csPayOn() { return CS_PAY.on || CS_PAY_TEST; }
 var CS_PADDLE_CB = null;
 function csLoadPaddle(cb) {

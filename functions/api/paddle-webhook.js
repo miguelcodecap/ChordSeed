@@ -87,6 +87,8 @@ async function currentRow(env, userId) {
 }
 
 export async function onRequestPost({ request, env }) {
+  // Disabled: Paddle is no longer the payment provider. Nothing is written to the database.
+  if (env.PADDLE_ENABLED !== '1') return new Response('gone', { status: 410 });
   const raw = await request.text();
   if (!env.PADDLE_WEBHOOK_SECRET || !env.SUPABASE_SERVICE_ROLE_KEY) return new Response('not configured', { status: 503 });
   const ok = await verifySignature(request.headers.get('Paddle-Signature'), raw, env.PADDLE_WEBHOOK_SECRET);
