@@ -497,7 +497,7 @@ function csSetGuitarTuning(id) {
 function csTuningLabel(es) {
   if (TUNING_ID === 'std') return '';
   var tu = null; try { tu = TUNINGS.filter(function (x) { return x.id === TUNING_ID; })[0]; } catch (e) {}
-  return tu ? String(tu[es ? 'es' : 'en']).replace(/^(Guitarra|Guitar) · /, '') : '';
+  return tu ? String(tu[es ? 'es' : 'en']).replace(/\s*\(.*\)$/, '') : '';
 }
 var GS_CACHE = {};
 function ckey(c) { return c.pc + c.q + (c.ext || ''); }
@@ -1229,13 +1229,21 @@ function identify(pcs, bass) {
   return out.slice(0, 4);
 }
 var TUNINGS = [
-  { id: 'std', es: 'Guitarra · estándar', en: 'Guitar · standard', notes: [40,45,50,55,59,64], inst: 'guitar' },
-  { id: 'dropd', es: 'Guitarra · Drop D', en: 'Guitar · Drop D', notes: [38,45,50,55,59,64], inst: 'guitar' },
-  { id: 'half', es: 'Guitarra · medio tono abajo', en: 'Guitar · half step down', notes: [39,44,49,54,58,63], inst: 'guitar' },
-  { id: 'dadgad', es: 'Guitarra · DADGAD', en: 'Guitar · DADGAD', notes: [38,45,50,55,57,62], inst: 'guitar' },
-  { id: 'openg', es: 'Guitarra · Open G', en: 'Guitar · Open G', notes: [38,43,50,55,59,62], inst: 'guitar' },
-  { id: 'bass', es: 'Bajo · 4 cuerdas', en: 'Bass · 4 strings', notes: [28,33,38,43], inst: 'guitar' },
-  { id: 'uke', es: 'Ukelele · GCEA', en: 'Ukulele · GCEA', notes: [67,60,64,69], inst: 'guitar' }
+  // grp 'common' = most used, in order from standard downwards; 'alt' = open and rare tunings; 'other' = other instruments (tuner only)
+  { id: 'std', grp: 'common', es: 'Estándar (la normal)', en: 'Standard (the normal one)', strs: 'E A D G B E', notes: [40,45,50,55,59,64], inst: 'guitar' },
+  { id: 'dropd', grp: 'common', es: 'Drop D (solo la 6ª baja a D)', en: 'Drop D (only the 6th down to D)', strs: 'D A D G B E', notes: [38,45,50,55,59,64], inst: 'guitar' },
+  { id: 'half', grp: 'common', es: 'Medio tono abajo (todas)', en: 'Half step down (all strings)', strs: 'E♭ A♭ D♭ G♭ B♭ E♭', notes: [39,44,49,54,58,63], inst: 'guitar' },
+  { id: 'dropcs', grp: 'common', es: 'Drop C# (medio tono abajo + 6ª a C#)', en: 'Drop C# (half step down + 6th to C#)', strs: 'C# A♭ D♭ G♭ B♭ E♭', notes: [37,44,49,54,58,63], inst: 'guitar' },
+  { id: 'whole', grp: 'common', es: 'Un tono abajo (todas)', en: 'Whole step down (all strings)', strs: 'D G C F A D', notes: [38,43,48,53,57,62], inst: 'guitar' },
+  { id: 'dropc', grp: 'common', es: 'Drop C (un tono abajo + 6ª a C)', en: 'Drop C (whole step down + 6th to C)', strs: 'C G C F A D', notes: [36,43,48,53,57,62], inst: 'guitar' },
+  { id: 'dadgad', grp: 'alt', es: 'DADGAD', en: 'DADGAD', strs: 'D A D G A D', notes: [38,45,50,55,57,62], inst: 'guitar' },
+  { id: 'openg', grp: 'alt', es: 'Open G', en: 'Open G', strs: 'D G D G B D', notes: [38,43,50,55,59,62], inst: 'guitar' },
+  { id: 'opend', grp: 'alt', es: 'Open D', en: 'Open D', strs: 'D A D F# A D', notes: [38,45,50,54,57,62], inst: 'guitar' },
+  { id: 'opene', grp: 'alt', es: 'Open E', en: 'Open E', strs: 'E B E G# B E', notes: [40,47,52,56,59,64], inst: 'guitar' },
+  { id: 'openc', grp: 'alt', es: 'Open C', en: 'Open C', strs: 'C G C G C E', notes: [36,43,48,55,60,64], inst: 'guitar' },
+  { id: 'ddropd', grp: 'alt', es: 'Doble Drop D', en: 'Double Drop D', strs: 'D A D G B D', notes: [38,45,50,55,59,62], inst: 'guitar' },
+  { id: 'bass', grp: 'other', es: 'Bajo · 4 cuerdas', en: 'Bass · 4 strings', strs: 'E A D G', notes: [28,33,38,43], inst: 'guitar' },
+  { id: 'uke', grp: 'other', es: 'Ukelele · GCEA', en: 'Ukulele · GCEA', strs: 'G C E A', notes: [67,60,64,69], inst: 'guitar' }
 ];
 function autoCorrelate(buf, sr) {
   var SIZE = buf.length, rms = 0, i;
@@ -1907,7 +1915,7 @@ var LEARN = {
   learn: { es: ['Aprende desde cero', 'Siete lecciones cortas. Cada una te explica algo, te deja escucharlo y termina con una pregunta.', [['Para quién', 'Para quien empieza: no necesitas saber nada de teoría.'], ['Tu guía', 'Lumen te acompaña en cada lección y celebra contigo cuando aciertas.']]],
     en: ['Learn from scratch', 'Seven short lessons. Each one explains something, lets you hear it and ends with a question.', [['For whom', 'For beginners: no theory needed.'], ['Your guide', 'Lumen walks you through every lesson and celebrates with you when you get it right.']]] }
 };
-var NAV_ORDER = ['gen', 'tun', 'rea', 'scl', 'mod', 'dic', 'learn'];
+var NAV_ORDER = ['gen', 'rea', 'scl', 'mod', 'dic', 'tun', 'learn'];
 var NAV_TAB = { rea: ['Enriquecer mis acordes', 'Enrich my chords'], mod: ['Cambiar de tonalidad', 'Change key'], scl: ['Escalas para tu melodía', 'Scales for your melody'] };
 var NAV_ICON = { gen:'✦', ana:'◎', scl:'♪', rea:'⟲', mod:'⇄', dic:'▦', tun:'♮', learn:'✎' };
 var CX_TIP = ['Indica cuántas notas tiene cada acorde. Pocas notas suenan sencillas y directas; más notas (séptimas, novenas) suenan más ricas, como en el jazz o el R&B.', 'How many notes each chord has. Fewer notes sound simple and direct; more notes (sevenths, ninths) sound richer, like jazz or R&B.'];
@@ -2039,6 +2047,14 @@ class Component extends DCLogic {
       CS_SYNC = function () { self.acctPush(); };
       if (!ud || merged.length !== cloudSaved.length || JSON.stringify(learn) !== JSON.stringify((ud && ud.learn) || {})) self.acctPush();
     }).catch(function () { self.setState({ acctSync: 'err' }); });
+  }
+  pickTuning(tu) {
+    if (tu.notes.length === 6) { csSetGuitarTuning(tu.id); try { localStorage.setItem('cs_tun', tu.id); } catch (e) {} }
+    this.setState({ tunId: tu.id });
+  }
+  gtItem(tu) {
+    var self = this, on = (this.state.tunId || 'std') === tu.id, es = this.state.lang !== 'en';
+    return { label: String(tu[CUR_LANG === 'es' ? 'es' : 'en']), strs: tu.strs, pressed: on ? 'true' : 'false', pick: function () { self.pickTuning(tu); } };
   }
   payCheckout(k) {
     var self = this, st = this.state, es = st.lang !== 'en';
@@ -2925,8 +2941,14 @@ class Component extends DCLogic {
       navOpen: !!st.navOpen,
       idShortcutTxt: LX('¿No sabes qué acorde estás tocando? Márcalo en el diapasón y te lo digo →', 'Don’t know what chord you’re playing? Mark it on the fretboard and I’ll name it →'),
       idShortcut: function () { self.setState({ view: 'dic', dMode: 'id', pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
-      tunHintShow: isGtr(st.inst) && view !== 'tun', tunHintTxt: LX('Antes de tocar: ¿tu guitarra está afinada? Abre el afinador →', 'Before you play: is your guitar in tune? Open the tuner →'),
-      tunHintGo: function () { self.setState({ view: 'tun', navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+      gtShow: isGtr(st.inst), gtTitle: LX('¿En qué afinación está tu guitarra?', 'What tuning is your guitar in?'),
+      gtSub: LX('Si no sabes, es la estándar: la normal. Los diagramas de acordes se adaptan a la que elijas.', 'If you’re not sure, it’s standard: the normal one. Chord diagrams adapt to the one you pick.'),
+      gtCommon: TUNINGS.filter(function (x) { return x.grp === 'common'; }).map(function (tu) { return self.gtItem(tu); }),
+      gtAlt: TUNINGS.filter(function (x) { return x.grp === 'alt'; }).map(function (tu) { return self.gtItem(tu); }),
+      gtMoreOpen: !!st.gtMore || TUNINGS.some(function (x) { return x.grp === 'alt' && x.id === (st.tunId || 'std'); }),
+      gtMoreExp: st.gtMore ? 'true' : 'false',
+      gtMoreLab: (st.gtMore ? '▾ ' : '▸ ') + LX('Afinaciones abiertas y poco comunes', 'Open and less common tunings'),
+      gtMoreToggle: function () { self.setState({ gtMore: !self.state.gtMore }); },
       navExpanded: st.navOpen ? 'true' : 'false',
       navCaret: st.navOpen ? '▴' : '▾',
       navBtnStyle: st.navOpen ? 'border-color:#E8D872' : '',
@@ -3003,7 +3025,9 @@ class Component extends DCLogic {
         note: cd.missing ? T.idNo5 : (i === 0 ? T.idBest : T.idAlso),
         style: 'display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:150px;padding:14px 16px;border-radius:16px;cursor:pointer;text-align:left;font-family:Figtree,sans-serif;' + (i === 0 ? 'background:#21281A;border:1.5px solid #E8D872;color:#F4EDB8' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
         open: function () { self.setState({ dMode: 'look', dRoot: cd.root, dType: DTYPES.indexOf(cd.T) }); } }; }),
-      tTunings: TUNINGS.map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], pressed: on ? 'true' : 'false', style: pill(on), pick: function () { if (tu.notes.length === 6) { csSetGuitarTuning(tu.id); try { localStorage.setItem('cs_tun', tu.id); } catch (e) {} } self.setState({ tunId: tu.id }); } }; }),
+      tTunGroups: [['common', LX('Las más usadas', 'Most used')], ['alt', LX('Abiertas y poco comunes', 'Open and less common')], ['other', LX('Otros instrumentos', 'Other instruments')]].map(function (g) {
+        return { title: g[1], items: TUNINGS.filter(function (x) { return x.grp === g[0]; }).map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], strs: tu.strs, pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.pickTuning(tu); } }; }) };
+      }),
       tStrings: tTun.notes.map(function (m, i) { var hz = tA * Math.pow(2, (m - 69) / 12), on = tNear === i; return { num: (LX('Cuerda ', 'String ')) + (tTun.notes.length - i), name: spell(m % 12, true, st.lat) + (Math.floor(m / 12) - 1), hz: hz.toFixed(1) + ' Hz', aria: (LX('Escuchar ', 'Play ')) + spell(m % 12, true, st.lat),
         style: 'display:flex;flex-direction:column;align-items:center;gap:2px;min-width:78px;padding:10px 12px;border-radius:16px;cursor:pointer;font-family:Figtree,sans-serif;' + (on ? 'background:#0F3A2C;border:1.5px solid #6FD39C;color:#DFFBEA' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
         play: function () { self.setState({ tunRef: i }); try { var AC = window.AudioContext || window.webkitAudioContext; if (!self.ctx && AC) self.ctx = new AC(); var ctx = self.ctx; if (ctx.state === 'suspended') ctx.resume(); if (!self.master) { self.master = ctx.createDynamicsCompressor(); self.master.connect(ctx.destination); } var det = Math.log2(tA / 440) * 12; playNote(ctx, self.master, 'guitar', m + det, ctx.currentTime + 0.03, 2.4); } catch (e) {} } }; }),
@@ -3023,7 +3047,7 @@ class Component extends DCLogic {
       st2Now: stepNow === 2, st3Now: stepNow === 1, st4Now: stepNow === 3, st5Now: false,
       startSubTxt: st.onbAns ? LX('Ya lo elegiste al inicio. Si quieres cambiarlo, despliega este bloque.', 'You already chose this at the start. Expand this block if you want to change it.') : T.startSub,
       startSubStyle: 'font-size:12px;color:' + (st.onbAns ? '#C9D6C6' : '#9FB3A4'),
-      profileLine: st.profileSet ? T.profileLine1 + (INSTS.filter(function (x) { return x[0] === st.inst; })[0] || ['', '', ''])[es ? 1 : 2] + ' · ' + RE_STYLES[genre][lang].at(0) : '',
+      profileLine: st.profileSet ? T.profileLine1 + (INSTS.filter(function (x) { return x[0] === st.inst; })[0] || ['', '', ''])[es ? 1 : 2] + (isGtr(st.inst) && csTuningLabel(es) ? ' (' + csTuningLabel(es) + ')' : '') + ' · ' + RE_STYLES[genre][lang].at(0) : '',
       instCards: INSTS.map(function (x) { var on = st.inst === x[0]; return { label: x[es ? 1 : 2], pressed: on ? 'true' : 'false',
         dot: 'width:10px;height:10px;border-radius:99px;display:inline-block;background:' + (on ? '#0E140A' : x[3]),
         style: 'display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:14px;cursor:pointer;font:700 14px Figtree,sans-serif;border:1.5px solid ' + (on ? '#E8D872' : '#2F4A3B') + ';background:' + (on ? '#E8D872' : '#16271F') + ';color:' + (on ? '#0E140A' : '#E4EDE2'),
