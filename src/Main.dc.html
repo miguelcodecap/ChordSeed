@@ -753,7 +753,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
     <sc-if value="{{hasProMsg}}" hint-placeholder-val="{{ false }}">
       <div role="status" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:-8px;padding:12px 16px;border-radius:16px;background:#21281A;border:1px solid #5E6B34;color:#F4EDB8;font-size:14px">
         <span>{{proMsg}}</span>
-        <div style="display:flex;gap:8px"><button class="btn" onClick="{{goPro}}">{{t.seePro}}</button><button class="ghost" onClick="{{dismissPro}}">{{t.close}}</button></div>
+        <div style="display:flex;gap:8px"><sc-if value="{{proMsgCta}}" hint-placeholder-val="{{ true }}"><button class="btn" onClick="{{goPro}}">{{t.seePro}}</button></sc-if><button class="ghost" onClick="{{dismissPro}}">{{t.close}}</button></div>
       </div>
     </sc-if>
     </div>
@@ -5212,6 +5212,7 @@ class Component extends DCLogic {
           pick: function () { var upd = { navOpen: false, ttTool: null, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
       }),
       navOpen: !!st.navOpen,
+      proMsgCta: !(st.isPro && st.sub && st.sub.paddle_subscription_id) && !/Pro!|Pro…|ya eres Pro|activando/i.test(st.proMsg || ''),
       amLab: LX('Cómo agregar el acorde', 'How to add the chord'),
       amTabs: [['pick', '✋', LX('Elegirlo', 'Pick it')], ['play', '🎤', LX('Tocarlo', 'Play it')], ['neck', '🎸', LX('Marcarlo en el diapasón', 'Mark it on the neck')]].map(function (a) { var on = (st.addMode || 'pick') === a[0]; return { icon: a[1], label: a[2], sel: on ? 'true' : 'false', pick: function () {
         if (a[0] === 'neck') { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }

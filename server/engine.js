@@ -3075,6 +3075,7 @@ class Component extends DCLogic {
           pick: function () { var upd = { navOpen: false, ttTool: null, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
       }),
       navOpen: !!st.navOpen,
+      proMsgCta: !(st.isPro && st.sub && st.sub.paddle_subscription_id) && !/Pro!|Pro…|ya eres Pro|activando/i.test(st.proMsg || ''),
       amLab: LX('Cómo agregar el acorde', 'How to add the chord'),
       amTabs: [['pick', '✋', LX('Elegirlo', 'Pick it')], ['play', '🎤', LX('Tocarlo', 'Play it')], ['neck', '🎸', LX('Marcarlo en el diapasón', 'Mark it on the neck')]].map(function (a) { var on = (st.addMode || 'pick') === a[0]; return { icon: a[1], label: a[2], sel: on ? 'true' : 'false', pick: function () {
         if (a[0] === 'neck') { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
