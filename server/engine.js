@@ -2175,12 +2175,25 @@ class Component extends DCLogic {
         var src = ctx.createMediaStreamSource(stream), an = ctx.createAnalyser(); an.fftSize = 16384; an.smoothingTimeConstant = 0; src.connect(an);
         var td = new Float32Array(2048), fd = new Float32Array(an.frequencyBinCount), acc = new Float32Array(an.frequencyBinCount);
         var E = { stream: stream, raf: 0, to: 0 }; self._ear = E;
+        var NB = 48, bars = new Float32Array(NB);
+        var earDraw = function (buf, lvl) {
+          var orb = document.querySelector('.ear-orb'); if (orb) orb.style.setProperty('--lvl', lvl.toFixed(3));
+          var cv = document.querySelector('.ear-viz'); if (!cv) return; var g = cv.getContext('2d'); if (!g) return;
+          var W = cv.width, H = cv.height, seg = Math.floor(buf.length / NB);
+          g.clearRect(0, 0, W, H);
+          var grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, '#6FD39C'); grad.addColorStop(.5, '#E8D872'); grad.addColorStop(1, '#FF9A8B'); g.fillStyle = grad;
+          var bw = W / NB;
+          for (var b = 0; b < NB; b++) { var m = 0; for (var j = b * seg; j < (b + 1) * seg; j++) { var v = Math.abs(buf[j]); if (v > m) m = v; }
+            var target = Math.min(1, Math.sqrt(m) * 2.2); bars[b] = target > bars[b] ? target : bars[b] * 0.86 + target * 0.14;
+            var h = Math.max(4, bars[b] * (H - 6)), x = b * bw + bw * 0.22, w = bw * 0.56, y = (H - h) / 2, r = Math.min(w / 2, 3);
+            g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, h, r); else g.rect(x, y, w, h); g.fill(); }
+        };
         var floor = 0, t0 = performance.now(), onset = 0, frames = 0, lastLvl = 0, lastF = 0;
         E.to = setTimeout(function () { if (self._ear === E && !onset) fail(LX('No escuché ningún acorde. Acércate al micrófono y rasguea con fuerza.', 'I didn’t hear a chord. Get closer to the mic and strum firmly.')); }, 9000);
         var step = function (ts) {
           if (self._ear !== E) return;
           an.getFloatTimeDomainData(td); var sum = 0; for (var i = 0; i < td.length; i++) sum += td[i] * td[i]; var rms = Math.sqrt(sum / td.length);
-          if (ts - lastLvl > 80) { lastLvl = ts; self.setState({ earLvl: Math.min(1, rms * 8) }); }
+          if (ts - lastLvl > 30) { lastLvl = ts; earDraw(td, Math.min(1, rms * 8)); }
           var el = performance.now() - t0;
           if (!onset) {
             if (el < 400) floor = Math.max(floor, rms);
@@ -3114,6 +3127,13 @@ class Component extends DCLogic {
       pkStrip: chs.map(function (c, i) { return { name: nm(c), cls: 'pk-chip' + (i === chs.length - 1 && st.pkAdded ? ' new' : '') }; }),
       earTitle: LX('Toca el acorde y lo reconozco', 'Play the chord and I’ll recognize it'),
       earHow: LX('Pulsa Escuchar, rasguea el acorde una vez y déjalo sonar. Funciona en cualquier afinación. Te muestro las opciones más probables con su diagrama en tu afinación para que confirmes.', 'Tap Listen, strum the chord once and let it ring. Works in any tuning. I’ll show the most likely options with their diagram in your tuning so you can confirm.'),
+      earCls: 'ear2 ' + ({ idle: 'ear-idle', err: 'ear-idle ear-err', wait: 'ear-wait', listen: 'ear-listen', res: 'ear-res-st' })[st.earPhase || 'idle'] || 'ear-idle',
+      earOrbTap: function () { var ph = self.state.earPhase; if (ph === 'wait' || ph === 'listen') { self.earStop(); self.setState({ earPhase: 'idle' }); return; } self.earListen(); },
+      earOrbLab: (st.earPhase === 'wait' || st.earPhase === 'listen') ? LX('Dejar de escuchar', 'Stop listening') : LX('Empezar a escuchar', 'Start listening'),
+      earHead: st.earPhase === 'wait' ? LX('Te escucho… rasguea ahora', 'I’m listening… strum now') : st.earPhase === 'listen' ? LX('Reconociendo las notas…', 'Recognizing the notes…') : st.earPhase === 'res' ? LX('¿Es alguno de estos?', 'Is it one of these?') : st.earPhase === 'err' ? (st.earMsg || LX('Algo falló', 'Something went wrong')) : LX('Toca el micrófono', 'Tap the microphone'),
+      earSub: st.earPhase === 'wait' ? LX('Rasguea el acorde una vez y déjalo sonar. Toca el círculo para cancelar.', 'Strum the chord once and let it ring. Tap the circle to cancel.') : st.earPhase === 'listen' ? LX('Déjalo sonar un segundo más', 'Let it ring a second longer') : st.earPhase === 'res' ? LX('Ordenados del más probable al menos. Escúchalos y elige.', 'Sorted from most to least likely. Listen and pick.') : st.earPhase === 'err' ? LX('Toca el micrófono para intentarlo otra vez.', 'Tap the microphone to try again.') : LX('Después rasguea el acorde una vez. Lo reconozco y te muestro cómo se toca.', 'Then strum the chord once. I’ll recognize it and show you how to play it.'),
+      earShowHint: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err',
+      earH1: LX('Cualquier afinación', 'Any tuning'), earH2: LX('Guitarra, piano o ukelele', 'Guitar, piano or ukulele'),
       earIdle: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err', earListening: st.earPhase === 'listen' || st.earPhase === 'wait',
       earGoLab: LX('Escuchar', 'Listen'),
       earLiveTxt: st.earPhase === 'wait' ? LX('Escuchando… rasguea ahora', 'Listening… strum now') : LX('Analizando…', 'Analyzing…'),
