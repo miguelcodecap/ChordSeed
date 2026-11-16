@@ -483,6 +483,9 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .pk-chip{font:700 13px 'JetBrains Mono',ui-monospace,monospace;padding:3px 8px;border-radius:8px;background:#16271F;color:#DDE8DC}.pk-chip.new{background:#E8D872;color:#10180F;animation:amIn .3s ease backwards}
 body:has(.pk-modal){overflow:hidden}
 .cs-picker.pk-modal > *{flex-shrink:0}
+.pk-modal .pk-foot{position:sticky;bottom:-20px;z-index:4;margin:4px -20px -20px;padding:12px 20px 14px;background:rgba(10,21,16,.97);border-top:1px solid #24392E;border-radius:0 0 24px 24px;box-shadow:0 -12px 24px rgba(0,0,0,.35)}
+.pk-modal .hovz > .cloud{display:none!important}
+@media (max-width:640px){.pk-modal .pk-foot{bottom:calc(-16px - env(safe-area-inset-bottom));margin:4px -16px calc(-16px - env(safe-area-inset-bottom));padding:10px 16px calc(12px + env(safe-area-inset-bottom));border-radius:0}}
 .tilerow > .just-added{animation:justAdd 1.6s ease}
 @keyframes justAdd{0%{box-shadow:0 0 0 0 rgba(232,216,114,.0);transform:scale(.92)}25%{box-shadow:0 0 0 6px rgba(232,216,114,.55),0 0 28px rgba(232,216,114,.45);transform:scale(1.04)}100%{box-shadow:0 0 0 0 rgba(232,216,114,0);transform:none}}
 body:has(.pk-modal) .guide,body:has(.pk-modal) .gcoach,body:has(.pk-modal) .gc-ring,body:has(.pk-modal) .modtoast,body:has(.pk-modal) .lm-fab,body:has(.pk-modal) .hdr-sticky{visibility:hidden!important}
@@ -921,7 +924,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
               </div>
             </div>
           </div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+          <div class="pk-foot" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
             <button onClick="{{focusSel}}" style="all:unset;cursor:pointer;display:flex;align-items:baseline;gap:12px" aria-label="{{t.seeHow}}">
               <span class="mono" style="font-size:28px;font-weight:700">{{selName}}</span>
               <span style="font-size:13px;color:#9FB3A4">{{selDesc}}</span>
@@ -1304,6 +1307,21 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
           </div>
         </sc-if>
 
+          <sc-if value="{{dIsEar}}" hint-placeholder-val="{{ false }}"><section class="panel" style="gap:14px"><div class="{{earCls}}" aria-live="polite">
+            <div class="ear-hero">
+              <button class="ear-orb" onClick="{{earOrbTap}}" aria-label="{{earOrbLab}}"><span class="ear-ring r1" aria-hidden="true"></span><span class="ear-ring r2" aria-hidden="true"></span><span class="ear-ring r3" aria-hidden="true"></span><span class="ear-core" aria-hidden="true"><i class="ic ic-mic"></i><span class="ear-spin"></span></span></button>
+              <div class="ear-cap"><b>{{earHead}}</b><small>{{earSub}}</small></div>
+              <canvas class="ear-viz" width="640" height="96" aria-hidden="true"></canvas>
+              <sc-if value="{{earShowHint}}" hint-placeholder-val="{{ true }}"><div class="ear-hints"><span><i class="ic ic-guitar" aria-hidden="true"></i> {{earH1}}</span><span><i class="ic ic-note" aria-hidden="true"></i> {{earH2}}</span><span class="ear-beta">beta</span></div></sc-if>
+            </div>
+            <sc-if value="{{earHasRes}}" hint-placeholder-val="{{ false }}"><div class="ear-res">
+              <div class="ear-cands"><sc-for list="{{earCands}}" as="ec" hint-placeholder-count="3"><div class="{{ec.cls}}">
+                <div class="ear-ch"><span class="mono ear-nm">{{ec.name}}</span><span class="ear-tag">{{ec.tag}}</span></div>
+                <dc-import name="Diagram" diag="{{ec.diag}}" hint-size="200px,220px"></dc-import>
+                <sc-if value="{{ec.canOpen}}" hint-placeholder-val="{{ false }}"><button class="ghost" onClick="{{ec.open}}" style="min-height:40px;justify-content:center">{{ec.openLab}}</button></sc-if><div style="display:flex;gap:6px"><button class="ghost ear-play" onClick="{{ec.play}}" aria-label="{{ec.playLab}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button><button class="btn" onClick="{{ec.add}}" style="flex:1;min-height:44px;box-shadow:none">+ {{ec.addLab}}</button></div>
+              </div></sc-for></div>
+              <div class="ear-more"><button class="ghost" onClick="{{earStart}}"><i class="ic ic-mic" aria-hidden="true"></i> {{earAgainLab}}</button><button class="ghost" onClick="{{earToNeckDic}}"><i class="ic ic-guitar" aria-hidden="true"></i> {{earNoneLab}}</button></div>
+            </div></section></sc-if>
         <sc-if value="{{dIsId}}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:18px">
             <section class="panel" style="gap:14px" aria-label="{{t.idTitle}}">
@@ -5378,9 +5396,11 @@ class Component extends DCLogic {
       earCands: (st.earRes || []).map(function (r, i) {
         var c = mk(r.pc, r.id); var d = makeDiag(c, isGtr(st.inst) ? st.inst : 'guitar', es, nm(c), sp);
         return { name: nm(c), diag: d, cls: 'ear-c' + (i === 0 ? ' best' : ''), tag: i === 0 ? LX('Más probable', 'Most likely') : LX('También puede ser', 'Could also be'),
-          playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: LX('Agregar', 'Add'),
+          playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: view === 'dic' ? LX('A mi progresión', 'To my progression') : LX('Agregar', 'Add'),
           play: function () { self.playSeq([c], st.inst); },
-          add: function () { self.addChordDone(self.state.chords.concat([c])); } };
+          canOpen: view === 'dic', openLab: LX('Ver todas las posiciones', 'See all positions'),
+          open: function () { self.earStop(); var ti = -1; DTYPES.forEach(function (T2, j) { if (ti < 0 && (T2.q || 'M') === (c.q || 'M') && (T2.sx || '') === (c.sx || '')) ti = j; }); self.setState({ dMode: 'look', dRoot: c.pc, dType: ti >= 0 ? ti : self.state.dType, earPhase: 'idle' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+          add: function () { if (view === 'dic') { self.setState({ view: 'gen' }); } self.addChordDone(self.state.chords.concat([c])); } };
       }),
       earStart: function () { self.earListen(); },
       earAgainLab: LX('Escuchar otra vez', 'Listen again'), earNoneLab: LX('Ninguno es: marcarlo en el diapasón', 'None of these: mark it on the neck'),
@@ -5432,8 +5452,9 @@ class Component extends DCLogic {
         var nl = self.state.saved.concat([entry]); storeSaved(nl); self.setState({ saved: nl, saveMsg: '' });
       },
       soundStatus: (function () { var lab = INSTS.filter(function (x) { return x[0] === st.inst; })[0]; var nmI = lab ? lab[es ? 1 : 2] : ''; if (st.inst === 'synth') return '♪ ' + T.sndSynth; return (BANKS[st.inst] ? '♪ ' + T.sndReal : '… ' + T.sndLoading) + nmI.toLowerCase(); })(),
-      dModes: [['look', T.dModeLook], ['id', T.dModeId]].map(function (m) { var on = (st.dMode || 'look') === m[0]; return { label: m[1], selected: on ? 'true' : 'false', style: seg(on), pick: function () { self.setState({ dMode: m[0] }); } }; }),
-      dIsLook: (st.dMode || 'look') === 'look', dIsId: st.dMode === 'id',
+      dModes: [['look', T.dModeLook], ['ear', LX('Tócalo y lo reconozco', 'Play it, I’ll name it')], ['id', LX('Márcalo en el diapasón', 'Mark it on the neck')]].map(function (m) { var on = (st.dMode || 'look') === m[0]; return { label: m[1], selected: on ? 'true' : 'false', style: seg(on), pick: function () { if (m[0] !== 'ear') self.earStop(); var up = { dMode: m[0] }; if (m[0] === 'ear') { up.earPhase = 'idle'; up.earRes = []; } self.setState(up); } }; }),
+      dIsLook: (st.dMode || 'look') === 'look', dIsId: st.dMode === 'id', dIsEar: st.dMode === 'ear',
+      earToNeckDic: function () { self.earStop(); self.setState({ dMode: 'id', earPhase: 'idle' }); },
       dRoots: NS.map(function (_, pc) { var on = st.dRoot === pc; return { label: spell(pc, [5,10,3,8,1].indexOf(pc) >= 0, st.lat), pressed: on ? 'true' : 'false', style: on ? KON : '', pick: function () { self.setState({ dRoot: pc }); self.playSeq([mkx(pc, DTYPES[st.dType].q, DTYPES[st.dType].sx)]); } }; }),
       dTypes: DTYPES.map(function (Ty, i) { var on = st.dType === i; return { name: dSp(st.dRoot) + Ty.sx, pressed: on ? 'true' : 'false', style: pill(on) + ';min-height:40px;padding:0 12px', pick: function () { self.setState({ dType: i }); self.playSeq([mkx(st.dRoot, Ty.q, Ty.sx)]); } }; }),
       dcName: dSp(st.dRoot) + dT.sx,
