@@ -83,7 +83,7 @@ export async function onRequestPost({ request, env }) {
     if (c && c.paddle_subscription_id && c.paddle_subscription_id !== row.paddle_subscription_id) return new Response('other subscription', { status: 202 });
   }
   // While the public beta lasts, a cancelled/refunded user goes back to the free-beta Pro, not to Free.
-  const BETA_END = '2027-03-01';
+  const BETA_END = '2026-12-01';
   if (row.plan === 'free' && new Date().toISOString() < BETA_END) Object.assign(row, { plan: 'pro', status: 'trialing', current_period_end: BETA_END, paddle_subscription_id: null, paddle_customer_id: null });
   const r = await fetch(`${SB_URL}/rest/v1/subscriptions?on_conflict=user_id`, {
     method: 'POST',
