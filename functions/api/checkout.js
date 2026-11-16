@@ -18,7 +18,8 @@ const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, 
 export function onRequestOptions() { return new Response(null, { status: 204, headers: cors }); }
 
 export async function onRequestPost({ request, env }) {
-  if (!env.POLAR_ACCESS_TOKEN) return json({ error: 'not_configured' }, 503);
+  const TOKEN = env.POLAR_ACCESS_TOKEN || env.POLAR_ACCES_TOKEN; // the secret was saved with this spelling in Cloudflare
+  if (!TOKEN) return json({ error: 'not_configured' }, 503);
   let body = {}; try { body = await request.json(); } catch { /* empty */ }
   const product = POLAR_PRODUCTS[body.plan];
   if (!product) return json({ error: 'bad_plan' }, 400);
@@ -31,7 +32,7 @@ export async function onRequestPost({ request, env }) {
   const api = env.POLAR_SANDBOX === '1' ? 'https://sandbox-api.polar.sh' : 'https://api.polar.sh';
   const r = await fetch(`${api}/v1/checkouts/`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${env.POLAR_ACCESS_TOKEN}`, 'content-type': 'application/json' },
+    headers: { Authorization: `Bearer ${TOKEN}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       products: [product],
       external_customer_id: user.id,
