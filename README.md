@@ -95,3 +95,9 @@ the `ASSETS` map in `build.py`.
 - Cloudflare secrets needed: `PADDLE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`.
 - Paddle events to subscribe: `subscription.created`, `subscription.updated`, `subscription.canceled`, `transaction.completed`.
 - Pages Paddle reviews: `/pricing.html`, `/refund.html`, `/terms.html`.
+
+## Payments (Polar) — replaces Paddle
+- Checkout: `functions/api/checkout.js` (POST, Supabase token) creates a Polar checkout for products in `POLAR_PRODUCTS`.
+- Webhook: `functions/api/polar-webhook.js` → `https://chordseed.pages.dev/api/polar-webhook` (Standard Webhooks signature).
+- Cloudflare secrets: `POLAR_ACCESS_TOKEN`, `POLAR_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`.
+- Polar webhook events: `subscription.created`, `subscription.updated`, `subscription.active`, `subscription.canceled`, `subscription.revoked`, `subscription.uncanceled`, `order.paid`, `order.refunded`.

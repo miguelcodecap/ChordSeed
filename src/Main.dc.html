@@ -2858,37 +2858,12 @@ function csAuthErr(e, es) {
   return m || (es ? 'Algo salió mal. Inténtalo de nuevo.' : 'Something went wrong. Please try again.');
 }
 
-/* ===== Pagos (Paddle) =====
-   on:false = public beta (Pro free for signed-in users, no checkout). Add ?pay=1 to the URL to test the checkout anyway.
-   For real payments: env 'production', the live client token (live_...) and the live price ids. */
-var CS_PAY_ENVS = {
-  sandbox: { token: 'test_5af1f7f82d99f2567fd54cd54f7', prices: { month: 'pri_01m7ea1b6ndwpe4wnjg9vwfxag', year: 'pri_01m7ea7727xn83c18d2tqg39v3', founder: 'pri_01m7ea7n4pv2kyh2d9vvbskngj' } },
-  production: { token: 'live_0ae7d260e4e46458f192f0ef20c', prices: { month: 'pri_01m7ed4pf69a11v926rywf3f3a', year: 'pri_01m7ed543601jta8npwx3xm14h', founder: 'pri_01m7ed5d25gddcwn2wr3jr6nya' } }
-};
-// GO LIVE: set on:true and env:'production' (and put the live webhook secret in Cloudflare).
-var CS_PAY = { on: false, env: 'sandbox' };
-CS_PAY.token = CS_PAY_ENVS[CS_PAY.env].token; CS_PAY.prices = CS_PAY_ENVS[CS_PAY.env].prices;
-var CS_PAY_TEST = false; // Paddle removed (account not approved); re-enable when the new payment provider is connected
+/* ===== Pagos (Polar, merchant of record) =====
+   on:false = public beta (Pro free for signed-in users). ?pay=1 shows the plan picker anyway (real Polar checkout).
+   Checkout is created server-side by /api/checkout; Pro is activated by /api/polar-webhook. */
+var CS_PAY = { on: false, provider: 'polar' };
+var CS_PAY_TEST = false; try { CS_PAY_TEST = /[?&]pay=1\b/.test(window.location.search); } catch (e) {}
 function csPayOn() { return CS_PAY.on || CS_PAY_TEST; }
-var CS_PADDLE_CB = null;
-function csLoadPaddle(cb) {
-  function init() {
-    try {
-      if (!window.__csPaddleInit) {
-        if (CS_PAY.env === 'sandbox') window.Paddle.Environment.set('sandbox');
-        window.Paddle.Initialize({ token: CS_PAY.token, eventCallback: function (ev) { if (CS_PADDLE_CB) CS_PADDLE_CB(ev); } });
-        window.__csPaddleInit = true;
-      }
-      cb(true);
-    } catch (e) { cb(false); }
-  }
-  if (window.Paddle && window.Paddle.Checkout) { init(); return; }
-  try {
-    var s = document.createElement('script'); s.src = 'https://cdn.paddle.com/paddle/v2/paddle.js'; s.async = true;
-    s.onload = init; s.onerror = function () { cb(false); };
-    document.head.appendChild(s);
-  } catch (e) { cb(false); }
-}
 
 // 'claude' = the Lumen panel explains how to use Chordseed inside Claude (free); 'chat' = Lumen answers in the app (needs ANTHROPIC_API_KEY on Cloudflare).
 var CS_LUMEN_MODE = 'claude', CS_MCP_URL = 'https://chordseed.pages.dev/mcp';
@@ -4191,6 +4166,24 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 
 class Component extends DCLogic {
   componentDidMount() {
+    try {
+      if (/[?&]paid=1\b/.test(window.location.search)) {
+        var selfP = this, tries = 0, esP = (this.state.lang || 'es') !== 'en';
+        this.setState({ proMsg: esP ? '¡Gracias! Estamos activando tu Pro… (tarda unos segundos)' : 'Thank you! Activating your Pro… (takes a few seconds)' });
+        try { history.replaceState(null, '', window.location.pathname); } catch (e) {}
+        var poll = function () {
+          tries++;
+          if (selfP.sb && selfP.state.user) {
+            selfP.sb.from('subscriptions').select('*').eq('user_id', selfP.state.user.id).maybeSingle().then(function (r) {
+              var sub = r && r.data;
+              if (sub && sub.paddle_subscription_id && sub.plan === 'pro') { selfP.setState({ isPro: true, sub: sub, proMsg: esP ? '✦ ¡Ya eres Pro! Todo está desbloqueado.' : '✦ You’re Pro! Everything is unlocked.' }); return; }
+              if (tries < 15) setTimeout(poll, 3000); else selfP.setState({ proMsg: esP ? 'Tu pago se recibió. Si Pro no aparece en un minuto, recarga la página o escríbenos a chordseed.help@gmail.com.' : 'Your payment went through. If Pro doesn’t show up within a minute, reload the page or email chordseed.help@gmail.com.' });
+            }).catch(function () { if (tries < 15) setTimeout(poll, 3000); });
+          } else if (tries < 15) setTimeout(poll, 2000);
+        };
+        setTimeout(poll, 2500);
+      }
+    } catch (e) {}
     try { var savedTun = localStorage.getItem('cs_tun'); if (savedTun && savedTun !== 'std') { csSetGuitarTuning(savedTun); if (TUNING_ID === savedTun) this.setState({ tunId: savedTun }); } } catch (e) {}
     try { var qp = new URLSearchParams(location.search), pp = qp.get('p'); if (pp) { var pl = parseChordList(pp.split(',')); if (pl.chords.length) { var up0 = { chords: pl.chords.slice(0, 16), view: 'gen', focus: null }; var md = qp.get('mood'); if (md && MOODS.some(function (x) { return x[0] === md; })) up0.mood = md; this.setState(up0); } } } catch (e) {}
     try {
@@ -4294,7 +4287,7 @@ class Component extends DCLogic {
       var learn = Object.assign({}, (ud && ud.learn) || {}, self.state.lDone || {});
       try { window.localStorage.setItem('chordseed.learn.v1', JSON.stringify(learn)); } catch (e) {}
       self.setState({ isPro: pro, sub: sub || null, saved: merged, lDone: learn, cloudSongs: ud && Array.isArray(ud.songs) ? ud.songs : [], acctSync: 'ok' });
-      if (self.state.payAfterLogin && csPayOn()) { self.setState({ payAfterLogin: false, acctOpen: false, payOpen: true }); csLoadPaddle(function () {}); }
+      if (self.state.payAfterLogin && csPayOn()) { self.setState({ payAfterLogin: false, acctOpen: false, payOpen: true }); }
       CS_SYNC = function () { self.acctPush(); };
       if (!ud || merged.length !== cloudSaved.length || JSON.stringify(learn) !== JSON.stringify((ud && ud.learn) || {})) self.acctPush();
     }).catch(function () { self.setState({ acctSync: 'err' }); });
@@ -4359,40 +4352,20 @@ class Component extends DCLogic {
   payCheckout(k) {
     var self = this, st = this.state, es = st.lang !== 'en';
     if (!st.user) { self.setState({ payOpen: false, acctOpen: true, acctMode: 'signup', payAfterLogin: true }); return; }
-    var price = CS_PAY.prices[k]; if (!price) return;
     self.setState({ payBusy: k, payMsg: '' });
-    CS_PADDLE_CB = function (ev) {
-      var n = ev && ev.name;
-      if (n === 'checkout.loaded') self.setState({ payBusy: '' });
-      if (n === 'checkout.completed') {
-        self.setState({ payOpen: false, payBusy: '', proMsg: es ? '¡Gracias! Estamos activando tu Pro… (tarda unos segundos)' : 'Thank you! Activating your Pro… (takes a few seconds)' });
-        var tries = 0, poll = function () {
-          tries++;
-          if (!self.sb || !self.state.user) return;
-          self.sb.from('subscriptions').select('*').eq('user_id', self.state.user.id).maybeSingle().then(function (r) {
-            var sub = r && r.data;
-            if (sub && sub.paddle_subscription_id && sub.plan === 'pro') { self.setState({ isPro: true, sub: sub, proMsg: es ? '✦ ¡Ya eres Pro! Todo está desbloqueado.' : '✦ You’re Pro! Everything is unlocked.' }); return; }
-            if (tries < 10) setTimeout(poll, 3000);
-            else self.setState({ proMsg: es ? 'Tu pago se recibió. Si Pro no aparece en un minuto, recarga la página.' : 'Your payment went through. If Pro doesn’t show up within a minute, reload the page.' });
-          }).catch(function () { if (tries < 10) setTimeout(poll, 3000); });
-        };
-        setTimeout(poll, 2500);
-      }
-      if (n === 'checkout.closed') self.setState({ payBusy: '' });
-      if (n === 'checkout.error') self.setState({ payBusy: '', payMsg: es ? 'No se pudo abrir el pago. Inténtalo otra vez.' : 'Couldn’t open checkout. Please try again.' });
+    var go = function (token) {
+      fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ plan: k }) })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.url) { try { sessionStorage.setItem('cs_paying', '1'); } catch (e) {} window.location.href = res.j.url; return; }
+          var code = res.j && res.j.error;
+          self.setState({ payBusy: '', payMsg: code === 'not_configured' ? (es ? 'Los pagos todavía no están activos. Vuelve pronto.' : 'Payments aren’t active yet. Check back soon.') : code === 'login' ? (es ? 'Vuelve a iniciar sesión e inténtalo otra vez.' : 'Please sign in again and retry.') : (es ? 'No se pudo abrir el pago. Inténtalo otra vez.' : 'Couldn’t open checkout. Please try again.') });
+        })
+        .catch(function () { self.setState({ payBusy: '', payMsg: es ? 'Sin conexión. Inténtalo otra vez.' : 'No connection. Please try again.' }); });
     };
-    csLoadPaddle(function (ok) {
-      if (!ok) { self.setState({ payBusy: '', payMsg: es ? 'No se pudo cargar el sistema de pago. Revisa tu conexión o desactiva el bloqueador de anuncios.' : 'Couldn’t load the payment system. Check your connection or turn off your ad blocker.' }); return; }
-      try {
-        window.Paddle.Checkout.open({
-          items: [{ priceId: price, quantity: 1 }],
-          customer: st.user.email ? { email: st.user.email } : undefined,
-          customData: { user_id: st.user.id },
-          settings: { displayMode: 'overlay', theme: 'dark', locale: es ? 'es' : 'en', allowLogout: false }
-        });
-        setTimeout(function () { if (self.state.payBusy === k) self.setState({ payBusy: '' }); }, 6000);
-      } catch (e) { self.setState({ payBusy: '', payMsg: es ? 'No se pudo abrir el pago.' : 'Couldn’t open checkout.' }); }
-    });
+    try {
+      self.sb.auth.getSession().then(function (r) { var t = r && r.data && r.data.session && r.data.session.access_token; if (!t) { self.setState({ payBusy: '', payOpen: false, acctOpen: true, acctMode: 'login', payAfterLogin: true }); return; } go(t); });
+    } catch (e) { self.setState({ payBusy: '', payMsg: es ? 'No se pudo abrir el pago.' : 'Couldn’t open checkout.' }); }
   }
   acctPush() {
     var self = this;
@@ -6179,7 +6152,7 @@ class Component extends DCLogic {
       payOpen: !!st.payOpen,
       payTitle: LX('Elige tu plan Pro', 'Choose your Pro plan'),
       paySay: LX('Todo lo de Pro: frases de hasta 8 acordes, acordes extendidos, sorpresa atrevida, canciones en la nube y guardado sin límite.', 'Everything in Pro: phrases up to 8 chords, extended chords, bold surprise, songs in the cloud and unlimited saves.'),
-      payTest: CS_PAY.env === 'sandbox', payTestTxt: LX('Modo de prueba: usa la tarjeta 4242 4242 4242 4242, cualquier fecha futura y CVC 100. No se cobra nada.', 'Test mode: use card 4242 4242 4242 4242, any future date and CVC 100. Nothing is charged.'),
+      payTest: false, payTestTxt: LX('Modo de prueba: usa la tarjeta 4242 4242 4242 4242, cualquier fecha futura y CVC 100. No se cobra nada.', 'Test mode: use card 4242 4242 4242 4242, any future date and CVC 100. Nothing is charged.'),
       payPlans: [
         { k: 'month', name: LX('Mensual', 'Monthly'), price: '$3.99', per: LX('/ mes', '/ month'), note: LX('Cancela cuando quieras', 'Cancel anytime'), best: false },
         { k: 'year', name: LX('Anual', 'Yearly'), price: '$29', per: LX('/ año', '/ year'), note: LX('Ahorras 39% · unos $2.42 al mes', 'Save 39% · about $2.42 a month'), best: true },
@@ -6188,7 +6161,7 @@ class Component extends DCLogic {
         return { name: p.name, price: p.price, per: p.per, note: p.note, best: p.best, bestLab: LX('Mejor precio', 'Best value'), cls: 'pay-plan' + (p.best ? ' best' : ''), cta: st.payBusy === p.k ? LX('Abriendo…', 'Opening…') : LX('Elegir', 'Choose'),
           pick: function () { self.payCheckout(p.k); } };
       }),
-      payFoot: LX('Pagos seguros con Paddle, nuestro revendedor oficial. Reembolso completo en 14 días, sin preguntas.', 'Secure payments by Paddle, our official reseller. Full refund within 14 days, no questions asked.'),
+      payFoot: LX('Pagos seguros con Polar, nuestro revendedor oficial. Reembolso completo en 14 días, sin preguntas.', 'Secure payments by Polar, our official reseller. Full refund within 14 days, no questions asked.'),
       payHasMsg: !!st.payMsg, payMsgTxt: st.payMsg || '',
       payClose: function () { self.setState({ payOpen: false, payBusy: '' }); },
       payBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ payOpen: false, payBusy: '' }); },
@@ -6468,7 +6441,7 @@ class Component extends DCLogic {
       goPro: function () {
         if (csPayOn()) {
           if (!self.state.user) { self.setState({ proMsg: '', acctOpen: true, acctMode: 'signup', acctMsg: LX('Crea tu cuenta (o entra) y luego eliges tu plan Pro.', 'Create your account (or sign in), then pick your Pro plan.'), acctErr: false, payAfterLogin: true }); return; }
-          self.setState({ proMsg: '', acctOpen: false, payOpen: true, payMsg: '' }); csLoadPaddle(function () {}); return;
+          self.setState({ proMsg: '', acctOpen: false, payOpen: true, payMsg: '' }); return;
         }
         if (!self.state.user) { self.setState({ proMsg: '', acctOpen: true, acctMode: 'signup', acctMsg: LX('Durante la beta, Pro es gratis: crea tu cuenta y se activa solo.', 'During the beta, Pro is free: create your account and it unlocks automatically.'), acctErr: false }); return; }
         self.setState({ proMsg: T.proPitch });
