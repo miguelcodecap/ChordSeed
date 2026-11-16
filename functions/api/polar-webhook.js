@@ -12,16 +12,25 @@ function b64ToBytes(b64) { const bin = atob(b64); const out = new Uint8Array(bin
 function bytesToB64(buf) { let s = ''; new Uint8Array(buf).forEach((b) => { s += String.fromCharCode(b); }); return btoa(s); }
 function safeEq(a, b) { if (a.length !== b.length) return false; let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; }
 
-// Polar's SDK signs with the raw secret's UTF-8 bytes; secrets in "whsec_<base64>" form are base64-decoded per Standard Webhooks.
-function secretBytes(secret) { return secret.startsWith('whsec_') ? b64ToBytes(secret.slice(6)) : enc.encode(secret); }
+// Polar's SDK signs with the UTF-8 bytes of the full secret string (including any "whsec_" prefix).
+// Standard Webhooks libraries instead base64-decode what follows "whsec_". Accept either so both setups work.
+function secretKeys(secret) {
+  const keys = [enc.encode(secret)];
+  if (secret.startsWith('whsec_')) { try { keys.push(b64ToBytes(secret.slice(6))); } catch { /* not base64 */ } }
+  return keys;
+}
 
 export async function verify(headers, raw, secret, nowS = Math.floor(Date.now() / 1000)) {
   const id = headers.get('webhook-id'), ts = headers.get('webhook-timestamp'), sigs = headers.get('webhook-signature');
   if (!id || !ts || !sigs || !secret) return false;
   if (Math.abs(nowS - Number(ts)) > MAX_SKEW_S) return false;
-  const key = await crypto.subtle.importKey('raw', secretBytes(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const mac = bytesToB64(await crypto.subtle.sign('HMAC', key, enc.encode(`${id}.${ts}.${raw}`)));
-  return sigs.split(' ').some((p) => { const [v, s] = p.split(','); return v === 'v1' && s && safeEq(s, mac); });
+  const given = sigs.split(' ').map((p) => p.split(',')).filter((p) => p[0] === 'v1' && p[1]).map((p) => p[1]);
+  for (const kb of secretKeys(secret)) {
+    const key = await crypto.subtle.importKey('raw', kb, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const mac = bytesToB64(await crypto.subtle.sign('HMAC', key, enc.encode(`${id}.${ts}.${raw}`)));
+    if (given.some((g) => safeEq(g, mac))) return true;
+  }
+  return false;
 }
 
 function userIdOf(d) {
