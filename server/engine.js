@@ -3145,9 +3145,11 @@ class Component extends DCLogic {
       earCands: (st.earRes || []).map(function (r, i) {
         var c = mk(r.pc, r.id); var d = makeDiag(c, isGtr(st.inst) ? st.inst : 'guitar', es, nm(c), sp);
         return { name: nm(c), diag: d, cls: 'ear-c' + (i === 0 ? ' best' : ''), tag: i === 0 ? LX('Más probable', 'Most likely') : LX('También puede ser', 'Could also be'),
-          playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: LX('Agregar', 'Add'),
+          playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: view === 'dic' ? LX('A mi progresión', 'To my progression') : LX('Agregar', 'Add'),
           play: function () { self.playSeq([c], st.inst); },
-          add: function () { self.addChordDone(self.state.chords.concat([c])); } };
+          canOpen: view === 'dic', openLab: LX('Ver todas las posiciones', 'See all positions'),
+          open: function () { self.earStop(); var ti = -1; DTYPES.forEach(function (T2, j) { if (ti < 0 && (T2.q || 'M') === (c.q || 'M') && (T2.sx || '') === (c.sx || '')) ti = j; }); self.setState({ dMode: 'look', dRoot: c.pc, dType: ti >= 0 ? ti : self.state.dType, earPhase: 'idle' }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+          add: function () { if (view === 'dic') { self.setState({ view: 'gen' }); } self.addChordDone(self.state.chords.concat([c])); } };
       }),
       earStart: function () { self.earListen(); },
       earAgainLab: LX('Escuchar otra vez', 'Listen again'), earNoneLab: LX('Ninguno es: marcarlo en el diapasón', 'None of these: mark it on the neck'),
@@ -3199,8 +3201,9 @@ class Component extends DCLogic {
         var nl = self.state.saved.concat([entry]); storeSaved(nl); self.setState({ saved: nl, saveMsg: '' });
       },
       soundStatus: (function () { var lab = INSTS.filter(function (x) { return x[0] === st.inst; })[0]; var nmI = lab ? lab[es ? 1 : 2] : ''; if (st.inst === 'synth') return '♪ ' + T.sndSynth; return (BANKS[st.inst] ? '♪ ' + T.sndReal : '… ' + T.sndLoading) + nmI.toLowerCase(); })(),
-      dModes: [['look', T.dModeLook], ['id', T.dModeId]].map(function (m) { var on = (st.dMode || 'look') === m[0]; return { label: m[1], selected: on ? 'true' : 'false', style: seg(on), pick: function () { self.setState({ dMode: m[0] }); } }; }),
-      dIsLook: (st.dMode || 'look') === 'look', dIsId: st.dMode === 'id',
+      dModes: [['look', T.dModeLook], ['ear', LX('Tócalo y lo reconozco', 'Play it, I’ll name it')], ['id', LX('Márcalo en el diapasón', 'Mark it on the neck')]].map(function (m) { var on = (st.dMode || 'look') === m[0]; return { label: m[1], selected: on ? 'true' : 'false', style: seg(on), pick: function () { if (m[0] !== 'ear') self.earStop(); var up = { dMode: m[0] }; if (m[0] === 'ear') { up.earPhase = 'idle'; up.earRes = []; } self.setState(up); } }; }),
+      dIsLook: (st.dMode || 'look') === 'look', dIsId: st.dMode === 'id', dIsEar: st.dMode === 'ear',
+      earToNeckDic: function () { self.earStop(); self.setState({ dMode: 'id', earPhase: 'idle' }); },
       dRoots: NS.map(function (_, pc) { var on = st.dRoot === pc; return { label: spell(pc, [5,10,3,8,1].indexOf(pc) >= 0, st.lat), pressed: on ? 'true' : 'false', style: on ? KON : '', pick: function () { self.setState({ dRoot: pc }); self.playSeq([mkx(pc, DTYPES[st.dType].q, DTYPES[st.dType].sx)]); } }; }),
       dTypes: DTYPES.map(function (Ty, i) { var on = st.dType === i; return { name: dSp(st.dRoot) + Ty.sx, pressed: on ? 'true' : 'false', style: pill(on) + ';min-height:40px;padding:0 12px', pick: function () { self.setState({ dType: i }); self.playSeq([mkx(st.dRoot, Ty.q, Ty.sx)]); } }; }),
       dcName: dSp(st.dRoot) + dT.sx,
