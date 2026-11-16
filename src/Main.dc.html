@@ -441,6 +441,42 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 /* account */
 .acctbtn{gap:8px}
 .am-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:4px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid #24392E;align-self:flex-start}
+/* add-chord: three ways */
+.am-row{display:flex;gap:6px;padding:4px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid #24392E;align-self:flex-start;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.am-row .am-card{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px 0 10px;border-radius:10px;border:0;background:transparent;color:#C5D3C6;font:600 14px Figtree,sans-serif;cursor:pointer;white-space:nowrap;flex:none}
+.am-row .am-card small,.am-row .am-go{display:none}.am-row .am-tx b{font-weight:600}.am-row .am-ic svg{width:18px;height:18px}
+.am-row .am-card[aria-selected="true"]{background:#E8D872;color:#10180F}.am-row .am-card[aria-selected="true"] .am-ic{color:#10180F}
+.am-row .am-card:hover:not([aria-selected="true"]){background:rgba(232,216,114,.08);color:#F1F4EA}
+.am-big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.am-big .am-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-height:168px;padding:18px;border-radius:18px;border:1.5px solid #2F4A3B;background:linear-gradient(180deg,#14261D,#0E1B15);color:#F1F4EA;text-align:left;cursor:pointer;font-family:Figtree,sans-serif;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;animation:amIn .38s cubic-bezier(.2,.8,.2,1) backwards}
+.am-big .am-card:nth-child(2){animation-delay:.06s}.am-big .am-card:nth-child(3){animation-delay:.12s}
+.am-big .am-card:hover,.am-big .am-card:focus-visible{transform:translateY(-3px);border-color:#E8D872;box-shadow:0 14px 34px rgba(0,0,0,.45),0 0 0 4px rgba(232,216,114,.10);outline:none}
+.am-big .am-ic{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:rgba(232,216,114,.12);border:1px solid rgba(232,216,114,.35);color:#F0E39A}
+.am-big .am-tx{display:flex;flex-direction:column;gap:6px}.am-big .am-tx b{font:600 18px Figtree,sans-serif;line-height:1.2}.am-big .am-tx small{font-size:13.5px;line-height:1.45;color:#B5C7B8}
+.am-big .am-go{position:absolute;right:16px;top:18px;color:#6F8A79;font-size:18px;transition:transform .18s,color .18s}.am-big .am-card:hover .am-go{color:#E8D872;transform:translateX(3px)}
+@keyframes amIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pk-back{position:fixed;inset:0;z-index:140;background:rgba(3,8,6,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:pkFade .22s ease both}
+@keyframes pkFade{from{opacity:0}to{opacity:1}}
+.cs-picker.pk-modal{position:fixed!important;z-index:141;left:50%;top:50%;transform:translate(-50%,-50%);width:min(880px,calc(100vw - 32px));max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:20px!important;border-radius:24px!important;border-color:#3A5646!important;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pkPop .28s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pkPop{from{opacity:0;transform:translate(-50%,-46%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%)}}
+.pk-head{display:flex;align-items:center;gap:10px}.pk-ttl{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.pk-ttl b{font:400 26px/1.15 'Cormorant Garamond',Georgia,serif;color:#F1F4EA}
+.pk-k{font:700 11px Figtree,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#E8D872}
+.pk-icb{flex:none;display:grid;place-items:center;width:42px;height:42px;border-radius:12px;border:1px solid #2F4A3B;background:transparent;color:#DDE8DC;font:600 16px Figtree,sans-serif;cursor:pointer}.pk-icb:hover{border-color:#E8D872;color:#F0E39A}
+.pk-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px dashed #2F4A3B}
+.pk-chip{font:700 13px 'JetBrains Mono',ui-monospace,monospace;padding:3px 8px;border-radius:8px;background:#16271F;color:#DDE8DC}.pk-chip.new{background:#E8D872;color:#10180F;animation:amIn .3s ease backwards}
+body:has(.pk-modal){overflow:hidden}
+.cs-picker.pk-modal > *{flex-shrink:0}
+body:has(.pk-modal) .guide,body:has(.pk-modal) .gcoach,body:has(.pk-modal) .gc-ring,body:has(.pk-modal) .modtoast,body:has(.pk-modal) .lm-fab,body:has(.pk-modal) .hdr-sticky{visibility:hidden!important}
+body:has(.pk-modal) .mainwrap > section,body:has(.pk-modal) [id^="stp-"]{filter:none!important;transform:none!important;opacity:1!important;animation:none!important}
+@media (max-width:640px){
+  .am-big{grid-template-columns:1fr;gap:10px}
+  .am-big .am-card{flex-direction:row;align-items:center;min-height:0;padding:14px 40px 14px 14px;gap:14px}
+  .am-big .am-ic{width:46px;height:46px;flex:none}
+  .am-big .am-go{top:50%;transform:translateY(-50%)}.am-big .am-card:hover .am-go{transform:translate(3px,-50%)}
+  .cs-picker.pk-modal{left:0;right:0;top:auto;bottom:0;transform:none;width:100%;max-height:92vh;max-height:92dvh;border-radius:24px 24px 0 0!important;padding:16px 16px calc(16px + env(safe-area-inset-bottom))!important;animation:pkUp .3s cubic-bezier(.2,.8,.2,1) both}
+  .pk-ttl b{font-size:22px}
+}
+@keyframes pkUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .am-tab{min-height:40px;padding:0 14px;border-radius:10px;border:0;background:transparent;color:#C5D3C6;font:600 14px Figtree,sans-serif;cursor:pointer;white-space:nowrap}
 .am-tab[aria-selected="true"]{background:#E8D872;color:#10180F}
 .ear{display:flex;flex-direction:column;gap:12px}.ear-beta{font:700 10px Figtree,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#10180F;background:#9FD3B4;border-radius:99px;padding:2px 7px;vertical-align:middle}
@@ -809,9 +845,16 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
           <button class="addtile" onClick="{{togglePicker}}" aria-expanded="{{pickerExpanded}}" style="{{addTileStyle}}"><span style="font-size:30px;line-height:1">+</span><span style="font:600 13px 'Figtree',sans-serif">{{t.addChord}}</span></button>
         </div>
       </div>
+      <sc-if value="{{pkModal}}" hint-placeholder-val="{{ false }}"><div class="pk-back" onClick="{{pkClose}}" aria-hidden="true"></div></sc-if>
       <sc-if value="{{pickerOpen}}" hint-placeholder-val="{{ false }}">
-        <div class="cs-picker" style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:#0A1510;border:1px solid #24392E;scroll-margin-top:90px">
-          <div class="am-tabs" role="tablist" aria-label="{{amLab}}"><sc-for list="{{amTabs}}" as="am" hint-placeholder-count="3"><button role="tab" aria-selected="{{am.sel}}" class="am-tab" onClick="{{am.pick}}"><span aria-hidden="true">{{am.icon}}</span> {{am.label}}</button></sc-for></div>
+        <div class="{{pkCls}}" role="{{pkRole}}" aria-modal="{{pkModalAria}}" aria-label="{{amLab}}" style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:#0A1510;border:1px solid #24392E;scroll-margin-top:90px">
+          <sc-if value="{{pkModal}}" hint-placeholder-val="{{ false }}"><div class="pk-head">
+            <sc-if value="{{amBackShow}}" hint-placeholder-val="{{ false }}"><button class="pk-icb" onClick="{{amBack}}" aria-label="{{amBackLab}}">←</button></sc-if>
+            <div class="pk-ttl"><span class="pk-k">{{amKick}}</span><b>{{amTitle}}</b></div>
+            <button class="pk-icb" onClick="{{pkClose}}" aria-label="{{t.close}}">✕</button>
+          </div>
+          <sc-if value="{{pkHasStrip}}" hint-placeholder-val="{{ false }}"><div class="pk-strip"><span class="lab">{{pkStripLab}}</span><sc-for list="{{pkStrip}}" as="ps" hint-placeholder-count="4"><span class="{{ps.cls}}">{{ps.name}}</span></sc-for></div></sc-if></sc-if>
+          <div class="{{amWrapCls}}" role="tablist" aria-label="{{amLab}}"><sc-for list="{{amTabs}}" as="am" hint-placeholder-count="3"><button role="tab" aria-selected="{{am.sel}}" class="am-card" onClick="{{am.pick}}"><span class="am-ic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{am.path}}"></path></svg></span><span class="am-tx"><b>{{am.label}}<sc-if value="{{am.beta}}" hint-placeholder-val="{{ false }}"> <span class="ear-beta">beta</span></sc-if></b><small>{{am.desc}}</small></span><span class="am-go" aria-hidden="true">→</span></button></sc-for></div>
           <sc-if value="{{amPick}}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;flex-wrap:wrap;gap:16px">
             <div style="flex:2 1 360px;min-width:0;display:flex;flex-direction:column;gap:8px">
@@ -4168,6 +4211,7 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 
 class Component extends DCLogic {
   componentDidMount() {
+    var selfK = this; try { document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && selfK.state.pkModal && selfK.state.pickerOpen) { selfK.earStop(); selfK.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); } }); } catch (e) {}
     try {
       if (/[?&]paid=1\b/.test(window.location.search)) {
         var selfP = this, tries = 0, esP = (this.state.lang || 'es') !== 'en';
@@ -4862,6 +4906,8 @@ class Component extends DCLogic {
     var keyName = chs.length ? spell(k.t, flats, st.lat) + ' ' + (k.mode === 'maj' ? T.major : T.minor) : '';
 
     var pickerOpen = st.pickerOpen || chs.length === 0;
+    var pkModal = !!st.pkModal && !!st.pickerOpen && chs.length > 0;
+    var amMode = st.addMode === 'play' ? 'play' : (st.addMode === 'choose' && pkModal) ? 'choose' : 'pick';
     var step = chs.length === 0 ? 1 : (st.mood === 'any' ? 2 : 3);
     var stepLabels = [T.s1, T.s2, T.s3];
     var steps = stepLabels.map(function (lb, i) {
@@ -4996,7 +5042,7 @@ class Component extends DCLogic {
     var gTonicMaj = k.mode === 'maj' ? k.t : (k.t + 3) % 12, gTonicMin = k.mode === 'min' ? k.t : (k.t + 9) % 12;
     var hvr = function (id) { return {
       hov: st.gHov === id,
-      enter: function (e) { if (e && e.pointerType === 'touch') return; if (self.state.gHov !== id) self.setState({ gHov: id }); },
+      enter: function (e) { if (e && e.pointerType === 'touch') return; if (self._hovMute && Date.now() < self._hovMute) return; if (self.state.gHov !== id) self.setState({ gHov: id }); },
       leave: function (e) { if (e && e.pointerType === 'touch') return; if (self.state.gHov === id) self.setState({ gHov: null }); } }; };
     var setCx = function (n) { if (n < 0 || n >= CXS.length) return; if (n === 5 && !self.state.isPro) { self.setState({ proMsg: T.proMsgCx }); return; } self.setState({ cx: n, proMsg: '', cxAsk: (self.state.chords || []).length && n !== self.state.cx ? n : null }); };
     var setSur = function (n) { if (n < 0 || n >= SURS.length) return; if (n === 2 && !self.state.isPro) { self.setState({ proMsg: T.proMsgSur }); return; } self.setState({ sur: n, focus: null, proMsg: '' }); };
@@ -5216,11 +5262,25 @@ class Component extends DCLogic {
       navOpen: !!st.navOpen,
       proMsgCta: !(st.isPro && st.sub && st.sub.paddle_subscription_id) && !/Pro!|Pro…|ya eres Pro|activando/i.test(st.proMsg || ''),
       amLab: LX('Cómo agregar el acorde', 'How to add the chord'),
-      amTabs: [['pick', '✋', LX('Elegirlo', 'Pick it')], ['play', '🎤', LX('Tocarlo', 'Play it')], ['neck', '🎸', LX('Marcarlo en el diapasón', 'Mark it on the neck')]].map(function (a) { var on = (st.addMode || 'pick') === a[0]; return { icon: a[1], label: a[2], sel: on ? 'true' : 'false', pick: function () {
+      amTabs: [
+        ['pick', 'M4 6h16M4 12h16M4 18h10M18 16l2 2 3-4', LX('Elegirlo de la lista', 'Pick it from the list'), LX('Eliges la nota y el tipo. Lo más rápido si ya sabes cómo se llama.', 'Choose the note and the type. Fastest if you already know its name.')],
+        ['play', 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5 11a7 7 0 0 0 14 0M12 18v3', LX('Tocarlo en tu instrumento', 'Play it on your instrument'), LX('Rasguéalo una vez y lo reconozco con el micrófono.', 'Strum it once and I’ll recognize it with the mic.')],
+        ['neck', 'M3 8h18M3 12h18M3 16h18M7 5v14M12 5v14M17 5v14', LX('Marcarlo en el diapasón', 'Mark it on the neck'), LX('Toca los trastes que pisas y te digo qué acorde es.', 'Tap the frets you press and I’ll tell you the chord.')]
+      ].map(function (a) { var on = amMode === a[0]; return { path: a[1], label: a[2], desc: a[3], beta: a[0] === 'play', sel: on ? 'true' : 'false', pick: function () {
         if (a[0] === 'neck') { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
         if (a[0] !== 'play') self.earStop();
-        self.setState({ addMode: a[0] }); } }; }),
-      amPick: (st.addMode || 'pick') === 'pick', amPlay: st.addMode === 'play',
+        self._hovMute = Date.now() + 450; self.setState({ addMode: a[0], gHov: null }); } }; }),
+      amPick: amMode === 'pick', amPlay: amMode === 'play',
+      amWrapCls: amMode === 'choose' ? 'am-big' : 'am-row',
+      amKick: LX('Añadir acorde', 'Add a chord'),
+      amTitle: amMode === 'choose' ? LX('¿Cómo quieres añadirlo?', 'How do you want to add it?') : amMode === 'play' ? LX('Tócalo y lo reconozco', 'Play it and I’ll recognize it') : LX('Elige la nota y el tipo', 'Pick the note and the type'),
+      amBackShow: pkModal && amMode !== 'choose', amBackLab: LX('Otras formas de añadir', 'Other ways to add'),
+      amBack: function () { self.earStop(); self.setState({ addMode: 'choose' }); },
+      pkModal: pkModal, pkModalAria: pkModal ? 'true' : 'false', pkRole: pkModal ? 'dialog' : 'region',
+      pkCls: 'cs-picker' + (pkModal ? ' pk-modal' : ''),
+      pkClose: function () { self.earStop(); self.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); },
+      pkHasStrip: pkModal && chs.length > 0, pkStripLab: LX('Tu progresión:', 'Your progression:'),
+      pkStrip: chs.map(function (c, i) { return { name: nm(c), cls: 'pk-chip' + (i === chs.length - 1 && st.pkAdded ? ' new' : '') }; }),
       earTitle: LX('Toca el acorde y lo reconozco', 'Play the chord and I’ll recognize it'),
       earHow: LX('Pulsa Escuchar, rasguea el acorde una vez y déjalo sonar. Funciona en cualquier afinación. Te muestro las opciones más probables con su diagrama en tu afinación para que confirmes.', 'Tap Listen, strum the chord once and let it ring. Works in any tuning. I’ll show the most likely options with their diagram in your tuning so you can confirm.'),
       earIdle: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err', earListening: st.earPhase === 'listen' || st.earPhase === 'wait',
@@ -5236,7 +5296,7 @@ class Component extends DCLogic {
         return { name: nm(c), diag: d, cls: 'ear-c' + (i === 0 ? ' best' : ''), tag: i === 0 ? LX('Más probable', 'Most likely') : LX('También puede ser', 'Could also be'),
           playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: LX('Agregar', 'Add'),
           play: function () { self.playSeq([c], st.inst); },
-          add: function () { self.setState({ chords: self.state.chords.concat([c]), focus: null, earPhase: 'idle', earRes: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm(c) + LX('. Toca el siguiente acorde o mira abajo qué puede seguir.', '. Play the next chord or see below what can come next.') }); } };
+          add: function () { self.setState({ chords: self.state.chords.concat([c]), focus: null, pkAdded: true, earPhase: 'idle', earRes: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm(c) + LX('. Toca el siguiente acorde o mira abajo qué puede seguir.', '. Play the next chord or see below what can come next.') }); } };
       }),
       earStart: function () { self.earListen(); },
       earAgainLab: LX('Escuchar otra vez', 'Listen again'), earNoneLab: LX('Ninguno es: marcarlo en el diapasón', 'None of these: mark it on the neck'),
@@ -5326,7 +5386,7 @@ class Component extends DCLogic {
         style: 'display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:150px;padding:14px 16px;border-radius:16px;cursor:pointer;text-align:left;font-family:Figtree,sans-serif;' + (i === 0 ? 'background:#21281A;border:1.5px solid #E8D872;color:#F4EDB8' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
         open: function () { self.setState({ dMode: 'look', dRoot: cd.root, dType: DTYPES.indexOf(cd.T) }); },
         addLab: LX('Agregar a mi progresión', 'Add to my progression'),
-        add: function () { var c = mkx(cd.root, cd.T.q || 'M', cd.T.sx); self.setState({ chords: (self.state.chords || []).concat([c]), view: 'gen', pickerOpen: true, addMode: 'pick', idFrets: [-1,-1,-1,-1,-1,-1], idKeys: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm2 + '.' }); setTimeout(function () { var el = document.querySelector('.tilerow'); if (el) try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 120); } }; }),
+        add: function () { var c = mkx(cd.root, cd.T.q || 'M', cd.T.sx); self.setState({ chords: (self.state.chords || []).concat([c]), view: 'gen', pickerOpen: false, pkModal: false, addMode: 'pick', idFrets: [-1,-1,-1,-1,-1,-1], idKeys: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm2 + '.' }); setTimeout(function () { var el = document.querySelector('.tilerow'); if (el) try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 120); } }; }),
       tTunGroups: [['common', LX('Las más usadas', 'Most used')], ['alt', LX('Abiertas y poco comunes', 'Open and less common')], ['other', LX('Otros instrumentos', 'Other instruments')]].map(function (g) {
         return { title: g[1], items: TUNINGS.filter(function (x) { return x.grp === g[0]; }).map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], strs: tu.strs, pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.pickTuning(tu); } }; }) };
       }),
@@ -5728,7 +5788,7 @@ class Component extends DCLogic {
       hasChords: chs.length > 0,
       pickerOpen: pickerOpen,
       pickerExpanded: pickerOpen ? 'true' : 'false',
-      togglePicker: function () { var open = chs.length === 0 ? true : !pickerOpen; self.setState({ pickerOpen: open }); if (open) setTimeout(function () { var el = document.querySelector('.cs-picker'); if (el) { var r = el.getBoundingClientRect(); if (r.top < 0 || r.top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 60); },
+      togglePicker: function () { var open = chs.length === 0 ? true : !pickerOpen; if (open && chs.length > 0 && !guidedOn) { self.setState({ pickerOpen: true, pkModal: true, addMode: 'choose', pkAdded: false, earPhase: 'idle', earRes: null }); setTimeout(function () { var b = document.querySelector('.pk-modal .am-card'); if (b) try { b.focus({ preventScroll: true }); } catch (e) {} }, 80); return; } if (!open) { self.earStop(); self.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); return; } self.setState({ pickerOpen: open }); if (open) setTimeout(function () { var el = document.querySelector('.cs-picker'); if (el) { var r = el.getBoundingClientRect(); if (r.top < 0 || r.top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 60); },
       addTileStyle: 'width:124px;height:124px;flex:none;box-sizing:border-box;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed ' + (pickerOpen ? '#E8D872' : '#2F4A3B') + ';background:' + (pickerOpen ? '#21281A' : 'transparent') + ';color:' + (pickerOpen ? '#F0E39A' : '#C5D3C6'),
       settingsOpen: st.settingsOpen,
       settingsExpanded: st.settingsOpen ? 'true' : 'false',
@@ -6468,7 +6528,7 @@ class Component extends DCLogic {
       selDesc: selQ[lang] + ' · ' + (es ? selQ.des : selQ.den),
       focusSel: setFocus({ type: 'sel', i: 0 }),
       playSel: function () { self.playSeq([sel]); },
-      addSel: function () { var up = { chords: chs.concat([sel]), focus: null }; if (guidedOn && self._gc && self._gc.k === 'add') up.pickerOpen = false; self.setState(up); },
+      addSel: function () { var up = { chords: chs.concat([sel]), focus: null, pkAdded: true }; if (guidedOn && self._gc && self._gc.k === 'add') up.pickerOpen = false; self.setState(up); },
       hovClose: function () { self.setState({ gHov: null }); },
       selHov: st.gHov === 'sel', selHovX: st.gHov === 'sel' ? 'true' : 'false', selCloud: st.gHov === 'sel' ? dg(sel) : null,
       selShow: function () { self.setState({ gHov: self.state.gHov === 'sel' ? null : 'sel' }); },
