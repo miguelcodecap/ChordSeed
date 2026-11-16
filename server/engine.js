@@ -486,6 +486,19 @@ function playNote(ctx, out, inst, m, st, len) {
 }
 
 var TUNING = [40, 45, 50, 55, 59, 64];
+var TUNING_ID = 'std';
+// Diagrams and guitar playback follow the 6-string tuning chosen in the tuner (Drop D, DADGAD, Open G, half step down...).
+function csSetGuitarTuning(id) {
+  var tu = null; try { tu = TUNINGS.filter(function (x) { return x.id === id; })[0]; } catch (e) {}
+  if (!tu || tu.notes.length !== 6) { tu = { id: 'std', notes: [40, 45, 50, 55, 59, 64] }; }
+  if (TUNING_ID === tu.id) return;
+  TUNING = tu.notes.slice(); TUNING_ID = tu.id; GS_CACHE = {};
+}
+function csTuningLabel(es) {
+  if (TUNING_ID === 'std') return '';
+  var tu = null; try { tu = TUNINGS.filter(function (x) { return x.id === TUNING_ID; })[0]; } catch (e) {}
+  return tu ? String(tu[es ? 'es' : 'en']).replace(/^(Guitarra|Guitar) · /, '') : '';
+}
 var GS_CACHE = {};
 function ckey(c) { return c.pc + c.q + (c.ext || ''); }
 function guitarShapes(c, relaxed) {
@@ -570,7 +583,7 @@ var VIOLIN_OPEN = [55, 62, 69, 76];
 function chordPcs(c) { var out = []; voicing(c).slice(1).forEach(function (m) { var pc = m % 12; if (out.indexOf(pc) < 0) out.push(pc); }); return out; }
 function makeDiag(c, inst, es, name, spellFn) {
   var lab = INSTS.filter(function (x) { return x[0] === inst; })[0];
-  var d = { name: name, inst: lab[es ? 1 : 2] };
+  var d = { name: name, inst: lab[es ? 1 : 2] + (isGtr(inst) && csTuningLabel(es) ? ' · ' + csTuningLabel(es) : '') };
   var oct = function (m) { return spellFn(m % 12) + (Math.floor(m / 12) - 1); };
   if (isGtr(inst)) { d.kind = 'guitar'; d.frets = guitarFrets(c); d.caption = CAPS.guitar[es ? 0 : 1]; }
   else if (inst === 'piano' || inst === 'synth') {
@@ -1894,7 +1907,7 @@ var LEARN = {
   learn: { es: ['Aprende desde cero', 'Siete lecciones cortas. Cada una te explica algo, te deja escucharlo y termina con una pregunta.', [['Para quién', 'Para quien empieza: no necesitas saber nada de teoría.'], ['Tu guía', 'Lumen te acompaña en cada lección y celebra contigo cuando aciertas.']]],
     en: ['Learn from scratch', 'Seven short lessons. Each one explains something, lets you hear it and ends with a question.', [['For whom', 'For beginners: no theory needed.'], ['Your guide', 'Lumen walks you through every lesson and celebrates with you when you get it right.']]] }
 };
-var NAV_ORDER = ['gen', 'rea', 'scl', 'mod', 'dic', 'tun', 'learn'];
+var NAV_ORDER = ['gen', 'tun', 'rea', 'scl', 'mod', 'dic', 'learn'];
 var NAV_TAB = { rea: ['Enriquecer mis acordes', 'Enrich my chords'], mod: ['Cambiar de tonalidad', 'Change key'], scl: ['Escalas para tu melodía', 'Scales for your melody'] };
 var NAV_ICON = { gen:'✦', ana:'◎', scl:'♪', rea:'⟲', mod:'⇄', dic:'▦', tun:'♮', learn:'✎' };
 var CX_TIP = ['Indica cuántas notas tiene cada acorde. Pocas notas suenan sencillas y directas; más notas (séptimas, novenas) suenan más ricas, como en el jazz o el R&B.', 'How many notes each chord has. Fewer notes sound simple and direct; more notes (sevenths, ninths) sound richer, like jazz or R&B.'];
@@ -1919,6 +1932,7 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 
 class Component extends DCLogic {
   componentDidMount() {
+    try { var savedTun = localStorage.getItem('cs_tun'); if (savedTun && savedTun !== 'std') { csSetGuitarTuning(savedTun); if (TUNING_ID === savedTun) this.setState({ tunId: savedTun }); } } catch (e) {}
     try { var qp = new URLSearchParams(location.search), pp = qp.get('p'); if (pp) { var pl = parseChordList(pp.split(',')); if (pl.chords.length) { var up0 = { chords: pl.chords.slice(0, 16), view: 'gen', focus: null }; var md = qp.get('mood'); if (md && MOODS.some(function (x) { return x[0] === md; })) up0.mood = md; this.setState(up0); } } } catch (e) {}
     try {
       var selfT = this, tipNew = false; try { tipNew = localStorage.getItem('cs_gtip') !== '1'; } catch (e) {} if (tipNew) { setTimeout(function () { if (selfT.state.guided) selfT.setState({ gTip: true }); setTimeout(function () { try { localStorage.setItem('cs_gtip', '1'); } catch (e) {} selfT.setState({ gTip: false }); }, 9000); }, 4000); }
@@ -2909,6 +2923,10 @@ class Component extends DCLogic {
           pick: function () { var upd = { navOpen: false, ttTool: null, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
       }),
       navOpen: !!st.navOpen,
+      idShortcutTxt: LX('¿No sabes qué acorde estás tocando? Márcalo en el diapasón y te lo digo →', 'Don’t know what chord you’re playing? Mark it on the fretboard and I’ll name it →'),
+      idShortcut: function () { self.setState({ view: 'dic', dMode: 'id', pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+      tunHintShow: isGtr(st.inst) && view !== 'tun', tunHintTxt: LX('Antes de tocar: ¿tu guitarra está afinada? Abre el afinador →', 'Before you play: is your guitar in tune? Open the tuner →'),
+      tunHintGo: function () { self.setState({ view: 'tun', navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
       navExpanded: st.navOpen ? 'true' : 'false',
       navCaret: st.navOpen ? '▴' : '▾',
       navBtnStyle: st.navOpen ? 'border-color:#E8D872' : '',
@@ -2985,7 +3003,7 @@ class Component extends DCLogic {
         note: cd.missing ? T.idNo5 : (i === 0 ? T.idBest : T.idAlso),
         style: 'display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:150px;padding:14px 16px;border-radius:16px;cursor:pointer;text-align:left;font-family:Figtree,sans-serif;' + (i === 0 ? 'background:#21281A;border:1.5px solid #E8D872;color:#F4EDB8' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
         open: function () { self.setState({ dMode: 'look', dRoot: cd.root, dType: DTYPES.indexOf(cd.T) }); } }; }),
-      tTunings: TUNINGS.map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.setState({ tunId: tu.id }); } }; }),
+      tTunings: TUNINGS.map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], pressed: on ? 'true' : 'false', style: pill(on), pick: function () { if (tu.notes.length === 6) { csSetGuitarTuning(tu.id); try { localStorage.setItem('cs_tun', tu.id); } catch (e) {} } self.setState({ tunId: tu.id }); } }; }),
       tStrings: tTun.notes.map(function (m, i) { var hz = tA * Math.pow(2, (m - 69) / 12), on = tNear === i; return { num: (LX('Cuerda ', 'String ')) + (tTun.notes.length - i), name: spell(m % 12, true, st.lat) + (Math.floor(m / 12) - 1), hz: hz.toFixed(1) + ' Hz', aria: (LX('Escuchar ', 'Play ')) + spell(m % 12, true, st.lat),
         style: 'display:flex;flex-direction:column;align-items:center;gap:2px;min-width:78px;padding:10px 12px;border-radius:16px;cursor:pointer;font-family:Figtree,sans-serif;' + (on ? 'background:#0F3A2C;border:1.5px solid #6FD39C;color:#DFFBEA' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
         play: function () { self.setState({ tunRef: i }); try { var AC = window.AudioContext || window.webkitAudioContext; if (!self.ctx && AC) self.ctx = new AC(); var ctx = self.ctx; if (ctx.state === 'suspended') ctx.resume(); if (!self.master) { self.master = ctx.createDynamicsCompressor(); self.master.connect(ctx.destination); } var det = Math.log2(tA / 440) * 12; playNote(ctx, self.master, 'guitar', m + det, ctx.currentTime + 0.03, 2.4); } catch (e) {} } }; }),
