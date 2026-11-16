@@ -1228,6 +1228,120 @@ function identify(pcs, bass) {
   out.sort(function (a, b) { return b.score - a.score; });
   return out.slice(0, 4);
 }
+/* Chordseed chord ear: spectrum -> notes -> ranked chord candidates. Pure functions, no DOM. */
+var CE_CFG = { pr: 100, gap: 9, lu: 1.0, lm: 1.0, bb: 0.06, ftol: 0.012, subr: 0.08, sub: 0.06, pw: 0.5, al: 27, be: 320, stop: 0.3, thr: 0.04, fund: 0.1, pres: 0.22 };
+var CE_TYPES = [
+  // id (app QUALS id), intervals, weight penalty (simpler chords win ties)
+  { id: 'M', iv: [0, 4, 7], pen: 0 },
+  { id: 'm', iv: [0, 3, 7], pen: 0 },
+  { id: '7', iv: [0, 4, 7, 10], pen: 0.035 },
+  { id: 'maj7', iv: [0, 4, 7, 11], pen: 0.035 },
+  { id: 'm7', iv: [0, 3, 7, 10], pen: 0.035 },
+  { id: 'sus4', iv: [0, 5, 7], pen: 0.03 },
+  { id: 'sus2', iv: [0, 2, 7], pen: 0.03 },
+  { id: 'dim', iv: [0, 3, 6], pen: 0.04 },
+  { id: '6', iv: [0, 4, 7, 9], pen: 0.045 },
+  { id: 'm6', iv: [0, 3, 7, 9], pen: 0.045 },
+  { id: 'add9', iv: [0, 2, 4, 7], pen: 0.045 },
+  { id: '9', iv: [0, 2, 4, 7, 10], pen: 0.06 }
+];
+function ceMtof(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+function ceFtom(f) { return 69 + 12 * Math.log(f / 440) / Math.LN2; }
+
+// mags: linear magnitude per bin (length fftSize/2), sr: sample rate
+function cePeaks(mags, sr, fftSize) {
+  var binHz = sr / fftSize, out = [], max = 0, i;
+  var lo = Math.max(2, Math.floor(60 / binHz)), hi = Math.min(mags.length - 2, Math.floor(4200 / binHz));
+  for (i = lo; i <= hi; i++) if (mags[i] > max) max = mags[i];
+  if (max <= 0) return { peaks: out, max: 0 };
+  var thr = max * CE_CFG.thr;
+  for (i = lo; i <= hi; i++) {
+    var a = mags[i];
+    if (a < thr || a < mags[i - 1] || a < mags[i + 1] || a < mags[i - 2] || a < mags[i + 2]) continue;
+    // parabolic interpolation on log magnitude
+    var l = Math.log(mags[i - 1] + 1e-12), c = Math.log(a + 1e-12), r = Math.log(mags[i + 1] + 1e-12);
+    var d = l - 2 * c + r, off = d ? 0.5 * (l - r) / d : 0;
+    if (off > 0.5 || off < -0.5) off = 0;
+    out.push({ f: (i + off) * binHz, a: a / max });
+  }
+  return { peaks: out, max: max };
+}
+
+// Iterative multi-pitch estimation over spectral peaks (harmonic summation + partial subtraction)
+function ceNotes(peaks) {
+  var res = peaks.map(function (p) { return { f: p.f, a: p.a }; });
+  var notes = [], first = 0;
+  var tol = 0.035; // ~60 cents
+  var match = function (f, t) { var best = null, bd = 1, tt = t || tol; res.forEach(function (p) { var d = Math.abs(p.f / f - 1); if (d < tt && d < bd && p.a > 0.002) { bd = d; best = p; } }); return best; };
+  for (var it = 0; it < 6; it++) {
+    var bestS = 0, bestM = -1;
+    for (var m = 36; m <= 77; m++) {
+      var f0 = ceMtof(m), s = 0, fund = match(f0, CE_CFG.ftol);
+      if (!fund || fund.a < CE_CFG.fund) continue; // require some energy at the fundamental (guitar always has it)
+      for (var h = 1; h <= 8; h++) { var p = match(f0 * h); if (p) s += Math.sqrt(p.a) * (1 / (0.6 + 0.4 * h)); }
+      // octave-error guard: a note one octave down from a strong note only gets credit for odd harmonics it explains
+      if (s > bestS) { bestS = s; bestM = m; }
+    }
+    if (bestM < 0) break;
+    // octave correction: a lower note whose own fundamental is present and whose odd harmonics explain peaks wins
+    [12].forEach(function (d) {
+      var lowM = bestM - d; if (lowM < 36) return;
+      var fl = ceMtof(lowM), fp = match(fl), hp = match(ceMtof(bestM)); if (!fp || fp.a < CE_CFG.sub || (hp && fp.a < hp.a * CE_CFG.subr)) return;
+      var odd = 0; [3, 5].forEach(function (h) { var q = match(fl * h); if (q && q.a > 0.05) odd++; });
+      if (odd >= 1 && d === 12 ? true : odd >= 1) { bestM = lowM; }
+    });
+    if (!first) first = bestS;
+    if (bestS < first * CE_CFG.stop) break;
+    var f1 = ceMtof(bestM), base = match(f1), a1 = base ? base.a : 0;
+    notes.push({ m: bestM, s: bestS, a: a1 });
+    // subtract this note's expected partials
+    for (var h2 = 1; h2 <= 10; h2++) {
+      var pp = match(f1 * h2); if (!pp) continue;
+      pp.a = 0;
+    }
+  }
+  // prune notes that sit exactly on a strong harmonic (h3, h5, h6, h7) of a lower detected note and are much weaker
+  notes = notes.filter(function (n) {
+    return !notes.some(function (o) { var d = n.m - o.m; return (d === 19 || d === 28 || d === 31 || d === 34) && n.s < o.s * CE_CFG.pr; });
+  });
+  return notes;
+}
+
+// keyPcs: optional array of pitch classes of the current key (context), returns top candidates
+function ceRank(notes, keyPcs) {
+  if (!notes.length) return [];
+  var chroma = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass = null;
+  notes.forEach(function (n) { chroma[n.m % 12] += Math.sqrt(n.s); if (bass === null || n.m < bass) bass = n.m; });
+  var bpc = bass % 12, norm = Math.sqrt(chroma.reduce(function (t, v) { return t + v * v; }, 0)) || 1;
+  var cn = chroma.map(function (v) { return v / norm; });
+  var present = cn.map(function (v) { return v > CE_CFG.pres; });
+  var cands = [];
+  for (var r = 0; r < 12; r++) {
+    CE_TYPES.forEach(function (T) {
+      var tv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      T.iv.forEach(function (iv, k) { tv[(r + iv) % 12] = k === 2 && T.iv.length >= 3 && iv === 7 ? 0.75 : 1; });
+      var tn = Math.sqrt(tv.reduce(function (t, v) { return t + v * v; }, 0));
+      var dot = 0; for (var i = 0; i < 12; i++) dot += cn[i] * tv[i] / tn;
+      // must contain the root and the defining note (3rd / sus / dim 5th) when they matter
+      var hasRoot = present[r];
+      var def = T.iv[1]; var hasDef = present[(r + def) % 12];
+      var extraOut = 0; for (var j = 0; j < 12; j++) if (present[j] && !tv[j]) extraOut++;
+      var missing = 0; T.iv.forEach(function (iv) { if (!present[(r + iv) % 12] && iv !== 7) missing++; });
+      var mx = Math.max.apply(null, chroma) || 1, wv = chroma.map(function (v) { return v / mx; });
+      var expl = 0, unex = 0, miss = 0;
+      for (var q = 0; q < 12; q++) { if (tv[q]) expl += wv[q]; else unex += wv[q]; }
+      T.iv.forEach(function (iv) { var w = wv[(r + iv) % 12]; if (w < CE_CFG.pres) miss += (iv === 7 ? 0.35 : 1); });
+      var sc = expl - CE_CFG.lu * unex - CE_CFG.lm * miss - T.pen * 4 + (bpc === r ? CE_CFG.bb * 4 : 0);
+      if (keyPcs && keyPcs.length) { var inKey = T.iv.every(function (iv) { return keyPcs.indexOf((r + iv) % 12) >= 0; }); if (inKey) sc += 0.03; }
+      cands.push({ pc: r, id: T.id, score: sc, bass: bpc });
+    });
+  }
+  cands.sort(function (a, b) { return b.score - a.score; });
+  var top = cands.slice(0, 3), best = top[0] ? top[0].score : 0;
+  return top.filter(function (c, i) { return i === 0 || c.score > best - CE_CFG.gap; });
+}
+
+
 var TUNINGS = [
   // grp 'common' = most used, in order from standard downwards; 'alt' = open and rare tunings; 'other' = other instruments (tuner only)
   { id: 'std', grp: 'common', es: 'Estándar (la normal)', en: 'Standard (the normal one)', strs: 'E A D G B E', notes: [40,45,50,55,59,64], inst: 'guitar' },
@@ -2047,6 +2161,55 @@ class Component extends DCLogic {
       CS_SYNC = function () { self.acctPush(); };
       if (!ud || merged.length !== cloudSaved.length || JSON.stringify(learn) !== JSON.stringify((ud && ud.learn) || {})) self.acctPush();
     }).catch(function () { self.setState({ acctSync: 'err' }); });
+  }
+  earStop() {
+    if (this._ear) { try { this._ear.stream.getTracks().forEach(function (tr) { tr.stop(); }); } catch (e) {} if (this._ear.raf) cancelAnimationFrame(this._ear.raf); if (this._ear.to) clearTimeout(this._ear.to); this._ear = null; }
+  }
+  earListen() {
+    var self = this;
+    self.earStop(); self.stopMic && self._mic && self.stopMic(true);
+    var fail = function (msg) { self.earStop(); self.setState({ earPhase: 'err', earMsg: msg, earRes: [] }); };
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { fail(LX('Tu navegador no deja usar el micrófono aquí.', 'Your browser doesn’t allow the microphone here.')); return; }
+      self.setState({ earPhase: 'wait', earMsg: '', earRes: [], earLvl: 0 });
+      navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }).then(function (stream) {
+        var AC = window.AudioContext || window.webkitAudioContext; if (!self.ctx) self.ctx = new AC();
+        var ctx = self.ctx; if (ctx.state === 'suspended') ctx.resume();
+        var src = ctx.createMediaStreamSource(stream), an = ctx.createAnalyser(); an.fftSize = 16384; an.smoothingTimeConstant = 0; src.connect(an);
+        var td = new Float32Array(2048), fd = new Float32Array(an.frequencyBinCount), acc = new Float32Array(an.frequencyBinCount);
+        var E = { stream: stream, raf: 0, to: 0 }; self._ear = E;
+        var floor = 0, t0 = performance.now(), onset = 0, frames = 0, lastLvl = 0, lastF = 0;
+        E.to = setTimeout(function () { if (self._ear === E && !onset) fail(LX('No escuché ningún acorde. Acércate al micrófono y rasguea con fuerza.', 'I didn’t hear a chord. Get closer to the mic and strum firmly.')); }, 9000);
+        var step = function (ts) {
+          if (self._ear !== E) return;
+          an.getFloatTimeDomainData(td); var sum = 0; for (var i = 0; i < td.length; i++) sum += td[i] * td[i]; var rms = Math.sqrt(sum / td.length);
+          if (ts - lastLvl > 80) { lastLvl = ts; self.setState({ earLvl: Math.min(1, rms * 8) }); }
+          var el = performance.now() - t0;
+          if (!onset) {
+            if (el < 400) floor = Math.max(floor, rms);
+            else if (rms > Math.max(0.012, floor * 3)) { onset = performance.now(); self.setState({ earPhase: 'listen' }); }
+          } else {
+            var since = performance.now() - onset;
+            if (since > 140 && performance.now() - lastF > 55) {
+              lastF = performance.now(); an.getFloatFrequencyData(fd);
+              for (var k = 0; k < fd.length; k++) acc[k] += Math.pow(10, fd[k] / 20);
+              frames++;
+            }
+            if (since > 900 || frames >= 12) {
+              self.earStop();
+              var pk = cePeaks(acc, ctx.sampleRate, an.fftSize), notes = ceNotes(pk.peaks);
+              var keyPcs = []; (self.state.chords || []).forEach(function (c) { (typeof chordPcs === 'function' ? chordPcs(c) : []).forEach(function (p) { if (keyPcs.indexOf(p) < 0) keyPcs.push(p); }); });
+              var res = ceRank(notes, keyPcs).slice(0, 3);
+              if (!res.length || notes.length < 2) { fail(LX('No pude distinguir las notas. Prueba otra vez dejando sonar el acorde, sin apagar las cuerdas.', 'I couldn’t make out the notes. Try again and let the chord ring without muting the strings.')); return; }
+              self.setState({ earPhase: 'res', earRes: res, earMsg: '' });
+              return;
+            }
+          }
+          E.raf = requestAnimationFrame(step);
+        };
+        E.raf = requestAnimationFrame(step);
+      }).catch(function () { fail(LX('Necesito permiso para usar el micrófono. Actívalo en tu navegador y vuelve a intentar.', 'I need permission to use the microphone. Allow it in your browser and try again.')); });
+    } catch (e) { fail(LX('No se pudo usar el micrófono.', 'Couldn’t use the microphone.')); }
   }
   pickTuning(tu) {
     if (tu.notes.length === 6) { csSetGuitarTuning(tu.id); try { localStorage.setItem('cs_tun', tu.id); } catch (e) {} }
@@ -2939,8 +3102,32 @@ class Component extends DCLogic {
           pick: function () { var upd = { navOpen: false, ttTool: null, navMsg: n[3] ? label + T.soonMsg : '' }; if (!n[3]) upd.view = n[0]; self.setState(upd); } };
       }),
       navOpen: !!st.navOpen,
-      idShortcutTxt: LX('¿No sabes qué acorde estás tocando? Márcalo en el diapasón y te lo digo →', 'Don’t know what chord you’re playing? Mark it on the fretboard and I’ll name it →'),
-      idShortcut: function () { self.setState({ view: 'dic', dMode: 'id', pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
+      amLab: LX('Cómo agregar el acorde', 'How to add the chord'),
+      amTabs: [['pick', '✋', LX('Elegirlo', 'Pick it')], ['play', '🎤', LX('Tocarlo', 'Play it')], ['neck', '🎸', LX('Marcarlo en el diapasón', 'Mark it on the neck')]].map(function (a) { var on = (st.addMode || 'pick') === a[0]; return { icon: a[1], label: a[2], sel: on ? 'true' : 'false', pick: function () {
+        if (a[0] === 'neck') { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
+        if (a[0] !== 'play') self.earStop();
+        self.setState({ addMode: a[0] }); } }; }),
+      amPick: (st.addMode || 'pick') === 'pick', amPlay: st.addMode === 'play',
+      earTitle: LX('Toca el acorde y lo reconozco', 'Play the chord and I’ll recognize it'),
+      earHow: LX('Pulsa Escuchar, rasguea el acorde una vez y déjalo sonar. Funciona en cualquier afinación. Te muestro las opciones más probables con su diagrama en tu afinación para que confirmes.', 'Tap Listen, strum the chord once and let it ring. Works in any tuning. I’ll show the most likely options with their diagram in your tuning so you can confirm.'),
+      earIdle: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err', earListening: st.earPhase === 'listen' || st.earPhase === 'wait',
+      earGoLab: LX('Escuchar', 'Listen'),
+      earLiveTxt: st.earPhase === 'wait' ? LX('Escuchando… rasguea ahora', 'Listening… strum now') : LX('Analizando…', 'Analyzing…'),
+      earMeterStyle: 'width:' + Math.round(Math.min(1, st.earLvl || 0) * 100) + '%',
+      earCancel: function () { self.earStop(); self.setState({ earPhase: 'idle' }); },
+      earHasMsg: !!st.earMsg, earMsg: st.earMsg || '',
+      earHasRes: st.earPhase === 'res' && (st.earRes || []).length > 0,
+      earResLab: LX('¿Cuál estás tocando?', 'Which one are you playing?'),
+      earCands: (st.earRes || []).map(function (r, i) {
+        var c = mk(r.pc, r.id); var d = makeDiag(c, isGtr(st.inst) ? st.inst : 'guitar', es, nm(c), sp);
+        return { name: nm(c), diag: d, cls: 'ear-c' + (i === 0 ? ' best' : ''), tag: i === 0 ? LX('Más probable', 'Most likely') : LX('También puede ser', 'Could also be'),
+          playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: LX('Agregar', 'Add'),
+          play: function () { self.playSeq([c], st.inst); },
+          add: function () { self.setState({ chords: self.state.chords.concat([c]), focus: null, earPhase: 'idle', earRes: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm(c) + LX('. Toca el siguiente acorde o mira abajo qué puede seguir.', '. Play the next chord or see below what can come next.') }); } };
+      }),
+      earStart: function () { self.earListen(); },
+      earAgainLab: LX('Escuchar otra vez', 'Listen again'), earNoneLab: LX('Ninguno es: marcarlo en el diapasón', 'None of these: mark it on the neck'),
+      earToNeck: function () { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} },
       gtShow: isGtr(st.inst), gtTitle: LX('¿En qué afinación está tu guitarra?', 'What tuning is your guitar in?'),
       gtSub: LX('Si no sabes, es la estándar: la normal. Los diagramas de acordes se adaptan a la que elijas.', 'If you’re not sure, it’s standard: the normal one. Chord diagrams adapt to the one you pick.'),
       gtCommon: TUNINGS.filter(function (x) { return x.grp === 'common'; }).map(function (tu) { return self.gtItem(tu); }),
@@ -3024,7 +3211,9 @@ class Component extends DCLogic {
         full: (LX('', '')) + cd.T[LX('es', 'en')] + (idBass !== null && idBass !== cd.root ? (LX(', con ', ', with ')) + dSp(idBass) + (LX(' en el bajo', ' in the bass')) : ''),
         note: cd.missing ? T.idNo5 : (i === 0 ? T.idBest : T.idAlso),
         style: 'display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:150px;padding:14px 16px;border-radius:16px;cursor:pointer;text-align:left;font-family:Figtree,sans-serif;' + (i === 0 ? 'background:#21281A;border:1.5px solid #E8D872;color:#F4EDB8' : 'background:#16271F;border:1.5px solid #2F4A3B;color:#E4EDE2'),
-        open: function () { self.setState({ dMode: 'look', dRoot: cd.root, dType: DTYPES.indexOf(cd.T) }); } }; }),
+        open: function () { self.setState({ dMode: 'look', dRoot: cd.root, dType: DTYPES.indexOf(cd.T) }); },
+        addLab: LX('Agregar a mi progresión', 'Add to my progression'),
+        add: function () { var c = mkx(cd.root, cd.T.q || 'M', cd.T.sx); self.setState({ chords: (self.state.chords || []).concat([c]), view: 'gen', pickerOpen: true, addMode: 'pick', idFrets: [-1,-1,-1,-1,-1,-1], idKeys: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm2 + '.' }); setTimeout(function () { var el = document.querySelector('.tilerow'); if (el) try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 120); } }; }),
       tTunGroups: [['common', LX('Las más usadas', 'Most used')], ['alt', LX('Abiertas y poco comunes', 'Open and less common')], ['other', LX('Otros instrumentos', 'Other instruments')]].map(function (g) {
         return { title: g[1], items: TUNINGS.filter(function (x) { return x.grp === g[0]; }).map(function (tu) { var on = (st.tunId || 'std') === tu.id; return { label: tu[lang], strs: tu.strs, pressed: on ? 'true' : 'false', style: pill(on), pick: function () { self.pickTuning(tu); } }; }) };
       }),
