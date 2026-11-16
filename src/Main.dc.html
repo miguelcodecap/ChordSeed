@@ -483,6 +483,8 @@ footer .legal{flex-basis:100%;text-align:center;font-size:11px;color:#5E7766;let
 .pk-chip{font:700 13px 'JetBrains Mono',ui-monospace,monospace;padding:3px 8px;border-radius:8px;background:#16271F;color:#DDE8DC}.pk-chip.new{background:#E8D872;color:#10180F;animation:amIn .3s ease backwards}
 body:has(.pk-modal){overflow:hidden}
 .cs-picker.pk-modal > *{flex-shrink:0}
+.tilerow > .just-added{animation:justAdd 1.6s ease}
+@keyframes justAdd{0%{box-shadow:0 0 0 0 rgba(232,216,114,.0);transform:scale(.92)}25%{box-shadow:0 0 0 6px rgba(232,216,114,.55),0 0 28px rgba(232,216,114,.45);transform:scale(1.04)}100%{box-shadow:0 0 0 0 rgba(232,216,114,0);transform:none}}
 body:has(.pk-modal) .guide,body:has(.pk-modal) .gcoach,body:has(.pk-modal) .gc-ring,body:has(.pk-modal) .modtoast,body:has(.pk-modal) .lm-fab,body:has(.pk-modal) .hdr-sticky{visibility:hidden!important}
 body:has(.pk-modal) .mainwrap > section,body:has(.pk-modal) [id^="stp-"]{filter:none!important;transform:none!important;opacity:1!important;animation:none!important}
 @media (max-width:640px){
@@ -4217,6 +4219,8 @@ function cxApply(c, lvl, tonic) {
 function loadGd() { try { return JSON.parse(window.localStorage.getItem('cs_gd') || '{}') || {}; } catch (e) { return {}; } }
 function loadGuided() { try { return window.localStorage.getItem('cs_guided') !== '0'; } catch (e) { return true; } }
 function loadOnb() { try { return window.localStorage.getItem('chordseed.onb.v1') === '1'; } catch (e) { return false; } }
+function loadOnbSession() { try { return window.sessionStorage.getItem('chordseed.onb.s') === '1'; } catch (e) { return false; } }
+function storeOnbSession() { try { window.sessionStorage.setItem('chordseed.onb.s', '1'); } catch (e) {} }
 function loadLrnSeen() { try { return window.localStorage.getItem('chordseed.lrnseen.v1') === '1'; } catch (e) { return false; } }
 function storeFlag(k) { try { window.localStorage.setItem(k, '1'); } catch (e) {} }
 function loadLearn() { try { var raw = window.localStorage.getItem('chordseed.learn.v1'); var v = raw ? JSON.parse(raw) : {}; return v && typeof v === 'object' ? v : {}; } catch (e) { return {}; } }
@@ -4445,7 +4449,7 @@ class Component extends DCLogic {
 
   constructor(props) {
     super(props);
-    this.state = { lmGuest: loadLmGuest(), chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gcOff: (function () { try { return localStorage.getItem('cs_gcoff') === '1'; } catch (e) { return false; } })(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnb() };
+    this.state = { lmGuest: loadLmGuest(), chords: [], selRoot: 5, selQ: 'M', inst: 'guitar', pos: {}, focus: null, view: 'gen', aChords: [mk(0,'M'), mk(7,'M'), mk(9,'m'), mk(5,'M')], aPicker: false, aSel: 0, aHov: null, aCofHov: null, sMode: 'prog', sChords: null, sTarget: 'all', sRec: null, sRoot: 9, sType: 'mpent', sView: 'guitar', profileSet: loadOnb(), guided: loadGuided(), gd: loadGd(), gcOff: (function () { try { return localStorage.getItem('cs_gcoff') === '1'; } catch (e) { return false; } })(), gTip: false, addedSug: false, strummed: false, rhyIdx: 0, rhyPos: -1, lIdx: 0, lAns: null, lDone: loadLearn(), lRoot: 0, lQ: 'M', lIvl: 4, lNote: -1, dMode: 'look', dRoot: 9, dType: 5, dEasy: false, dView: 'g', idFrets: null, tunId: 'std', tunA: 440, tunMic: false, tunHz: null, tunMsg: '', mO: null, mD: null, mRoute: 0, mFlip: 0, mHov: null, reChords: null, reOpen: 1, reStyle: 'neo', reLevel: 1, reKeep: 'free', rePass: false, reEnd: 'same', reVar: 0, reHov: null, saved: loadSaved(), saveMsg: '', isPro: false, proMsg: '', pickerOpen: false, settingsOpen: false, advOpen: false, lang: initLang(), lat: false, learn: true, mood: 'any', cx: 0, sur: 1, count: 1, parts: {}, form: ['A'], editPart: 'A', partNames: {}, partSeed: 0, addOpen: false, bpm: null, ts: '4/4', feel: null, playing: null, band: true, reveal: 1, rOpen: false, fOpt: false, lm: false, lrnSeen: loadLrnSeen(), lrnKey: null, cxAsk: null, onb: loadOnbSession() };
   }
   _bus() {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -4804,6 +4808,16 @@ class Component extends DCLogic {
     } catch (e) { try { console.warn('[chordseed] audio', e && e.message); } catch (e2) {} }
   }
 
+  addChordDone(list) {
+    var self = this; this.earStop(); this._hovMute = Date.now() + 450;
+    this.setState({ chords: list, focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [], earMsg: '', gHov: null });
+    setTimeout(function () {
+      var row = document.querySelector('.tilerow'); if (!row) return;
+      try { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      var tiles = row.children, n = list.length - 1, t = tiles && tiles[n];
+      if (t) { t.classList.remove('just-added'); void t.offsetWidth; t.classList.add('just-added'); setTimeout(function () { t.classList.remove('just-added'); }, 1800); }
+    }, 90);
+  }
   gMark(k) { var g = Object.assign({}, this.state.gd || {}); if (g[k]) return; g[k] = true; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); }
   gMarkMany(ks, extra) { var g = Object.assign({}, this.state.gd || {}); ks.forEach(function (k) { g[k] = true; }); delete g.tourDone; this._gcPend = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState(Object.assign({ gd: g }, extra || {})); }
   gUnmark(k) { var g = Object.assign({}, this.state.gd || {}), i = -1; GC_SUBS.forEach(function (x, j) { if (x[1] === k) i = j; }); GC_SUBS.forEach(function (x, j) { if (j >= i) delete g[x[1]]; }); this._gcPend = null; if (this._gcEl) this._gcEl._hid = null; try { localStorage.setItem('cs_gd', JSON.stringify(g)); } catch (e) {} this.setState({ gd: g }); var self = this; setTimeout(function () { var tg = self._gc && document.querySelector(self._gc.sel); if (tg) try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 80); }
@@ -5313,7 +5327,7 @@ class Component extends DCLogic {
         return { name: nm(c), diag: d, cls: 'ear-c' + (i === 0 ? ' best' : ''), tag: i === 0 ? LX('Más probable', 'Most likely') : LX('También puede ser', 'Could also be'),
           playLab: LX('Escuchar ', 'Play ') + nm(c), addLab: LX('Agregar', 'Add'),
           play: function () { self.playSeq([c], st.inst); },
-          add: function () { if (guidedOn) { self.earStop(); self.setState({ chords: self.state.chords.concat([c]), focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [] }); return; } self.setState({ chords: self.state.chords.concat([c]), focus: null, pkAdded: true, earPhase: 'idle', earRes: [], earMsg: LX('✓ Agregué ', '✓ Added ') + nm(c) + LX('. Toca el siguiente acorde o mira abajo qué puede seguir.', '. Play the next chord or see below what can come next.') }); } };
+          add: function () { self.addChordDone(self.state.chords.concat([c])); } };
       }),
       earStart: function () { self.earListen(); },
       earAgainLab: LX('Escuchar otra vez', 'Listen again'), earNoneLab: LX('Ninguno es: marcarlo en el diapasón', 'None of these: mark it on the neck'),
@@ -6080,8 +6094,8 @@ class Component extends DCLogic {
       onbTools: NAV_ORDER.map(function (id) { return NAV.filter(function (n) { return n[0] === id; })[0]; }).filter(Boolean).map(function (n) { var on = (st.onbTool || 'gen') === n[0]; return { icon: NAV_ICON[n[0]] || '•', label: NAV_TAB[n[0]] ? NAV_TAB[n[0]][es ? 0 : 1] : n[es ? 1 : 2], desc: n[es ? 4 : 5], style: 'all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:16px;border:1.5px solid ' + (on ? '#E8D872' : '#24392E') + ';background:' + (on ? '#21281A' : '#0A1510'), pick: function () { self.setState({ onbTool: n[0] }); } }; }),
       onbAgainLab: LX('Ver la bienvenida otra vez', 'Show the welcome again'), onbAgain: function () { try { window.localStorage.removeItem('cs_gd'); } catch (e) {} self.setState({ gd: {} }); try { window.localStorage.removeItem('chordseed.onb.v1'); } catch (x) {} self.setState({ onb: false, settingsOpen: false }); },
       onbSkipLab: LX('Saltar', 'Skip'), onbGoLab: LX('Empezar →', 'Start →'),
-      onbSkip: function () { storeFlag('chordseed.onb.v1'); self.setState({ onb: true }); },
-      onbGo: function () { storeFlag('chordseed.onb.v1'); self.gMark('inst'); self.gMark('genre'); self.setState({ onb: true, profileSet: true, onbAns: true, view: st.onbTool || 'gen' }); },
+      onbSkip: function () { storeFlag('chordseed.onb.v1'); storeOnbSession(); self.setState({ onb: true }); },
+      onbGo: function () { storeFlag('chordseed.onb.v1'); storeOnbSession(); self.gMark('inst'); self.gMark('genre'); self.setState({ onb: true, profileSet: true, onbAns: true, view: st.onbTool || 'gen' }); },
       lrn_tools: function () { if (!self.state.lrnSeen) storeFlag('chordseed.lrnseen.v1'); self.setState({ lrnKey: 'tools', lrnSeen: true }); },
       lrnTag_tools: (LX('Aprende: ', 'Learn: ')) + LEARN['tools'][LX('es', 'en')][0],
       lrn_start: function () { if (!self.state.lrnSeen) storeFlag('chordseed.lrnseen.v1'); self.setState({ lrnKey: 'start', lrnSeen: true }); },
@@ -6545,13 +6559,13 @@ class Component extends DCLogic {
       selDesc: selQ[lang] + ' · ' + (es ? selQ.des : selQ.den),
       focusSel: setFocus({ type: 'sel', i: 0 }),
       playSel: function () { self.playSeq([sel]); },
-      addSel: function () { var up = { chords: chs.concat([sel]), focus: null, pkAdded: true }; if (guidedOn && self._gc && self._gc.k === 'add') up.pickerOpen = false; self.setState(up); },
+      addSel: function () { self.addChordDone(chs.concat([sel])); },
       hovClose: function () { self.setState({ gHov: null }); },
       selHov: st.gHov === 'sel', selHovX: st.gHov === 'sel' ? 'true' : 'false', selCloud: st.gHov === 'sel' ? dg(sel) : null,
       selShow: function () { self.setState({ gHov: self.state.gHov === 'sel' ? null : 'sel' }); },
       diatonic: pool.filter(function (p) { return p.d && !(k.mode === 'min' && p.r === 'v'); }).map(function (p, di) {
         var c = { pc: (k.t + p.o) % 12, q: p.q, ext: '', sx: sfx(p, 0) }, h = hvr('d' + di);
-        return { hov: h.hov, cloud: h.hov ? dg(c) : null, enter: h.enter, leave: h.leave, name: nm(c), roman: p.r, aria: T.add + ' ' + nm(c), pick: function () { self.setState({ chords: chs.concat([c]), focus: null }); self.playSeq([c]); } };
+        return { hov: h.hov, cloud: h.hov ? dg(c) : null, enter: h.enter, leave: h.leave, name: nm(c), roman: p.r, aria: T.add + ' ' + nm(c), pick: function () { self.addChordDone(chs.concat([c])); self.playSeq([c]); } };
       }),
       examples: EXAMPLES.map(function (ex) {
         var list = ex.map(function (e) { return mk(e[0], e[1]); });
