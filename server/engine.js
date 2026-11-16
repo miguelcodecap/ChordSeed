@@ -724,7 +724,8 @@ function csAuthErr(e, es) {
 /* ===== Pagos (Polar, merchant of record) =====
    on:false = public beta (Pro free for signed-in users). ?pay=1 shows the plan picker anyway (real Polar checkout).
    Checkout is created server-side by /api/checkout; Pro is activated by /api/polar-webhook. */
-var CS_PAY = { on: false, provider: 'polar' };
+var CS_PAY = { on: true, provider: 'polar' };
+var CS_BETA_END = '2027-03-01'; function csInBeta() { try { return new Date().toISOString().slice(0, 10) < CS_BETA_END; } catch (e) { return false; } }
 var CS_PAY_TEST = false; try { CS_PAY_TEST = /[?&]pay=1\b/.test(window.location.search); } catch (e) {}
 function csPayOn() { return CS_PAY.on || CS_PAY_TEST; }
 
@@ -4012,16 +4013,17 @@ class Component extends DCLogic {
       acctEmail: st.user ? st.user.email : '',
       acctPlanLab: LX('Plan', 'Plan'), acctPlan: st.isPro ? (st.sub && st.sub.status === 'trialing' && !st.sub.paddle_subscription_id ? LX('Pro ✦ · gratis en la beta', 'Pro ✦ · free during beta') : 'Pro ✦') : LX('Gratis', 'Free'), acctPlanStyle: st.isPro ? 'color:#F0E39A' : 'color:#C9D6C6',
       acctCanUpgrade: !!st.user && (!st.isPro || (csPayOn() && !(st.sub && st.sub.paddle_subscription_id))),
-      hdrProShow: !st.isPro || (csPayOn() && !!st.user && !(st.sub && st.sub.paddle_subscription_id)), hdrProLab: LX('Hazte Pro', 'Go Pro'), hdrProTip: csPayOn() ? LX('Ver los planes Pro', 'See Pro plans') : LX('Durante la beta, Pro es gratis con tu cuenta', 'During the beta, Pro is free with your account'),
+      hdrProShow: !st.isPro || (csPayOn() && !!st.user && !(st.sub && st.sub.paddle_subscription_id)), hdrProLab: (csInBeta() && st.isPro) ? LX('Hazte Fundador', 'Become a Founder') : LX('Hazte Pro', 'Go Pro'), hdrProTip: csPayOn() ? LX('Ver los planes Pro', 'See Pro plans') : LX('Durante la beta, Pro es gratis con tu cuenta', 'During the beta, Pro is free with your account'),
       payOpen: !!st.payOpen,
-      payTitle: LX('Elige tu plan Pro', 'Choose your Pro plan'),
+      payTitle: csInBeta() ? LX('Apoya Chordseed como Fundador', 'Back Chordseed as a Founder') : LX('Elige tu plan Pro', 'Choose your Pro plan'),
       paySay: LX('Todo lo de Pro: frases de hasta 8 acordes, acordes extendidos, sorpresa atrevida, canciones en la nube y guardado sin límite.', 'Everything in Pro: phrases up to 8 chords, extended chords, bold surprise, songs in the cloud and unlimited saves.'),
+      payBeta: csInBeta(), payBetaTxt: LX('Durante la beta (hasta el 1 de marzo de 2027) Pro es gratis para todos con cuenta. Si quieres apoyar el proyecto desde ya, el plan Fundador te deja Pro para siempre, con un solo pago. Los planes mensual ($3.99) y anual ($29) se abren al terminar la beta.', 'During the beta (until March 1, 2027) Pro is free for everyone with an account. If you want to back the project now, the Founder plan gives you Pro forever with a single payment. Monthly ($3.99) and yearly ($29) plans open when the beta ends.'),
       payTest: false, payTestTxt: LX('Modo de prueba: usa la tarjeta 4242 4242 4242 4242, cualquier fecha futura y CVC 100. No se cobra nada.', 'Test mode: use card 4242 4242 4242 4242, any future date and CVC 100. Nothing is charged.'),
       payPlans: [
         { k: 'month', name: LX('Mensual', 'Monthly'), price: '$3.99', per: LX('/ mes', '/ month'), note: LX('Cancela cuando quieras', 'Cancel anytime'), best: false },
         { k: 'year', name: LX('Anual', 'Yearly'), price: '$29', per: LX('/ año', '/ year'), note: LX('Ahorras 39% · unos $2.42 al mes', 'Save 39% · about $2.42 a month'), best: true },
         { k: 'founder', name: LX('Fundador', 'Founder'), price: '$49', per: LX('una vez', 'one time'), note: LX('Pro para siempre, sin renovaciones', 'Pro forever, no renewals'), best: false }
-      ].map(function (p) {
+      ].filter(function (p) { return !csInBeta() || p.k === 'founder'; }).map(function (p) {
         return { name: p.name, price: p.price, per: p.per, note: p.note, best: p.best, bestLab: LX('Mejor precio', 'Best value'), cls: 'pay-plan' + (p.best ? ' best' : ''), cta: st.payBusy === p.k ? LX('Abriendo…', 'Opening…') : LX('Elegir', 'Choose'),
           pick: function () { self.payCheckout(p.k); } };
       }),
