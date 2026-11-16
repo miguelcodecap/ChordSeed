@@ -2623,7 +2623,7 @@ class Component extends DCLogic {
       if (gc.alt) { var ab = mk('button', 'gc-alt', gc.altLab); ab.type = 'button'; ab.addEventListener('click', function () { var g = self._gc; if (g && g.alt) g.alt(); }); row.appendChild(ab); }
       var kb = mk('button', 'gc-keep', gc.keepLab); kb.type = 'button'; if (!gc.keepLab) kb.style.display = 'none'; kb.addEventListener('click', function () { var g = self._gc; if (g && g.keep && g.keepOk()) g.keep(); }); row.appendChild(kb);
       box.appendChild(row);
-      var offB = mk('button', 'gc-off', LX('Salir del modo guiado', 'Exit guided mode')); offB.type = 'button';
+      var offB = mk('button', 'gc-off'); offB.type = 'button'; var offSw = mk('span', 'gc-sw'); offSw.appendChild(mk('i')); offB.appendChild(offSw); offB.appendChild(mk('span', '', LX('Quitar modo guiado (usar libre)', 'Turn off guided mode (explore freely)')));
       offB.addEventListener('click', function () { try { localStorage.setItem('cs_guided', '0'); localStorage.setItem('cs_gtip', '1'); } catch (e) {} box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); box._k = null; self.setState({ guided: false, gTip: false }); });
       box.appendChild(offB);
       var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); box._hid = self._gc ? self._gc.key : null; self.forceUpdate(); }); box.appendChild(xb);
