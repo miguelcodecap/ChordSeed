@@ -1,6 +1,6 @@
 import { guitarFrets, parseChordName, chordName } from '/home/claude/chordseed/server/engine.js';
 import { createRequire } from 'module'; const require = createRequire(import.meta.url);
-const E = require('./chordear.js' /* copy of the ear functions from src/Main.dc.html */);
+const E = require(process.env.CE || './chordear.js');
 const SR = 44100, N = 16384;
 let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 function ks(f, dur, vel) { const n = Math.floor(SR * dur), out = new Float32Array(n), p = Math.max(2, Math.round(SR / f)); const buf = new Float32Array(p); for (let i = 0; i < p; i++) buf[i] = (rnd() * 2 - 1) * vel; let idx = 0; for (let i = 0; i < n; i++) { const a = buf[idx], b = buf[(idx + 1) % p]; const v = 0.996 * 0.5 * (a + b); out[i] = a; buf[idx] = v; idx = (idx + 1) % p; } return out; }

@@ -1244,16 +1244,101 @@ function cePeaks(mags, sr, fftSize) {
 }
 
 // Iterative multi-pitch estimation over spectral peaks (harmonic summation + partial subtraction)
-function ceNotes(peaks) {
+/* Ear lab: ?earlab=1 — records labelled strums so the recognizer can be tuned on real instruments */
+function csEarLab() {
+  var NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+  var LIST = ['C', 'G', 'D', 'A', 'E', 'Am', 'Em', 'Dm', 'F', 'Bm', 'C7', 'G7', 'D7', 'Cmaj7', 'Am7', 'Em7', 'Dsus4', 'Asus2', 'Bdim', 'Fmaj7'];
+  var es = (navigator.language || 'es').slice(0, 2) !== 'en';
+  var L = function (a, b) { return es ? a : b; };
+  var css = '#earlab{position:fixed;inset:0;z-index:9999;background:#07100C;color:#F1F4EA;font:15px Figtree,system-ui,sans-serif;overflow:auto;padding:20px}#earlab .w{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}#earlab h1{font:400 30px "Cormorant Garamond",Georgia,serif;margin:0}#earlab p{margin:0;color:#B5C7B8;line-height:1.5}#earlab .big{font:700 64px "JetBrains Mono",monospace;text-align:center;color:#E8D872;margin:8px 0}#earlab button{min-height:48px;border-radius:14px;border:1px solid #2F4A3B;background:#16271F;color:#F1F4EA;font:600 16px Figtree,sans-serif;padding:0 18px;cursor:pointer}#earlab button.go{background:#E8D872;color:#10180F;border:0}#earlab .row{display:flex;gap:8px;flex-wrap:wrap}#earlab input{min-height:44px;border-radius:12px;border:1px solid #2F4A3B;background:#0E1B15;color:#F1F4EA;padding:0 12px;font:600 16px Figtree}#earlab .log{font:13px "JetBrains Mono",monospace;color:#9FB3A4;white-space:pre-wrap}#earlab .st{text-align:center;font-weight:700}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+  var root = document.createElement('div'); root.id = 'earlab'; document.body.appendChild(root);
+  var samples = [], idx = 0, ctx = null, stream = null, busy = false, tuneName = '';
+  function nm(c) { return NAMES[c.pc] + ({ M: '', m: 'm', '7': '7', maj7: 'maj7', m7: 'm7', sus4: 'sus4', sus2: 'sus2', dim: 'dim', '6': '6', m6: 'm6', add9: 'add9', '9': '9' })[c.id]; }
+  function render(msg) {
+    var done = idx >= LIST.length;
+    root.innerHTML = '<div class="w"><h1>' + L('Laboratorio del oído', 'Ear lab') + '</h1><p>' + L('Toca cada acorde cuando te lo pida. Graba 1,5 segundos, intenta reconocerlo y guarda la muestra. Al final descarga el archivo y mándamelo para afinar el reconocimiento con tu guitarra real.', 'Play each chord when asked. It records 1.5 seconds, tries to recognise it and keeps the sample. At the end, download the file and send it so recognition can be tuned on your real guitar.') + '</p>' +
+      '<div class="row"><input id="el-tun" placeholder="' + L('Afinación (ej. estándar, Drop D)', 'Tuning (e.g. standard, Drop D)') + '" value="' + tuneName + '" style="flex:1"><input id="el-ins" placeholder="' + L('Instrumento y celular', 'Instrument & phone') + '" style="flex:1"></div>' +
+      (done ? '<p class="st">' + L('¡Listo! ', 'Done! ') + samples.length + L(' muestras.', ' samples.') + '</p>' : '<p style="text-align:center">' + L('Acorde ', 'Chord ') + (idx + 1) + ' / ' + LIST.length + '</p><div class="big">' + LIST[idx] + '</div>' +
+      '<div class="row" style="justify-content:center"><button class="go" id="el-rec">' + (busy ? L('Escuchando… rasguea', 'Listening… strum') : L('Grabar', 'Record')) + '</button><button id="el-skip">' + L('Saltar', 'Skip') + '</button></div>' +
+      '<div class="row" style="justify-content:center"><input id="el-lab" placeholder="' + L('o escribe otro acorde que toques', 'or type another chord you play') + '" style="width:260px"><button id="el-own">' + L('Grabar ese', 'Record that') + '</button></div>') +
+      '<p class="st" id="el-msg">' + (msg || '') + '</p>' +
+      '<div class="row" style="justify-content:center"><button class="go" id="el-dl"' + (samples.length ? '' : ' disabled') + '>' + L('Descargar muestras', 'Download samples') + ' (' + samples.length + ')</button><button id="el-x">' + L('Salir', 'Exit') + '</button></div>' +
+      '<div class="log">' + samples.map(function (x) { return (x.ok ? '✓ ' : '✗ ') + x.label + ' → ' + x.guess.join(' / '); }).join('\n') + '</div></div>';
+    var q = function (id) { return document.getElementById(id); };
+    q('el-tun').oninput = function (e) { tuneName = e.target.value; };
+    if (q('el-rec')) q('el-rec').onclick = function () { rec(LIST[idx], true); };
+    if (q('el-skip')) q('el-skip').onclick = function () { idx++; render(); };
+    if (q('el-own')) q('el-own').onclick = function () { var v = (q('el-lab').value || '').trim(); if (v) rec(v, false); };
+    q('el-dl').onclick = download;
+    q('el-x').onclick = function () { try { stream && stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} root.remove(); history.replaceState(null, '', location.pathname); };
+  }
+  function ensure() {
+    if (stream) return Promise.resolve();
+    return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }).then(function (s) { stream = s; var AC = window.AudioContext || window.webkitAudioContext; ctx = new AC(); });
+  }
+  function rec(label, adv) {
+    if (busy) return; busy = true; render();
+    ensure().then(function () {
+      if (ctx.state === 'suspended') ctx.resume();
+      var src = ctx.createMediaStreamSource(stream), sp = ctx.createScriptProcessor(4096, 1, 1), buf = [], total = 0, onset = -1, floor = 0, t0 = ctx.currentTime, SR = ctx.sampleRate, need = Math.floor(SR * 1.6);
+      var mute = ctx.createGain(); mute.gain.value = 0; src.connect(sp); sp.connect(mute); mute.connect(ctx.destination);
+      var stopAll = function () { try { sp.disconnect(); src.disconnect(); mute.disconnect(); } catch (e) {} };
+      var tout = setTimeout(function () { if (onset < 0) { stopAll(); busy = false; render(L('No escuché nada. Acércate y rasguea fuerte.', 'Heard nothing. Get closer and strum firmly.')); } }, 9000);
+      sp.onaudioprocess = function (ev) {
+        var d = ev.inputBuffer.getChannelData(0), c = new Float32Array(d); var rms = 0; for (var i = 0; i < c.length; i++) rms += c[i] * c[i]; rms = Math.sqrt(rms / c.length);
+        if (onset < 0) { buf.push(c); if (buf.length > 3) buf.shift(); if (ctx.currentTime - t0 < 0.4) floor = Math.max(floor, rms); else if (rms > Math.max(0.012, floor * 3)) { onset = 1; total = 0; buf = buf.slice(-1); buf.push(c); total = buf.length * 4096; } return; }
+        buf.push(c); total += c.length;
+        if (total >= need) { clearTimeout(tout); stopAll(); finish(label, adv, buf, SR); }
+      };
+    }).catch(function () { busy = false; render(L('Necesito permiso del micrófono.', 'Microphone permission needed.')); });
+  }
+  function finish(label, adv, chunks, SR) {
+    var n = chunks.reduce(function (t, c) { return t + c.length; }, 0), pcm = new Float32Array(n), o = 0; chunks.forEach(function (c) { pcm.set(c, o); o += c.length; });
+    // recognise like the app: average 16384-pt spectra over the first second
+    var N = 16384, acc = new Float32Array(N / 2), frames = 0;
+    for (var st0 = Math.floor(0.14 * SR) + 4096; st0 + N <= pcm.length && frames < 10; st0 += Math.floor(0.06 * SR), frames++) { var sp = ceFFTmag(pcm, st0, N); for (var k = 0; k < acc.length; k++) acc[k] += sp[k]; }
+    var pk = cePeaks(acc, SR, N), notes = ceNotes(pk.peaks), res = ceRank(notes, null);
+    var guess = res.map(nm), want = typeof parseChordName === 'function' ? parseChordName(label) : null;
+    var ok = !!(want && res[0] && res[0].pc === want.pc && nm(res[0]).replace(/^[A-G][#b]?/, '') === (want.sx || ''));
+    var i16 = new Int16Array(pcm.length); for (var z = 0; z < pcm.length; z++) i16[z] = Math.max(-32768, Math.min(32767, Math.round(pcm[z] * 32767)));
+    var bin = ''; var u8 = new Uint8Array(i16.buffer); for (var y = 0; y < u8.length; y += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(y, y + 0x8000));
+    samples.push({ label: label, sr: SR, pcm16: btoa(bin), guess: guess, ok: ok, tuning: ceTuning(pk.peaks), notes: notes.map(function (x) { return x.m; }) });
+    busy = false; if (adv) idx++;
+    render((ok ? '✓ ' : '✗ ') + L('Escuché: ', 'Heard: ') + (guess.join(' / ') || '—'));
+  }
+  function download() {
+    var meta = { tuning: tuneName, device: (document.getElementById('el-ins') || {}).value || '', ua: navigator.userAgent, at: new Date().toISOString() };
+    var blob = new Blob([JSON.stringify({ meta: meta, samples: samples })], { type: 'application/json' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chordseed-oido-' + Date.now() + '.json'; document.body.appendChild(a); a.click(); setTimeout(function () { a.remove(); }, 500);
+  }
+  render();
+}
+function ceFFTmag(sig, st, N) {
+  var re = new Float64Array(N), im = new Float64Array(N), i, j = 0;
+  for (i = 0; i < N; i++) { var w = 0.42 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1)) + 0.08 * Math.cos(4 * Math.PI * i / (N - 1)); re[i] = (sig[st + i] || 0) * w; }
+  for (i = 1; i < N; i++) { var bit = N >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { var t = re[i]; re[i] = re[j]; re[j] = t; } }
+  for (var len = 2; len <= N; len <<= 1) { var ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang); for (i = 0; i < N; i += len) { var cr = 1, ci = 0; for (var k = 0; k < len / 2; k++) { var a = i + k, b = a + len / 2, vr = re[b] * cr - im[b] * ci, vi = re[b] * ci + im[b] * cr; re[b] = re[a] - vr; im[b] = im[a] - vi; re[a] += vr; im[a] += vi; var tt = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = tt; } } }
+  var out = new Float32Array(N / 2); for (i = 0; i < N / 2; i++) out[i] = Math.hypot(re[i], im[i]); return out;
+}
+function ceTuning(peaks) {
+  // estimate how far the instrument is from A440 (in semitones, -0.5..0.5) from the strongest peaks
+  var sx = 0, sy = 0;
+  peaks.forEach(function (p) { if (p.f < 70 || p.f > 1400 || p.a < 0.08) return; var m = ceFtom(p.f), d = m - Math.round(m), w = p.a * p.a; sx += w * Math.cos(2 * Math.PI * d); sy += w * Math.sin(2 * Math.PI * d); });
+  if (!sx && !sy) return 0;
+  return Math.atan2(sy, sx) / (2 * Math.PI);
+}
+function ceNotes(peaks, tun) {
   var res = peaks.map(function (p) { return { f: p.f, a: p.a }; });
+  var off = typeof tun === 'number' ? tun : ceTuning(peaks); var mtof = function (m) { return ceMtof(m + off); };
   var notes = [], first = 0;
   var tol = 0.035; // ~60 cents
   var match = function (f, t) { var best = null, bd = 1, tt = t || tol; res.forEach(function (p) { var d = Math.abs(p.f / f - 1); if (d < tt && d < bd && p.a > 0.002) { bd = d; best = p; } }); return best; };
   for (var it = 0; it < 6; it++) {
     var bestS = 0, bestM = -1;
     for (var m = 36; m <= 77; m++) {
-      var f0 = ceMtof(m), s = 0, fund = match(f0, CE_CFG.ftol);
-      if (!fund || fund.a < CE_CFG.fund) continue; // require some energy at the fundamental (guitar always has it)
+      var f0 = mtof(m), s = 0, fund = match(f0, CE_CFG.ftol);
+      if (!fund || fund.a < CE_CFG.fund) { var h2p = match(f0 * 2), h3p = match(f0 * 3); if (!(m < 52 && h2p && h3p && h2p.a > 0.15 && h3p.a > 0.08)) continue; } // require some energy at the fundamental (guitar always has it)
       for (var h = 1; h <= 8; h++) { var p = match(f0 * h); if (p) s += Math.sqrt(p.a) * (1 / (0.6 + 0.4 * h)); }
       // octave-error guard: a note one octave down from a strong note only gets credit for odd harmonics it explains
       if (s > bestS) { bestS = s; bestM = m; }
@@ -1262,13 +1347,13 @@ function ceNotes(peaks) {
     // octave correction: a lower note whose own fundamental is present and whose odd harmonics explain peaks wins
     [12].forEach(function (d) {
       var lowM = bestM - d; if (lowM < 36) return;
-      var fl = ceMtof(lowM), fp = match(fl), hp = match(ceMtof(bestM)); if (!fp || fp.a < CE_CFG.sub || (hp && fp.a < hp.a * CE_CFG.subr)) return;
+      var fl = mtof(lowM), fp = match(fl), hp = match(mtof(bestM)); if (!fp || fp.a < CE_CFG.sub || (hp && fp.a < hp.a * CE_CFG.subr)) return;
       var odd = 0; [3, 5].forEach(function (h) { var q = match(fl * h); if (q && q.a > 0.05) odd++; });
       if (odd >= 1 && d === 12 ? true : odd >= 1) { bestM = lowM; }
     });
     if (!first) first = bestS;
     if (bestS < first * CE_CFG.stop) break;
-    var f1 = ceMtof(bestM), base = match(f1), a1 = base ? base.a : 0;
+    var f1 = mtof(bestM), base = match(f1), a1 = base ? base.a : 0;
     notes.push({ m: bestM, s: bestS, a: a1 });
     // subtract this note's expected partials
     for (var h2 = 1; h2 <= 10; h2++) {
@@ -1283,7 +1368,6 @@ function ceNotes(peaks) {
   return notes;
 }
 
-// keyPcs: optional array of pitch classes of the current key (context), returns top candidates
 function ceRank(notes, keyPcs) {
   if (!notes.length) return [];
   var chroma = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass = null;
@@ -2032,6 +2116,7 @@ function seqKey(list) { return list.map(function (c) { return c.pc + ':' + c.q +
 
 class Component extends DCLogic {
   componentDidMount() {
+    try { if (/[?&]earlab=1/.test(location.search)) setTimeout(csEarLab, 600); } catch (e) {}
     var selfK = this; try { document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && selfK.state.pkModal && selfK.state.pickerOpen) { selfK.earStop(); selfK.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); } }); } catch (e) {}
     try {
       if (/[?&]paid=1\b/.test(window.location.search)) {
