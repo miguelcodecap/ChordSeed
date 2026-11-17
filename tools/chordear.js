@@ -38,16 +38,24 @@ function cePeaks(mags, sr, fftSize) {
 }
 
 // Iterative multi-pitch estimation over spectral peaks (harmonic summation + partial subtraction)
-function ceNotes(peaks) {
+function ceTuning(peaks) {
+  // estimate how far the instrument is from A440 (in semitones, -0.5..0.5) from the strongest peaks
+  var sx = 0, sy = 0;
+  peaks.forEach(function (p) { if (p.f < 70 || p.f > 1400 || p.a < 0.08) return; var m = ceFtom(p.f), d = m - Math.round(m), w = p.a * p.a; sx += w * Math.cos(2 * Math.PI * d); sy += w * Math.sin(2 * Math.PI * d); });
+  if (!sx && !sy) return 0;
+  return Math.atan2(sy, sx) / (2 * Math.PI);
+}
+function ceNotes(peaks, tun) {
   var res = peaks.map(function (p) { return { f: p.f, a: p.a }; });
+  var off = typeof tun === 'number' ? tun : ceTuning(peaks); var mtof = function (m) { return ceMtof(m + off); };
   var notes = [], first = 0;
   var tol = 0.035; // ~60 cents
   var match = function (f, t) { var best = null, bd = 1, tt = t || tol; res.forEach(function (p) { var d = Math.abs(p.f / f - 1); if (d < tt && d < bd && p.a > 0.002) { bd = d; best = p; } }); return best; };
   for (var it = 0; it < 6; it++) {
     var bestS = 0, bestM = -1;
     for (var m = 36; m <= 77; m++) {
-      var f0 = ceMtof(m), s = 0, fund = match(f0, CE_CFG.ftol);
-      if (!fund || fund.a < CE_CFG.fund) continue; // require some energy at the fundamental (guitar always has it)
+      var f0 = mtof(m), s = 0, fund = match(f0, CE_CFG.ftol);
+      if (!fund || fund.a < CE_CFG.fund) { var h2p = match(f0 * 2), h3p = match(f0 * 3); if (!(m < 52 && h2p && h3p && h2p.a > 0.15 && h3p.a > 0.08)) continue; } // require some energy at the fundamental (guitar always has it)
       for (var h = 1; h <= 8; h++) { var p = match(f0 * h); if (p) s += Math.sqrt(p.a) * (1 / (0.6 + 0.4 * h)); }
       // octave-error guard: a note one octave down from a strong note only gets credit for odd harmonics it explains
       if (s > bestS) { bestS = s; bestM = m; }
@@ -56,13 +64,13 @@ function ceNotes(peaks) {
     // octave correction: a lower note whose own fundamental is present and whose odd harmonics explain peaks wins
     [12].forEach(function (d) {
       var lowM = bestM - d; if (lowM < 36) return;
-      var fl = ceMtof(lowM), fp = match(fl), hp = match(ceMtof(bestM)); if (!fp || fp.a < CE_CFG.sub || (hp && fp.a < hp.a * CE_CFG.subr)) return;
+      var fl = mtof(lowM), fp = match(fl), hp = match(mtof(bestM)); if (!fp || fp.a < CE_CFG.sub || (hp && fp.a < hp.a * CE_CFG.subr)) return;
       var odd = 0; [3, 5].forEach(function (h) { var q = match(fl * h); if (q && q.a > 0.05) odd++; });
       if (odd >= 1 && d === 12 ? true : odd >= 1) { bestM = lowM; }
     });
     if (!first) first = bestS;
     if (bestS < first * CE_CFG.stop) break;
-    var f1 = ceMtof(bestM), base = match(f1), a1 = base ? base.a : 0;
+    var f1 = mtof(bestM), base = match(f1), a1 = base ? base.a : 0;
     notes.push({ m: bestM, s: bestS, a: a1 });
     // subtract this note's expected partials
     for (var h2 = 1; h2 <= 10; h2++) {
@@ -111,4 +119,4 @@ function ceRank(notes, keyPcs) {
   return top.filter(function (c, i) { return i === 0 || c.score > best - CE_CFG.gap; });
 }
 
-if (typeof module !== 'undefined') module.exports = { CE_CFG: CE_CFG, cePeaks: cePeaks, ceNotes: ceNotes, ceRank: ceRank, CE_TYPES: CE_TYPES, ceMtof: ceMtof };
+if (typeof module !== 'undefined') module.exports = { ceTuning: ceTuning, CE_CFG: CE_CFG, cePeaks: cePeaks, ceNotes: ceNotes, ceRank: ceRank, CE_TYPES: CE_TYPES, ceMtof: ceMtof };
