@@ -2722,11 +2722,13 @@ class Component extends DCLogic {
   }
   addChordDone(list) {
     var self = this; this.earStop(); this._hovMute = Date.now() + 450;
-    this.setState({ chords: list, focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [], earMsg: '', gHov: null });
+    var inline = !!this.state.pickerOpen && !this.state.pkModal;
+    if (inline) this.setState({ chords: list, focus: null, earPhase: 'idle', earRes: [], earMsg: '', gHov: null, pkAdded: true });
+    else this.setState({ chords: list, focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [], earMsg: '', gHov: null });
     setTimeout(function () {
       if (!self._tipT && !self.state.tip) setTimeout(function () { self.tipNext(null); }, 900);
       var row = document.querySelector('.tilerow'); if (!row) return;
-      try { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      if (!inline) try { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
       var tiles = row.children, n = list.length - 1, t = tiles && tiles[n];
       if (t) { t.classList.remove('just-added'); void t.offsetWidth; t.classList.add('just-added'); setTimeout(function () { t.classList.remove('just-added'); }, 1800); }
     }, 90);
@@ -2850,7 +2852,7 @@ class Component extends DCLogic {
     var keyName = chs.length ? spell(k.t, flats, st.lat) + ' ' + (k.mode === 'maj' ? T.major : T.minor) : '';
 
     var pickerOpen = !!st.pickerOpen;
-    var pkModal = pickerOpen;
+    var pkModal = pickerOpen && !!st.pkModal;
     var amMode = st.addMode === 'play' ? 'play' : st.addMode === 'choose' ? 'choose' : 'pick';
     var step = chs.length === 0 ? 1 : (st.mood === 'any' ? 2 : 3);
     var stepLabels = [T.s1, T.s2, T.s3];
@@ -3211,7 +3213,8 @@ class Component extends DCLogic {
         ['play', 'M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3zM5 11a7 7 0 0 0 14 0M12 18v3', LX('Tocarlo en tu instrumento', 'Play it on your instrument'), LX('Rasguéalo una vez y lo reconozco con el micrófono.', 'Strum it once and I’ll recognize it with the mic.')],
         ['neck', 'M3 8h18M3 12h18M3 16h18M7 5v14M12 5v14M17 5v14', LX('Marcarlo en el diapasón', 'Mark it on the neck'), LX('Toca los trastes que pisas y te digo qué acorde es.', 'Tap the frets you press and I’ll tell you the chord.')]
       ].map(function (a) { var on = amMode === a[0]; return { path: a[1], label: a[2], desc: a[3], beta: a[0] === 'play', sel: on ? 'true' : 'false', pick: function () {
-        if (a[0] === 'neck') { self.earStop(); self.setState({ view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
+        try { localStorage.setItem('cs_addpref', a[0]); } catch (e) {}
+        if (a[0] === 'neck') { self.earStop(); self.setState({ pkModal: false, view: 'dic', dMode: 'id', idFromSong: true, pickerOpen: false, navOpen: false }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
         if (a[0] !== 'play') self.earStop();
         self._hovMute = Date.now() + 450; self.setState({ addMode: a[0], gHov: null }); } }; }),
       amPick: amMode === 'pick', amPlay: amMode === 'play',
@@ -3747,7 +3750,14 @@ class Component extends DCLogic {
       hasChords: chs.length > 0,
       pickerOpen: pickerOpen,
       pickerExpanded: pickerOpen ? 'true' : 'false',
-      togglePicker: function () { if (pickerOpen) { self.earStop(); self.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); return; } self._hovMute = Date.now() + 450; self.setState({ pickerOpen: true, pkModal: true, addMode: 'choose', pkAdded: false, earPhase: 'idle', earRes: null, gHov: null }); setTimeout(function () { var b = document.querySelector('.pk-modal .am-card'); if (b) try { b.focus({ preventScroll: true }); } catch (e) {} }, 80); },
+      togglePicker: function () {
+        if (pickerOpen) { self.earStop(); self.setState({ pickerOpen: false, pkModal: false, addMode: 'pick' }); return; }
+        var pref = null; try { pref = localStorage.getItem('cs_addpref'); } catch (e) {}
+        self._hovMute = Date.now() + 450;
+        if (pref === 'neck') { self.setState({ view: 'dic', dMode: 'id', idFromSong: true, navOpen: false, gHov: null }); try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {} return; }
+        if (pref === 'pick' || pref === 'play') { self.setState({ pickerOpen: true, pkModal: false, addMode: pref, pkAdded: false, earPhase: 'idle', earRes: null, gHov: null }); setTimeout(function () { var pk = document.querySelector('.cs-picker'); if (pk) try { pk.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {} }, 80); return; }
+        self.setState({ pickerOpen: true, pkModal: true, addMode: 'choose', pkAdded: false, earPhase: 'idle', earRes: null, gHov: null }); setTimeout(function () { var b = document.querySelector('.pk-modal .am-card'); if (b) try { b.focus({ preventScroll: true }); } catch (e) {} }, 80);
+      },
       addTileStyle: 'width:124px;height:124px;flex:none;box-sizing:border-box;border-radius:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px dashed ' + (pickerOpen ? '#E8D872' : '#2F4A3B') + ';background:' + (pickerOpen ? '#21281A' : 'transparent') + ';color:' + (pickerOpen ? '#F0E39A' : '#C5D3C6'),
       settingsOpen: st.settingsOpen,
       settingsExpanded: st.settingsOpen ? 'true' : 'false',
