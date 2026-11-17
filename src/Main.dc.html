@@ -314,10 +314,12 @@ body:has(.pk-modal) .tiptoast{display:none}
   .sfilter{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px;padding:0 14px 2px;scrollbar-width:none}
   .sfilter>button{flex:none}
   .songs{grid-template-columns:minmax(0,1fr)}
-  .cloud{pointer-events:auto;position:fixed;z-index:150;max-height:85vh;overflow-y:auto;left:0;right:0;bottom:0;top:auto;padding:12px 16px calc(18px + env(safe-area-inset-bottom));background:rgba(9,20,22,.97);border-top:1px solid #2F4A3B;border-radius:22px 22px 0 0;box-shadow:0 -24px 60px rgba(0,0,0,.6)}
+  .cloud{pointer-events:auto;position:fixed!important;z-index:150;max-height:85vh;overflow-y:auto;left:0!important;right:0!important;bottom:0!important;top:auto!important;padding:12px 16px calc(18px + env(safe-area-inset-bottom));background:rgba(9,20,22,.97);border-top:1px solid #2F4A3B;border-radius:22px 22px 0 0;box-shadow:0 -24px 60px rgba(0,0,0,.6)}
   .cloud-in{filter:none;animation:sheetUp .25s cubic-bezier(.2,.9,.3,1) both}
   .cloud-x{display:inline-flex}
   body:has(.tile .cloud) .modtoast,body:has(.tile .cloud) .guide,body:has(.tile .cloud) .lm-fab{display:none!important}
+  body:has(.cloud-sel) .modtoast,body:has(.cloud-sel) .guide,body:has(.cloud-sel) .lm-fab,body:has(.cloud-sel) .tiptoast{display:none!important}
+  .cloud-sel::before{content:'';display:block;width:44px;height:5px;border-radius:9px;background:#3B5A47;margin:0 auto 10px}
 }
 @keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 /* ===== Bosque encantado oscuro ===== */
@@ -964,7 +966,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
               <button class="ghost" onClick="{{selShow}}" aria-expanded="{{selHovX}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3v18M13 3v18M5 9h14M5 15h14"></path></svg>{{t.seeHow}}</button>
               <button class="ghost" onClick="{{playSel}}" aria-label="{{t.listen}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button>
-              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
+              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud cloud-sel" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
               <button class="btn" onClick="{{addSel}}">+ {{t.add}} {{selName}}</button>
               <button class="ghost" onClick="{{togglePicker}}">{{t.close}}</button>
             </div>
@@ -1925,7 +1927,7 @@ body.cs-scrolling .fo-atmo *,body.cs-scrolling .sage{animation-play-state:paused
             <div style="position:relative;display:flex;flex-wrap:wrap;gap:8px">
               <button class="ghost" onClick="{{selShow}}" aria-expanded="{{selHovX}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 3v18M13 3v18M5 9h14M5 15h14"></path></svg>{{t.seeHow}}</button>
               <button class="ghost" onClick="{{playSel}}" aria-label="{{t.listen}}"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"></path></svg></button>
-              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
+              <sc-if value="{{selHov}}" hint-placeholder-val="{{ false }}"><div class="cloud cloud-sel" style="top:auto;bottom:100%;left:auto;right:0;padding:0 0 8px"><div class="cloud-in"><dc-import name="Diagram" diag="{{selCloud}}" hint-size="220px,240px"></dc-import><button class="ghost cloud-x" onClick="{{hovClose}}">{{t.close}}</button></div></div></sc-if>
               <button class="btn" onClick="{{aAddSel}}">+ {{t.add}} {{selName}}</button>
               <button class="ghost" onClick="{{toggleAPicker}}">{{t.close}}</button>
             </div>
