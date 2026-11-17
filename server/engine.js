@@ -2706,10 +2706,25 @@ class Component extends DCLogic {
     } catch (e) { try { console.warn('[chordseed] audio', e && e.message); } catch (e2) {} }
   }
 
+  tipNext(after) {
+    var self = this, order = ['bars', 'rhythm'], seen = function (k) { try { return localStorage.getItem('cs_tip_' + k) === '1'; } catch (e) { return true; } };
+    var i = after ? order.indexOf(after) + 1 : 0, k = null;
+    for (; i < order.length; i++) if (!seen(order[i])) { k = order[i]; break; }
+    clearTimeout(this._tipT);
+    if (!k) { this.setState({ tip: null }); return; }
+    try { localStorage.setItem('cs_tip_' + k, '1'); } catch (e) {}
+    this.setState({ tip: k });
+    setTimeout(function () {
+      var el = k === 'bars' ? (function () { var r = document.querySelector('.tilerow'); var t = r && r.children[(self.state.chords || []).length - 1]; return t && t.querySelector('.tdur'); })() : document.querySelector('[data-g="rhythm"]');
+      if (el) { el.classList.remove('tip-glow'); void el.offsetWidth; el.classList.add('tip-glow'); setTimeout(function () { el.classList.remove('tip-glow'); }, 6600); if (k === 'rhythm') try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+    }, 120);
+    this._tipT = setTimeout(function () { self.tipNext(k); }, 9000);
+  }
   addChordDone(list) {
     var self = this; this.earStop(); this._hovMute = Date.now() + 450;
     this.setState({ chords: list, focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [], earMsg: '', gHov: null });
     setTimeout(function () {
+      if (!self._tipT && !self.state.tip) setTimeout(function () { self.tipNext(null); }, 900);
       var row = document.querySelector('.tilerow'); if (!row) return;
       try { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
       var tiles = row.children, n = list.length - 1, t = tiles && tiles[n];
@@ -3219,6 +3234,11 @@ class Component extends DCLogic {
       earSub: st.earPhase === 'wait' ? LX('Rasguea el acorde una vez y déjalo sonar. Toca el círculo para cancelar.', 'Strum the chord once and let it ring. Tap the circle to cancel.') : st.earPhase === 'listen' ? LX('Déjalo sonar un segundo más', 'Let it ring a second longer') : st.earPhase === 'res' ? LX('Ordenados del más probable al menos. Escúchalos y elige.', 'Sorted from most to least likely. Listen and pick.') : st.earPhase === 'err' ? LX('Toca el micrófono para intentarlo otra vez.', 'Tap the microphone to try again.') : LX('Después rasguea el acorde una vez. Lo reconozco y te muestro cómo se toca.', 'Then strum the chord once. I’ll recognize it and show you how to play it.'),
       earShowHint: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err',
       earH1: LX('Cualquier afinación', 'Any tuning'), earH2: LX('Guitarra, piano o ukelele', 'Guitar, piano or ukulele'),
+      tipShow: !!st.tip && !st.pickerOpen,
+      tipIc: st.tip === 'rhythm' ? 'ic ic-sliders' : 'ic ic-note',
+      tipTitle: st.tip === 'rhythm' ? LX('Ritmo y duración', 'Rhythm and length') : LX('¿Cuánto dura cada acorde?', 'How long does each chord last?'),
+      tipText: st.tip === 'rhythm' ? LX('Justo debajo de tu progresión, en “Ritmo y duración”, eliges el compás (4/4, 3/4…), la velocidad y el patrón de rasgueo. Puedes marcar el tempo tocando y sumar batería y bajo.', 'Right below your progression, in “Rhythm and length”, you choose the time signature (4/4, 3/4…), the speed and the strumming pattern. You can tap the tempo and add drums and bass.') : LX('Debajo de cada acorde, con − y + eliges cuántos compases suena: 1 compás = 4 tiempos en 4/4 (cuenta “1, 2, 3, 4”). Con 2 compases suena el doble. Los puntitos muestran los tiempos.', 'Under each chord, use − and + to choose how many bars it plays: 1 bar = 4 beats in 4/4 (count “1, 2, 3, 4”). 2 bars play twice as long. The dots show the beats.'),
+      tipClose: function () { var k = self.state.tip; self.tipNext(k); },
       earIdle: !st.earPhase || st.earPhase === 'idle' || st.earPhase === 'err', earListening: st.earPhase === 'listen' || st.earPhase === 'wait',
       earGoLab: LX('Escuchar', 'Listen'),
       earLiveTxt: st.earPhase === 'wait' ? LX('Escuchando… rasguea ahora', 'Listening… strum now') : LX('Analizando…', 'Analyzing…'),
