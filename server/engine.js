@@ -349,10 +349,22 @@ function loadBank(ctx, inst) {
   }).catch(function () { BANK_LOADING[inst] = false; });
 }
 function nearSmp(bank, m) { var best = bank[0]; bank.forEach(function (x) { if (Math.abs(x.m - m) < Math.abs(best.m - m)) best = x; }); return best; }
+// leading silence of a sample (seconds): trimmed so every instrument hits exactly on the grid
+function smpOnset(b) {
+  if (!b) return 0; if (b._on != null) return b._on;
+  try {
+    var d = b.getChannelData(0), n = Math.min(d.length, Math.floor(b.sampleRate * 0.25)), mx = 0, i;
+    for (i = 0; i < n; i++) { var a = Math.abs(d[i]); if (a > mx) mx = a; }
+    var thr = mx * 0.06, at = 0; for (i = 0; i < n; i++) if (Math.abs(d[i]) >= thr) { at = i; break; }
+    b._on = Math.max(0, at / b.sampleRate - 0.002);
+  } catch (e) { b._on = 0; }
+  return b._on;
+}
 function smpVoice(ctx, smp, m, st, stop, det) {
   var src = ctx.createBufferSource(); src.buffer = smp.b; src.playbackRate.value = Math.pow(2, (m - smp.m) / 12); src.detune.value = det || 0;
   if (smp.loop) { src.loop = true; src.loopStart = smp.b._ls; src.loopEnd = smp.b._le; }
-  src.start(st); src.stop(stop); return src;
+  var on = smpOnset(smp.b);
+  src.start(st, on); src.stop(stop); return src;
 }
 function playSample(ctx, out, inst, m, st, len, vel, ring) {
   var bank = BANKS[inst]; if (!bank) return false;
@@ -1778,23 +1790,26 @@ function ampBus(ctx, out, tone, side) {
   return inp;
 }
 var DRUMS = {
-  rock:   { k:'x-------x-x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', c:1 },
-  pop:    { k:'x-----x---x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-' },
-  ballad: { k:'x-------x-------', s:'----x-------x---', h:'x---x---x---x---', soft:1 },
-  metal:  { k:'x-x-x-x-x-x-x-x-', s:'----x-------x---', h:'x---x---x---x---', c:1 },
-  reggae: { k:'--------x-------', r:'--------x-------', h:'x-x-x-x-x-x-x-x-', b:'x-------x-------' },
-  shuffle:{ k:'x-------x-------', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', swing:1 },
-  jazz:   { k:'x---x---x---x---', y:'x---x-xx----x-xx', h:'----x-------x---', swing:1, soft:1, walk:1 },
-  funk:   { k:'x--x--x---x-----', s:'----x--x-x--x---', h:'xxxxxxxxxxxxxxxx', b:'x--x--x---x--x--' },
-  dembow: { k:'x---x---x---x---', s:'---x--x----x--x-', h:'x-x-x-x-x-x-x-x-', b:'x--x--x-x--x--x-' },
-  bossa:  { k:'x-----x-x-----x-', r:'x--x--x---x--x--', h:'x-x-x-x-x-x-x-x-', soft:1, b:'x-----x-x-----x-' },
-  bolero: { k:'x-------x-------', r:'x---x-x-x---x-x-', h:'x---x---x---x---', soft:1, b:'x-------x---x---' },
-  lofi:   { k:'x------xx-x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', swing:1, soft:1 },
-  waltz:  { k:'x-----------', s:'----x---x---', h:'x---x---x---', soft:1, b:'x-----------' },
-  six8:   { k:'x-----------', s:'------x-----', h:'x-x-x-x-x-x-', soft:1, b:'x-----x-----' },
-  five:   { k:'x-----x-------------', y:'x---x-x-x---x-x-x---', s:'------------x-------', swing:1, soft:1, b:'x-----x-----x---x---' }
+  rock:   { k:'x-------x-x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', c:1, bass:'eighths', b:'x-x-x-x-x-x-x-x-', fill:'s-s-t-t-' },
+  pop:    { k:'x-----x---x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', g:'-------x------x-', bass:'root', b:'x-----x---x---x-', fill:'s-s-s-ss' },
+  ballad: { k:'x-------x-------', s:'----x-------x---', h:'x---x---x---x---', soft:1, bass:'root', b:'x-------x-------' },
+  metal:  { k:'x-x-x-x-x-x-x-x-', s:'----x-------x---', h:'x---x---x---x---', c:1, bass:'pedal', b:'x-x-x-x-x-x-x-x-', fill:'ssssttss' },
+  reggae: { k:'--------x-------', r:'--------x-------', h:'x-x-x-x-x-x-x-x-', b:'x-------x-------', bass:'drop' },
+  shuffle:{ k:'x-------x-------', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', swing:1, swAmt:0.33, bass:'boogie', b:'x-x-x-x-x-x-x-x-', fill:'s-s-t-t-' },
+  jazz:   { k:'x---x---x---x---', y:'x---x-xx----x-xx', h:'----x-------x---', swing:1, swAmt:0.26, soft:1, walk:1 },
+  funk:   { k:'x--x--x---x-----', s:'----x--x-x--x---', h:'xxxxxxxxxxxxxxxx', g:'--x--------x--x-', b:'x--x--x---x--x--', bass:'octave', fill:'s-ss-sss' },
+  dembow: { k:'x---x---x---x---', s:'---x--x----x--x-', h:'x-x-x-x-x-x-x-x-', b:'x--x--x-x--x--x-', bass:'root' },
+  bossa:  { k:'x-----x-x-----x-', r:'x--x--x---x--x--', h:'x-x-x-x-x-x-x-x-', soft:1, b:'x-----x-x-----x-', bass:'fifth' },
+  bolero: { k:'x-------x-------', r:'x---x-x-x---x-x-', h:'x---x---x---x---', soft:1, b:'x-------x---x---', bass:'fifth' },
+  lofi:   { k:'x------xx-x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', swing:1, swAmt:0.2, soft:1, bass:'root', b:'x------xx-------' },
+  neo:    { k:'x------x--x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', g:'---------x----x-', swing:1, swAmt:0.14, soft:1, bass:'root', b:'x------x--x---x-' },
+  gospel: { k:'x-------x-x-----', s:'----x-------x---', h:'x-x-x-x-x-x-x-x-', soft:1, bass:'octave', b:'x-------x-x---x-', fill:'s-s-t-t-' },
+  folk:   { k:'x-------x-------', s:'----x-------x---', h:'x---x---x---x---', soft:1, bass:'fifth', b:'x-------x-------' },
+  waltz:  { k:'x-----------', s:'----x---x---', h:'x---x---x---', soft:1, b:'x-----------', bass:'root' },
+  six8:   { k:'x-----------', s:'------x-----', h:'x-x-x-x-x-x-', soft:1, b:'x-----x-----', bass:'fifth' },
+  five:   { k:'x-----x-------------', y:'x---x-x-x---x-x-x---', s:'------------x-------', swing:1, swAmt:0.26, soft:1, b:'x-----x-----x---x---', bass:'root' }
 };
-var GENRE_DRUM = { pop:'pop', rock:'rock', hard:'rock', metal:'metal', folk:'ballad', neo:'lofi', lofi:'lofi', citypop:'pop', jazz:'jazz', gospel:'ballad', funk:'funk', blues:'shuffle', bossa:'bossa', bolero:'bolero', urbano:'dembow', cine:'', clasico:'' };
+var GENRE_DRUM = { pop:'pop', rock:'rock', hard:'rock', metal:'metal', folk:'folk', neo:'neo', lofi:'lofi', citypop:'funk', jazz:'jazz', gospel:'gospel', funk:'funk', blues:'shuffle', bossa:'bossa', bolero:'bolero', urbano:'dembow', cine:'', clasico:'' };
 function bandFor(style, ts) { if (!style || !DRUMS[style]) return null; if (ts === '4/4') return style; if (ts === '3/4') return 'waltz'; if (ts === '6/8') return 'six8'; if (ts === '5/4') return 'five'; return null; }
 var SONG_ARR = {
   'Counting Stars':['guitar','pop'],
@@ -1861,6 +1876,7 @@ function drumHit(ctx, out, kind, t, vel) {
   else if (kind === 'r') { nHit(ctx, out, t, 'bandpass', 2400, 5, 0.5 * vel, 0.035); tHit(ctx, out, t, 'triangle', 820, 780, 0.12 * vel, 0.03); }
   else if (kind === 'y') { nHit(ctx, out, t, 'highpass', 5500, 0.6, 0.09 * vel, 0.4); nHit(ctx, out, t, 'bandpass', 8500, 2, 0.06 * vel, 0.25); }
   else if (kind === 'c') { nHit(ctx, out, t, 'highpass', 4200, 0.5, 0.16 * vel, 1.4); }
+  else if (kind === 't') { tHit(ctx, out, t, 'sine', 140, 90, 0.7 * vel, 0.22); nHit(ctx, out, t, 'bandpass', 900, 1, 0.1 * vel, 0.05); }
 }
 function playBass(ctx, out, m, t, len, vel) {
   var o = ctx.createOscillator(), o2 = ctx.createOscillator(), f = ctx.createBiquadFilter(), g = ctx.createGain(), g2 = ctx.createGain(), end = t + Math.max(0.1, len);
@@ -2392,8 +2408,12 @@ class Component extends DCLogic {
       if (feel === 'style' && FEELS.style.arpAll) feel = 'arp';
       var pat = FEELS[feel].p[ts] || new Array(barE + 1).join('x');
       var SP = feel === 'style' && ts === '4/4' ? FEELS.style.sp : null;
-      var swing = feel === 'swing' || (feel === 'style' && FEELS.style.swing);
-      var t0 = ctx.currentTime + 0.1, pos = 0;
+      var D = o.band ? DRUMS[o.band] : null;
+      var swing = feel === 'swing' || (feel === 'style' && FEELS.style.swing) || !!(D && D.swing);
+      // one swing ratio shared by chords, drums and bass (fraction of an eighth the off-beat is delayed)
+      var swAmt = !swing ? 0 : (D && D.swAmt != null ? D.swAmt : 0.3);
+      if (swing && bpm > 150) swAmt *= 0.75;
+      var t0 = ctx.currentTime + 0.12, pos = 0;
       if (o.mel && o.mel.start < 0) t0 += -o.mel.start * beat;
       var strike = function (m, time, len, vel, ring, mute) {
         if (inst === 'eguitar') { egStrike(ctx, out, m, time, len, vel, ring, mute, wide); return; }
@@ -2405,7 +2425,7 @@ class Component extends DCLogic {
       var gStr = {}, sTempo = Math.max(0.6, Math.min(1.5, 100 / bpm));
       var choke = function (sIdx, t) { var h = gStr[sIdx]; if (h && h.g) { try { h.g.gain.cancelScheduledValues(t); h.g.gain.setTargetAtTime(0.0001, t, 0.018); } catch (e) {} } };
       var scratch = function (t, v, up) { if (inst !== 'guitar') return; try { var nz = ctx.createBufferSource(); nz.buffer = noiseBuf(ctx); var bp2 = ctx.createBiquadFilter(); bp2.type = 'bandpass'; bp2.frequency.value = up ? 4200 : 3000; bp2.Q.value = 0.9; var ng = ctx.createGain(); ng.gain.setValueAtTime(0.0001, t); ng.gain.linearRampToValueAtTime(0.035 * v, t + 0.004); ng.gain.setTargetAtTime(0.0001, t + 0.01, up ? 0.012 : 0.02); nz.connect(bp2); bp2.connect(ng); ng.connect(out._sb || out); nz.start(t); nz.stop(t + 0.15); } catch (e) {} };
-      var GROOVE = [0, 0.009, -0.002, 0.012, 0.001, 0.010, -0.003, 0.014], drift = 0, barLvl = 1;
+      var GROOVE = [0, 0.003, -0.002, 0.004, 0, 0.003, -0.002, 0.004], drift = 0, barLvl = 1;
       var gStrum = function (ns, time, dir, vel, dur, ring, top, mute, bp) {
         var n = ns.length, list = ns.map(function (m, k) { return { m: m, s: 5 - (n - 1 - k), k: k }; });
         if (dir === 'U') { var reach = Math.min(n, (top || 4) - 1 + Math.floor(Math.random() * 3)); list = list.slice(-reach); }
@@ -2413,9 +2433,11 @@ class Component extends DCLogic {
         else if (n > 4 && Math.random() < 0.25) list = list.slice(1);
         if (dir === 'U') list.reverse();
         if (bp === 0) barLvl = 0.93 + Math.random() * 0.12;
-        drift = drift * 0.75 + (Math.random() - 0.5) * 0.007;
+        drift = drift * 0.6 + (Math.random() - 0.5) * 0.004;
         var vv = Math.max(0.25, Math.min(1, vel * barLvl));
-        var gap = (dir === 'U' ? 0.0075 : (heavy ? 0.006 : 0.016)) * sTempo * (1.25 - vv * 0.45), t0s = time + (bp != null ? GROOVE[bp % 8] * sTempo : 0) + drift;
+        // total strum spread stays musical (≈25–55 ms) and is centred so the loud part lands on the beat
+        var gap = (dir === 'U' ? 0.0065 : (heavy ? 0.005 : 0.0105)) * Math.min(1.25, sTempo) * (1.2 - vv * 0.35);
+        var spread = gap * Math.max(0, list.length - 1), t0s = time - spread * 0.3 + (bp != null ? GROOVE[bp % 8] : 0) + drift;
         scratch(t0s, vv, dir === 'U');
         list.forEach(function (x, j) {
           var t = t0s + j * gap * (0.8 + Math.random() * 0.4);
@@ -2440,17 +2462,17 @@ class Component extends DCLogic {
         if (o.ap) {
           var u = o.u || 1;
           if (o.hb) [notes[0], notes[0] - 12].forEach(function (m) { strike(m, t0 + pos * s16, len * s16 * 0.98, 0.6, last); });
-          for (var e2 = 0; e2 < len; e2 += u) { var idx = o.ap[(e2 / u) % o.ap.length]; strike(notes[Math.min(idx, notes.length - 1)], t0 + (pos + e2) * s16, u * s16 * 2.5, 0.62 + (e2 === 0 ? 0.1 : 0), last && e2 + u >= len); }
+          for (var e2 = 0; e2 < len; e2 += u) { var idx = o.ap[(e2 / u) % o.ap.length]; strike(notes[Math.min(idx, notes.length - 1)], t0 + (pos + e2) * s16 + (swing && (pos + e2) % 4 === 2 ? e8 * swAmt : 0), u * s16 * 2.5, 0.62 + (e2 === 0 ? 0.1 : 0), last && e2 + u >= len); }
         } else {
           var hits = [];
-          if (SP && SP.length === 8 && !FEELS.style.comp && inst === 'guitar') { for (var gq = 0; gq < len; gq += 2) { var gp = pos + gq, gbp = Math.floor(gp / 2) % barE; if (SP.charAt(gbp) === '-' && Math.random() < 0.45) ghost(t0 + gp * s16 + GROOVE[gbp % 8] * sTempo, 0.6 + Math.random() * 0.4); } }
+          if (SP && SP.length === 8 && !FEELS.style.comp && inst === 'guitar') { for (var gq = 0; gq < len; gq += 2) { var gp = pos + gq, gbp = Math.floor(gp / 2) % barE; if (SP.charAt(gbp) === '-' && Math.random() < 0.45) ghost(t0 + gp * s16 + (swing && gp % 4 === 2 ? e8 * swAmt : 0) + GROOVE[gbp % 8] * sTempo, 0.6 + Math.random() * 0.4); } }
           var SP16 = SP && SP.length === 16;
           for (var e = 0; e < len; e++) { var p16 = pos + e; if (SP16 ? (e === 0 || SP.charAt(p16 % 16) !== '-') : (e === 0 || (feel !== 'long' && p16 % 2 === 0 && pat.charAt((p16 / 2) % barE) === 'x'))) hits.push(e); }
           var upper = notes.length > 3 ? notes.slice(1) : notes;
           var arpSeq = [notes[0]].concat(upper, upper.slice(1, -1).reverse());
           hits.forEach(function (e, hi) {
             var p16 = pos + e, bp = Math.floor(p16 / 2) % barE, nxt = hi + 1 < hits.length ? hits[hi + 1] : len;
-            var time = t0 + p16 * s16 + (swing && p16 % 2 === 0 && bp % 2 === 1 ? e8 * 0.33 : 0);
+            var time = t0 + p16 * s16 + (swing && p16 % 4 === 2 ? e8 * swAmt : 0);
             var dur = (nxt - e) * s16 * 0.96, ring = last && hi === hits.length - 1;
             var chgCut = function (d) { return (!last && hi === hits.length - 1 && gtr) ? d * 0.72 : d; };
             if (ring) dur = Math.max(dur, 1.4);
@@ -2508,29 +2530,68 @@ class Component extends DCLogic {
         }
         pos += len;
       });
-      var D = o.band ? DRUMS[o.band] : null;
       if (D) {
         var dg = ctx.createGain(); dg.gain.value = D.soft ? 0.075 : 0.095; dg.connect(out);
         var bg = ctx.createGain(); bg.gain.value = 0.2; bg.connect(out);
-        var plen = (D.k || D.y || D.h).length, bpat = D.b || D.k || '';
-        var sw = function (p) { return (D.swing && p % 4 === 2) ? s16 * 0.66 : 0; };
+        var plen = (D.k || D.y || D.h).length, bpat = D.b || D.k || '', bsty = D.bass || 'root';
+        var sw = function (p) { return (swing && p % 4 === 2) ? e8 * swAmt : 0; };
+        var barP = barE * 2, total = pos, lastBarStart = Math.max(0, total - barP);
+        var hum = function () { return (Math.random() - 0.5) * 0.004; };
         if (D.c) drumHit(ctx, dg, 'c', t0, 0.8);
         var bassHits = [];
         for (var p = 0; p < pos; p++) {
           var sb = p % plen, time = t0 + p * s16 + sw(sb), ca = chordAt[p];
-          ['k', 's', 'h', 'r', 'y'].forEach(function (kd) { if (D[kd] && D[kd].charAt(sb) === 'x') drumHit(ctx, dg, kd, time, D.walk ? (kd === 'k' ? 0.28 : kd === 'y' ? (sb % 4 === 0 ? 0.9 : 0.62) : 0.8) : (kd === 'h' && sb % 4 !== 0 ? 0.7 : 1)); });
-          if (D.walk) { if (sb % 4 === 0) bassHits.push(p); }
+          var inFill = D.fill && p >= lastBarStart + barP / 2 && total >= barP * 2;
+          if (inFill) {
+            // short fill on the last half bar so the loop breathes and the repeat lands on a crash
+            var fp = p - (lastBarStart + barP / 2), fpat = D.fill;
+            if (fpat.charAt(fp % fpat.length) === 's') drumHit(ctx, dg, 's', time, 0.55 + 0.45 * fp / (barP / 2));
+            if (fpat.charAt(fp % fpat.length) === 't') drumHit(ctx, dg, 't', time, 0.8);
+            if (D.k && D.k.charAt(sb) === 'x' && sb % 8 === 0) drumHit(ctx, dg, 'k', time, 0.9);
+          } else {
+            ['k', 's', 'h', 'r', 'y', 'g'].forEach(function (kd) {
+              if (!D[kd] || D[kd].charAt(sb) !== 'x') return;
+              var v = 1;
+              if (D.walk) v = kd === 'k' ? 0.28 : kd === 'y' ? (sb % 4 === 0 ? 0.9 : 0.62) : 0.8;
+              else if (kd === 'h') v = sb % 4 === 0 ? 0.95 : (sb % 2 === 0 ? 0.62 : 0.42);
+              else if (kd === 'g') v = 0.22;
+              drumHit(ctx, dg, kd === 'g' ? 's' : kd, time + (kd === 'k' || kd === 's' ? 0 : hum()), v);
+            });
+          }
+          if (ca.start && p > 0 && D.c && (p % (barP * 4) === 0)) drumHit(ctx, dg, 'c', time, 0.55);
+          if (D.walk || bsty === 'walk') { if (p % 4 === 0) bassHits.push(p); }
           else if (ca.start || bpat.charAt(sb) === 'x') bassHits.push(p);
         }
+        if (total >= barP * 2 && D.c) drumHit(ctx, dg, 'c', t0 + total * s16, 0.7);
+        var tones = function (c) { var third = (c.q === 'm' || c.q === 'dim') ? 3 : 4, fifth = c.q === 'dim' ? 6 : 7, sev = /7|9/.test(c.sx || '') ? ((c.sx || '').indexOf('maj') >= 0 ? 11 : 10) : null; return { third: third, fifth: fifth, sev: sev }; };
+        var cnt = 0, prevC = null;
         bassHits.forEach(function (p, bi) {
-          var ca = chordAt[p], nx = Math.min(bi + 1 < bassHits.length ? bassHits[bi + 1] : pos, ca.endAt), root = bassNote(ca.c.pc), m = root;
-          if (D.walk) {
-            var k4 = ((p / 4) | 0) % 4, nextC = chordAt[Math.min(pos - 1, ca.endAt)] || ca;
-            var third = ca.c.q === 'm' || ca.c.q === 'dim' ? 3 : 4;
-            m = [root, root + third, root + 7, bassNote(nextC.c.pc) + (k4 === 3 ? -1 : 0)][k4];
-            if (k4 === 3 && nextC === ca) m = root + 5;
+          var ca = chordAt[p], nxP = bi + 1 < bassHits.length ? bassHits[bi + 1] : pos, nx = Math.min(nxP, ca.endAt), root = bassNote(ca.c.pc), m = root, T = tones(ca.c);
+          if (ca.c !== prevC) { cnt = 0; prevC = ca.c; } else cnt++;
+          var dur = (nx - p) * s16 * 0.92, vel = 1;
+          var nextC = (chordAt[ca.endAt] || ca).c, beatsLeft = Math.round((ca.endAt - p) / 4);
+          if (D.walk || bsty === 'walk') {
+            // walking bass: root on the chord's first beat, chord tones in between, chromatic approach into the next chord
+            var nr = bassNote(nextC.pc);
+            if (cnt === 0) m = root;
+            else if (beatsLeft <= 1 && nextC !== ca.c) m = nr + (Math.random() < 0.6 ? -1 : 1);
+            else m = root + [T.third, T.fifth, T.sev || 9, 12][(cnt - 1) % 4];
+            if (m > 55) m -= 12;
+            dur = s16 * 4 * 0.88; vel = cnt === 0 ? 1 : 0.85;
+          } else if (bsty === 'boogie') {
+            m = root + [0, T.third, T.fifth, 9, 10, 9, T.fifth, T.third][cnt % 8]; dur = Math.min(dur, e8 * 0.95);
+          } else if (bsty === 'fifth') {
+            m = cnt % 2 === 1 ? root + (root + T.fifth > 52 ? T.fifth - 12 : T.fifth) : root;
+          } else if (bsty === 'octave') {
+            m = (cnt % 2 === 1) ? root + 12 : root; dur = Math.min(dur, e8 * 0.8); vel = cnt % 2 ? 0.8 : 1;
+          } else if (bsty === 'eighths') {
+            dur = Math.min(dur, e8 * 0.9); vel = (p % 4 === 0) ? 1 : 0.82;
+          } else if (bsty === 'pedal') {
+            dur = Math.min(dur, e8 * 0.7);
+          } else if (bsty === 'drop') {
+            m = cnt % 2 === 1 ? root + T.fifth : root;
           }
-          playBass(ctx, bg, m, t0 + p * s16 + sw(p % plen), (nx - p) * s16 * 0.92, 1);
+          playBass(ctx, bg, m, t0 + p * s16 + sw(p % plen), dur, vel);
         });
       }
       if (o.mel) {
