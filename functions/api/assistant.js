@@ -9,7 +9,7 @@ const SB_KEY = 'sb_publishable_wbMAklnoQrY6-P0vM1KVlw_l0llY6fK';
 const MODEL = 'claude-haiku-5-5';
 const PRO_DAILY = 40, GUEST_FREE = 4, ACCOUNT_FREE = 10, GUEST_IP_DAILY = 30;
 const MAX_TURNS = 12, MAX_CHARS = 2000, MAX_STEPS = 4;
-const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
+const CORS = { 'Access-Control-Allow-Origin': 'https://chordseed.pages.dev', 'Vary': 'Origin', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization' };
 
 function reply(body, status) { return new Response(JSON.stringify(body), { status: status || 200, headers: Object.assign({ 'Content-Type': 'application/json' }, CORS) }); }
 function sb(env, path, token, init) {
@@ -70,7 +70,9 @@ export async function onRequest(context) {
   // 2) Read the conversation.
   let body;
   try { body = await request.json(); } catch (e) { return reply({ error: 'bad_request' }, 400); }
-  const ctx = body.context || {};
+  const raw = body.context && typeof body.context === 'object' ? body.context : {};
+  const clip = (v, n) => (typeof v === 'string' ? v : '').replace(/[\r\n]+/g, ' ').slice(0, n);
+  const ctx = { language: raw.language === 'es' ? 'es' : 'en', instrument: clip(raw.instrument, 40), genre: clip(raw.genre, 40), mood: clip(raw.mood, 40), chords: clip(raw.chords, 300) };
   const msgs = (Array.isArray(body.messages) ? body.messages : []).slice(-MAX_TURNS)
     .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
     .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_CHARS) }));
