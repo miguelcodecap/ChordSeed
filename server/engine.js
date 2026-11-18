@@ -1266,17 +1266,18 @@ function csEarLab() {
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   var root = document.createElement('div'); root.id = 'earlab'; document.body.appendChild(root);
   var samples = [], idx = 0, ctx = null, stream = null, busy = false, tuneName = '';
+  var esc = function (v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); };
   function nm(c) { return NAMES[c.pc] + ({ M: '', m: 'm', '7': '7', maj7: 'maj7', m7: 'm7', sus4: 'sus4', sus2: 'sus2', dim: 'dim', '6': '6', m6: 'm6', add9: 'add9', '9': '9' })[c.id]; }
   function render(msg) {
     var done = idx >= LIST.length;
     root.innerHTML = '<div class="w"><h1>' + L('Laboratorio del oído', 'Ear lab') + '</h1><p>' + L('Toca cada acorde cuando te lo pida. Graba 1,5 segundos, intenta reconocerlo y guarda la muestra. Al final descarga el archivo y mándamelo para afinar el reconocimiento con tu guitarra real.', 'Play each chord when asked. It records 1.5 seconds, tries to recognise it and keeps the sample. At the end, download the file and send it so recognition can be tuned on your real guitar.') + '</p>' +
-      '<div class="row"><input id="el-tun" placeholder="' + L('Afinación (ej. estándar, Drop D)', 'Tuning (e.g. standard, Drop D)') + '" value="' + tuneName + '" style="flex:1"><input id="el-ins" placeholder="' + L('Instrumento y celular', 'Instrument & phone') + '" style="flex:1"></div>' +
+      '<div class="row"><input id="el-tun" placeholder="' + L('Afinación (ej. estándar, Drop D)', 'Tuning (e.g. standard, Drop D)') + '" value="' + esc(tuneName) + '" style="flex:1"><input id="el-ins" placeholder="' + L('Instrumento y celular', 'Instrument & phone') + '" style="flex:1"></div>' +
       (done ? '<p class="st">' + L('¡Listo! ', 'Done! ') + samples.length + L(' muestras.', ' samples.') + '</p>' : '<p style="text-align:center">' + L('Acorde ', 'Chord ') + (idx + 1) + ' / ' + LIST.length + '</p><div class="big">' + LIST[idx] + '</div>' +
       '<div class="row" style="justify-content:center"><button class="go" id="el-rec">' + (busy ? L('Escuchando… rasguea', 'Listening… strum') : L('Grabar', 'Record')) + '</button><button id="el-skip">' + L('Saltar', 'Skip') + '</button></div>' +
       '<div class="row" style="justify-content:center"><input id="el-lab" placeholder="' + L('o escribe otro acorde que toques', 'or type another chord you play') + '" style="width:260px"><button id="el-own">' + L('Grabar ese', 'Record that') + '</button></div>') +
-      '<p class="st" id="el-msg">' + (msg || '') + '</p>' +
+      '<p class="st" id="el-msg">' + esc(msg || '') + '</p>' +
       '<div class="row" style="justify-content:center"><button class="go" id="el-dl"' + (samples.length ? '' : ' disabled') + '>' + L('Descargar muestras', 'Download samples') + ' (' + samples.length + ')</button><button id="el-x">' + L('Salir', 'Exit') + '</button></div>' +
-      '<div class="log">' + samples.map(function (x) { return (x.ok ? '✓ ' : '✗ ') + x.label + ' → ' + x.guess.join(' / '); }).join('\n') + '</div></div>';
+      '<div class="log">' + samples.map(function (x) { return (x.ok ? '✓ ' : '✗ ') + esc(x.label) + ' → ' + esc(x.guess.join(' / ')); }).join('\n') + '</div></div>';
     var q = function (id) { return document.getElementById(id); };
     q('el-tun').oninput = function (e) { tuneName = e.target.value; };
     if (q('el-rec')) q('el-rec').onclick = function () { rec(LIST[idx], true); };
