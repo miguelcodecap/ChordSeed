@@ -6440,7 +6440,7 @@ class Component extends DCLogic {
       fSub: LX('Tu progresión es la parte A. Añade más partes (B, C…) y decide en qué orden suenan: repite una o pon otra distinta.', 'Your progression is part A. Add more parts (B, C…) and choose the order they play in: repeat one or use a different one.'),
       devPlan: /[?&]dev(=|&|$)/.test((typeof location !== 'undefined' && location.search) || ''),
       lmBtnShow: !st.lmOpen && !st.acctOpen && !st.payOpen && !st.settingsOpen && !st.lm && !st.pickerOpen,
-      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: CS_LUMEN_MODE === 'claude' ? LX('Crea con Claude', 'Create with Claude') : LX('Pregúntale a Lumen', 'Ask Lumen'),
+      lmOpen: !!st.lmOpen, lmFace: SAGE.explain, lmFabLab: CS_LUMEN_MODE === 'claude' ? LX('Crea con IA', 'Create with AI') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmFabTxt: CS_LUMEN_MODE === 'claude' ? LX('Crea con IA', 'Create with AI') : LX('Pregúntale a Lumen', 'Ask Lumen'), lmTitle: CS_LUMEN_MODE === 'claude' ? LX('Crea con IA', 'Create with AI') : LX('Pregúntale a Lumen', 'Ask Lumen'),
       lmToggle: function () { self.setState({ lmOpen: !st.lmOpen, lmErr: '' }); setTimeout(function () { try { var t = document.getElementById('cs-lm-in'); if (t && window.matchMedia('(hover:hover)').matches) t.focus(); } catch (e) {} }, 60); },
       lmClose: function () { self.setState({ lmOpen: false }); },
       lmBackdrop: function (e) { if (e && e.target === e.currentTarget) self.setState({ lmOpen: false }); },
