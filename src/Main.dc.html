@@ -5069,7 +5069,8 @@ class Component extends DCLogic {
   }
   addChordDone(list) {
     var self = this; this.earStop(); this._hovMute = Date.now() + 450;
-    var inline = !!this.state.pickerOpen && !this.state.pkModal;
+    var gOn = !!this.state.guided && !this.state.gcOff;
+    var inline = !!this.state.pickerOpen && !this.state.pkModal && !gOn;
     if (inline) this.setState({ chords: list, focus: null, earPhase: 'idle', earRes: [], earMsg: '', gHov: null, pkAdded: true });
     else this.setState({ chords: list, focus: null, pickerOpen: false, pkModal: false, addMode: 'pick', earPhase: 'idle', earRes: [], earMsg: '', gHov: null });
     setTimeout(function () {
@@ -5088,6 +5089,7 @@ class Component extends DCLogic {
     var self = this, gc = this._gc, box = this._gcEl, ring = this._gcRing;
     if (!box) return;
     var tg = gc && document.querySelector(gc.sel);
+    if (document.querySelector('.pk-modal')) { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); box._k = null; return; }
     if (!gc || !tg || this.state.gcOff || !tg.getBoundingClientRect().width || box._hid === gc.key) { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); if (!gc) this._gcPend = null; return; }
     var mk = function (t, c, txt) { var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; };
     if (box._k !== gc.key) {
@@ -5104,7 +5106,7 @@ class Component extends DCLogic {
       box.appendChild(offB);
       var xb = mk('button', 'gc-x', '×'); xb.type = 'button'; xb.setAttribute('aria-label', 'Close'); xb.addEventListener('click', function () { box.style.display = 'none'; ring.style.display = 'none'; document.body.classList.remove('gc-on'); box._hid = self._gc ? self._gc.key : null; self.forceUpdate(); }); box.appendChild(xb);
       box.appendChild(mk('i', 'gc-ar', null));
-      box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in');
+      box.classList.remove('gc-in'); void box.offsetWidth; box.classList.add('gc-in'); box._freshUntil = Date.now() + 1800;
       var rr = tg.getBoundingClientRect(); if (box._seen && (rr.top < 70 || rr.bottom > window.innerHeight - 150)) { try { tg.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} } box._seen = true;
     }
     // auto-advance: a change starts a short countdown; another change restarts it
@@ -5127,6 +5129,15 @@ class Component extends DCLogic {
     box.style.left = (left + sx) + 'px'; box.style.top = (top + sy) + 'px';
     box.classList.toggle('gc-up', !below);
     var ar = box.querySelector('.gc-ar'); if (ar) ar.style.left = Math.max(14, Math.min(bw - 30, r.left + 24 - left)) + 'px';
+    // make sure the bubble itself is on screen whenever a new step appears (or the progression changes)
+    var nNow = (this.state.chords || []).length + '|' + !!this.state.pickerOpen; if (box._n !== nNow) { if (box._n != null) box._freshUntil = Date.now() + 1800; box._n = nNow; }
+    var now = Date.now();
+    if (box._freshUntil && now < box._freshUntil && (!box._lastScr || now - box._lastScr > 450)) {
+      var bb2 = box.getBoundingClientRect(), vh = window.innerHeight, pad = 16, botBar = 96, dy = 0;
+      if (bb2.bottom > vh - botBar) dy = bb2.bottom - (vh - botBar) + pad;
+      else if (bb2.top < pad + 56) dy = bb2.top - (pad + 56);
+      if (Math.abs(dy) > 8) { box._lastScr = now; try { window.scrollBy({ top: dy, behavior: 'smooth' }); } catch (e) { window.scrollBy(0, dy); } }
+    }
   }
   gdJump(i) {
     var g = i < GD_STEPS.length ? GD_STEPS[i] : [0, 0, 0, 0, 'stp-4', 'struct'], c2 = Object.assign({}, this.state.col || {});
