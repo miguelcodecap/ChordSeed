@@ -1,7 +1,7 @@
 POSTS_EN = {}
 
 POSTS_EN['borrowed'] = dict(
-slug='borrowed-chords-beatles', img='04-borrowed-chords', og='borrowed-chords',
+slug='borrowed-chords-beatles', img='cover-borrowed-chords-beatles', og='borrowed-chords',
 eyebrow='Color', minutes=6,
 title='Borrowed chords: the Beatles’ favorite trick',
 desc='What borrowed chords are, which ones work in any major key, and how the Beatles used the minor iv, ♭VII and ♭III in songs like In My Life, Hey Jude and Here Comes the Sun.',
@@ -47,7 +47,7 @@ body='''
 try_text='Turn on <strong>Surprise</strong> in the chord generator and Chordseed suggests borrowed chords that fit your progression, tells you which key they come from and plays them so you can hear the change. Free, in your browser.')
 
 POSTS_EN['reharm'] = dict(
-slug='how-to-reharmonize-a-song', img='06-reharmonize', og='reharmonize',
+slug='how-to-reharmonize-a-song', img='cover-how-to-reharmonize-a-song', og='reharmonize',
 eyebrow='Reharmonization', minutes=7,
 title='How to reharmonize a song in 5 simple steps',
 desc='A beginner-friendly guide to reharmonization: add sevenths, swap chords that share notes, use secondary dominants, borrowed chords and the tritone substitution, with a before-and-after example.',
@@ -94,7 +94,7 @@ body='''
 try_text='Open <strong>Enrich my chords</strong> in Chordseed, paste your progression and pick a style. It suggests sevenths, substitutions and passing chords, explains each one and plays the result on a real instrument. Free, in your browser.')
 
 POSTS_EN['key'] = dict(
-slug='how-to-change-key-in-a-song', img='10-change-key', og='change-key',
+slug='how-to-change-key-in-a-song', img='cover-how-to-change-key-in-a-song', og='change-key',
 eyebrow='Key changes', minutes=6,
 title='How to change key in a song (and lift the last chorus)',
 desc='Three easy ways to modulate: the sudden lift, the dominant chord trick and the pivot chord. Includes a chart of the chord to play before each new key.',
@@ -144,7 +144,7 @@ body='''
 try_text='Use <strong>Change key</strong> in Chordseed: choose where you are and where you want to go, and it shows you paths to get there, with the bridge and pivot chords marked, plays each one and draws the trip on the circle of fifths. Free, in your browser.')
 
 POSTS_EN['numbers'] = dict(
-slug='chord-numbers-roman-numerals', img='12-roman-numerals', og='roman-numerals',
+slug='chord-numbers-roman-numerals', img='cover-chord-numbers-roman-numerals', og='roman-numerals',
 eyebrow='Theory basics', minutes=7,
 title='Chord numbers explained: play any song in any key',
 desc='What I, IV, V and vi mean, the chord families of the most common guitar keys, the Nashville number system, how to transpose a progression and how to find the key of a song.',
@@ -202,7 +202,7 @@ body='''
 try_text='Paste any progression into <strong>Analyze my progression</strong> in Chordseed. It finds the key, labels every chord with its number and draws the tension curve so you can see what each chord does. Free, in your browser.')
 
 POSTS_EN['lofi'] = dict(
-slug='lofi-chord-progressions', img='11-lofi', og='lofi',
+slug='lofi-chord-progressions', img='cover-lofi-chord-progressions', og='lofi',
 eyebrow='Moods', minutes=6,
 title='6 lo-fi chord progressions (and why they sound so chill)',
 desc='Lo-fi hip hop chord progressions you can play today: seventh and ninth chords, ii–V–I loops and minor vamps, with tips on tempo, voicings and swing.',
